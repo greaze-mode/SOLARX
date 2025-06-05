@@ -18,6 +18,44 @@ const STARTUPS_API_URL = `${import.meta.env.VITE_API_URL}/api/startups?populate=
 const HQ_MARKER_COLOR_HEX = 0xff5722; // Orange color for HQ markers
 const GLOBE_RADIUS = 1;
 
+// Add region color constants
+const REGION_COLORS = {
+  ASIA_PACIFIC: 0xff5722, // Orange
+  AFRICA: 0x4CAF50,      // Green
+  DEFAULT: 0x2196F3      // Blue
+};
+
+// Add region names mapping
+const REGION_NAMES = {
+  ASIA_PACIFIC: "Asia-Pacific",
+  AFRICA: "Africa",
+  DEFAULT: "Other Regions"
+};
+
+const isInAsiaPacific = (lat, lng) => {
+  // Asia-Pacific region boundaries
+  return (
+    (lat >= -10 && lat <= 60 && lng >= 60 && lng <= 180) || // Main Asia
+    (lat >= -10 && lat <= 30 && lng >= 100 && lng <= 180)   // Southeast Asia
+  );
+};
+
+const isInAfrica = (lat, lng) => {
+  // Africa region boundaries
+  return (
+    lat >= -35 && lat <= 37 && lng >= -20 && lng <= 55
+  );
+};
+
+const getRegionColor = (lat, lng) => {
+  if (isInAsiaPacific(lat, lng)) {
+    return REGION_COLORS.ASIA_PACIFIC;
+  } else if (isInAfrica(lat, lng)) {
+    return REGION_COLORS.AFRICA;
+  }
+  return REGION_COLORS.DEFAULT;
+};
+
 const extractRichTextToString = (richTextArray) => {
   let textContent = "";
   if (Array.isArray(richTextArray)) {
@@ -101,7 +139,7 @@ const SolarXGlobalReach = () => {
                 id: `startup-hq-${startup.id}`,
                 lat: hqLocation.lat,
                 lng: hqLocation.lng,
-                color: HQ_MARKER_COLOR_HEX,
+                color: getRegionColor(hqLocation.lat, hqLocation.lng),
                 type: "Headquarters",
                 startupId: startup.id,
                 startupName: startup.Name || "N/A",
@@ -558,6 +596,24 @@ const SolarXGlobalReach = () => {
     </div>
   );
 
+  // Add Legend component before the main render
+  const RegionLegend = () => (
+    <div className="absolute bottom-4 left-4 bg-white/90 backdrop-blur-sm p-3 rounded-lg shadow-lg z-10">
+      <h4 className="text-sm font-semibold text-gray-700 mb-2">Region Colors</h4>
+      <div className="space-y-2">
+        {Object.entries(REGION_COLORS).map(([region, color]) => (
+          <div key={region} className="flex items-center space-x-2">
+            <div 
+              className="w-4 h-4 rounded-full" 
+              style={{ backgroundColor: `#${color.toString(16).padStart(6, '0')}` }}
+            />
+            <span className="text-xs text-gray-600">{REGION_NAMES[region]}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+
   // --- Main Render ---
   return (
     <>
@@ -636,18 +692,18 @@ const SolarXGlobalReach = () => {
                       </button>
                     </div>
                     <div
-                      ref={!isFullscreen ? globeContainerRef : null} // Assign ref only when not in fullscreen
-                      className="w-full h-[400px] md:h-[450px] lg:h-[500px] rounded-md sm:rounded-lg overflow-hidden relative cursor-grab bg-gray-800/50" // Ensure bg for placeholder visibility
+                      ref={!isFullscreen ? globeContainerRef : null}
+                      className="w-full h-[400px] md:h-[450px] lg:h-[500px] rounded-md sm:rounded-lg overflow-hidden relative cursor-grab bg-gray-800/50"
                     >
-                      {!isThreeJsReady &&
-                        !isComponentLoading && ( // Show only if Three.js isn't ready but main loading is done
-                          <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-4">
-                            <Loader2 className="w-8 h-8 text-orange-400 animate-spin mb-2" />
-                            <p className="text-orange-300 text-sm">
-                              Preparing Interactive Globe...
-                            </p>
-                          </div>
-                        )}
+                      {!isThreeJsReady && !isComponentLoading && (
+                        <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-4">
+                          <Loader2 className="w-8 h-8 text-orange-400 animate-spin mb-2" />
+                          <p className="text-orange-300 text-sm">
+                            Preparing Interactive Globe...
+                          </p>
+                        </div>
+                      )}
+                      {isThreeJsReady && <RegionLegend />}
                       {/* Canvas will be appended here by Three.js */}
                     </div>
                   </div>

@@ -142,7 +142,7 @@ export default function SolarXWinners() {
     const calculateResponsiveSettings = (maxSlidesForView) => {
       const slidesToShow = Math.min(maxSlidesForView, Math.max(1, numItems)); // Ensure at least 1 slide is shown
       return {
-        slidesToShow,
+        slidesToShow: slidesToShow,
         slidesToScroll: slidesToShow,
         infinite: numItems > slidesToShow,
       };
@@ -217,7 +217,7 @@ export default function SolarXWinners() {
       className="max-w-screen-2xl mx-auto min-w-full bg-gradient-to-b from-white via-orange-50 to-white py-16 md:py-24 relative"
     >
       <div className="px-4 sm:px-6 lg:px-8 relative z-10">
-        <div className="text-center mb-12 md:mb-16">
+        <div className="text-center">
           <h2 className="text-4xl md:text-5xl font-extrabold mb-4 text-gray-800">
             Meet Our <span className="text-orange-600">SolarX Winners</span>
           </h2>
@@ -229,7 +229,7 @@ export default function SolarXWinners() {
         </div>
 
         {/* Region Badge Selector */}
-        <div className="flex flex-wrap justify-center items-center gap-2 sm:gap-3 mb-10 md:mb-12 px-2">
+        <div className="flex flex-wrap justify-center items-center gap-2 sm:gap-3 px-2">
           {REGIONS_OPTIONS.map((region) => (
             <button
               key={region}
@@ -259,9 +259,9 @@ export default function SolarXWinners() {
             </p>
           </div>
         ) : (
-          <div className="mt-8">
+          <div className="mt-4">
             {showSliderNavButtons && (
-              <div className="flex justify-end items-center mb-4 px-1 sm:px-0">
+              <div className="flex justify-end items-centerpx-1 sm:px-0">
                 <div className="flex gap-2">
                   <button
                     onClick={() => sliderRef.current?.slickPrev()}
