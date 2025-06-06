@@ -67,7 +67,7 @@ export default function BusinessSummary({ companyId }) {
   }, [companyId]);
 
   return (
-    <div className="max-w-screen-2xl mx-[69px]  lg:p-0 my-20">
+    <div className="w-full px-[69px]">
       <div className="flex flex-col md:flex-row items-center justify-between md:justify-start mb-8 space-y-3 md:space-y-0 md:space-x-3 w-full">
         <div className="w-1/5 md:w-16 hidden md:block h-1.5 bg-gradient-to-r from-orange-500 to-red-500 rounded-full"></div>
         <h1 className="text-3xl md:text-5xl font-bold mb-1">
@@ -85,13 +85,13 @@ export default function BusinessSummary({ companyId }) {
       )}
 
       {!loading && businessData && (
-        <div className="bg-white rounded-xl shadow-md border border-orange-200 p-8 mb-6">
+        <div className="bg-white rounded-xl shadow-2xl border border-orange-200 p-8 mb-6 bg-gradient-to-br from-white to-orange-50">
           <p className="text-lg text-gray-700 mb-8 whitespace-pre-line">
             {businessData.summary}
           </p>
 
           {businessData.features.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-white">
               {businessData.features.map((feature, index) => (
                 <div
                   key={index}
@@ -121,7 +121,7 @@ export default function BusinessSummary({ companyId }) {
       )}
 
       {!loading && !businessData && (
-        <div className="bg-white rounded-xl shadow-sm p-8 mb-6">
+        <div className="bg-white rounded-xl shadow-2xl p-8 mb-6">
           <div className="bg-orange-50 border border-orange-100 rounded-lg p-8 text-center">
             <h3 className="text-xl font-medium text-orange-700 mb-4">
               No Business Summary Available

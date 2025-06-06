@@ -132,7 +132,7 @@ export default function TechnologySection({ companyId }) {
   }, [companyId]);
 
   return (
-    <div className="max-w-screen-2xl mx-[47px] p-4 md:p-6 lg:p-8 my-12 md:my-20">
+    <div className="max-w-screen-2xl mx-[47px] p-4 md:p-6 lg:p-8 mt-12 md:mt-20">
       <div className="flex flex-col md:flex-row items-center justify-between md:justify-start mb-8 space-y-3 md:space-y-0 md:space-x-3 w-full">
         <div className="w-1/5 md:w-16 hidden md:block h-1.5 bg-gradient-to-r from-orange-500 to-red-500 rounded-full"></div>
         <h1 className="text-4xl md:text-5xl font-bold mb-1 ">

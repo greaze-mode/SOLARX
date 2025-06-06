@@ -214,7 +214,7 @@ export default function SolarXWinners() {
   return (
     <section
       id="winners"
-      className="max-w-screen-2xl mx-auto min-w-full bg-gradient-to-b from-white via-orange-50 to-white py-16 md:py-24 relative"
+      className="max-w-screen-2xl mx-auto min-w-full bg-gradient-to-b from-white via-orange-50 to-white pt-16 md:pt-24 relative"
     >
       <div className="px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="text-center">

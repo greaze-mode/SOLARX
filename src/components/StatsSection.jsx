@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { API_URL } from "../services/api";
 
@@ -156,9 +156,10 @@ export default function StatsSection() {
   return (
     <section
       id="stats"
-      className="bg-white pb-12 sm:pb-16 md:pb-20 relative min-h-[60vh] max-w-screen-2xl mx-auto"
+      className="bg-gradient-to-r from-orange-200 to-orange-500 py-20 relative pb-32 w-full px-20"
     >
       {/* Background Blurs */}
+      <div className="absolute inset-0 bg-[url('/imgs/bg_impact_metrics.png')] bg-no-repeat bg-center bg-cover opacity-20"></div>
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute top-10 sm:top-20 left-10 sm:left-20 w-48 sm:w-72 md:w-96 h-48 sm:h-72 md:h-96 bg-orange-100/30 rounded-full filter blur-3xl"></div>
         <div className="absolute bottom-20 sm:bottom-40 right-5 sm:right-10 w-40 sm:w-60 md:w-80 h-40 sm:h-60 md:h-80 bg-orange-100/30 rounded-full filter blur-3xl"></div>

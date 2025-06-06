@@ -92,6 +92,7 @@ const SolarXGlobalReach = () => {
   const animationFrameIdRef = useRef(null);
   const markersGroupRef = useRef(null);
   const individualMarkersRef = useRef([]);
+  const scrollPositionRef = useRef(0);
 
   const [isComponentLoading, setIsComponentLoading] = useState(true);
   const [isThreeJsReady, setIsThreeJsReady] = useState(false);
@@ -245,7 +246,10 @@ const SolarXGlobalReach = () => {
     sceneRef.current = scene;
 
     const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
-    camera.position.z = 3.5;
+
+    const indiaPosition = latLngToVector3(20.5937, 78.9629, 3.5);
+    camera.position.set(indiaPosition.x, indiaPosition.y, indiaPosition.z);
+    camera.lookAt(0, 0, 0);
     cameraRef.current = camera;
 
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
@@ -719,6 +723,7 @@ const SolarXGlobalReach = () => {
                       <InfoPanel
                         data={selectedMarkerData}
                         onClose={closeInfoPanel}
+                        isFullScreen={isFullscreen}
                       />
                     </div>
                   )}

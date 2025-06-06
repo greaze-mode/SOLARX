@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Target, AlertTriangle, Loader2, Globe, BarChart3 } from "lucide-react";
 import KeyImpactMetricsScroller from "../components/KeyImpactMetricsScroller";
@@ -261,11 +261,12 @@ const GlobalImpactSection = () => {
 
   return (
     <section
-      className={`py-20 bg-white relative overflow-hidden transition-opacity duration-200 max-w-screen-2xl min-w-full mx-auto ${
+      className={`pt-20 bg-white relative overflow-hidden transition-opacity duration-200 w-full ${
         isVisible ? "opacity-100" : "opacity-0"
       }`}
     >
-      <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div className="w-full relative z-10 bg-gradient-to-r from-orange-200 to-orange-500 py-20">
+        <div className="absolute inset-0 bg-[url('/imgs/bg_impact_metrics.png')] bg-no-repeat bg-center bg-cover opacity-10"></div>
         <div
           className="text-center mb-16 transform transition-all duration-200"
           style={{
@@ -285,8 +286,8 @@ const GlobalImpactSection = () => {
           </p>
         </div>
 
-        <div className="flex flex-row space-y-20">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-10 lg:gap-12">
+        <div className="flex flex-row space-y-20 px-20">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-10 lg:gap-12 px-4 sm:px-6 lg:px-8 mb-20">
             {/* Left Column: SDGs and Metrics */}
             <div className="col-span-1 flex flex-col justify-start space-y-8">
               {sdgData.length > 0 && (
@@ -393,10 +394,15 @@ const GlobalImpactSection = () => {
         </div>
 
         {impactMetrics.length > 0 && (
-          <KeyImpactMetricsScroller
-            metrics={impactMetrics}
-            isVisible={isVisible}
-          />
+            <div className="relative">
+                <div className="absolute inset-0 bg-[url('/imgs/bg_impact_metrics.png')] bg-no-repeat bg-center bg-cover opacity-10"></div>
+                <div className="relative z-10">
+                    <KeyImpactMetricsScroller
+                        metrics={impactMetrics}
+                        isVisible={isVisible}
+                    />
+                </div>
+            </div>
         )}
       </div>
     </section>

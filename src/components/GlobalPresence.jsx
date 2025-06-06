@@ -376,7 +376,7 @@ const GlobalPresence = ({ companyId }) => {
     // Reload map if locations or dark mode changes
   }, [mapLocations, darkMode, loading, error]);
 
-  const InfoCard = ({ title, items, icon, cardColor }) => (
+  const InfoCard = ({ title, items }) => (
     <div
       className={`rounded-xl p-6 shadow-lg transition-all duration-300 ${
         darkMode
@@ -385,7 +385,6 @@ const GlobalPresence = ({ companyId }) => {
       }`}
     >
       <div className="flex items-center mb-4">
-        {React.cloneElement(icon, { className: `w-7 h-7 mr-3 ${cardColor}` })}
         <h3
           className={`text-xl font-semibold ${
             darkMode ? "text-white" : "text-gray-800"
@@ -421,11 +420,11 @@ const GlobalPresence = ({ companyId }) => {
 
   return (
     <section
-      className={`py-16 relative transition-colors duration-300 max-w-screen-2xl  ${
+      className={`py-16 relative transition-colors duration-300 px-[69px] w-full ${
         darkMode ? "bg-gray-900" : "bg-gray-50"
       }`}
     >
-      <div className="mx-auto px-4 ml-20">
+      <div className="">
         <div className="flex flex-col md:flex-row items-center justify-between md:justify-start mb-8 space-y-3 md:space-y-0 md:space-x-3 w-full">
           <div className="w-1/5 md:w-16 hidden md:block h-1.5 bg-gradient-to-r from-orange-500 to-red-500 rounded-full"></div>
           <h1 className="text-3xl md:text-5xl font-bold mb-1">
@@ -573,14 +572,10 @@ const GlobalPresence = ({ companyId }) => {
               <InfoCard
                 title="Sector Focus"
                 items={startupData.sectorFocus}
-                icon={<Zap />}
-                cardColor="text-blue-500"
               />
               <InfoCard
                 title="Technology Types"
                 items={startupData.technologyTypes}
-                icon={<Cpu />}
-                cardColor="text-green-500"
               />
             </div>
           </div>

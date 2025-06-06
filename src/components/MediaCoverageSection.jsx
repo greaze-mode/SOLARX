@@ -70,12 +70,8 @@ const mediaMentionsData = [
 ];
 
 export default function MediaCoverageSection() {
-  const truncate = (string, length, end = "...") => {
-    return string.length < length ? string : string.substring(0, length) + end;
-  };
-
   return (
-    <div className="max-w-5xl min-w-full mx-auto pb-16 bg-white px-4">
+    <div className="max-w-5xl min-w-full mx-auto pb-16 bg-white px-4 pt-16">
       <h1 className="text-4xl sm:text-5xl font-extrabold mb-4 text-center">
         <span className="bg-clip-text text-transparent bg-gradient-to-r from-orange-500 to-red-600">
           Media Coverage & Recognition

@@ -67,7 +67,7 @@ export default function CompanyInformation({ companyId }) {
     }
   }, [id]);
   return (
-    <div className="p-[80px] font-sans max-w-screen-2xl mx-auto my-20">
+    <div className="px-[69px] font-sans w-full my-20">
       {loading && (
         <div className="flex justify-center items-center py-20">
           <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-orange-500"></div>
@@ -81,8 +81,8 @@ export default function CompanyInformation({ companyId }) {
       )}
 
       {!loading && company && (
-        <div className="max-w-screen-2xl mx-auto">
-          <div className="flex flex-col md:flex-row items-center justify-between md:justify-start mb-8 space-y-3 md:space-y-0 md:space-x-3 w-full">
+        <div className="w-full">
+          <div className="flex flex-col md:flex-row items-center justify-between md:justify-start mb-8 space-y-3 md:space-y-0 md:space-x-3 w-full ">
             <div className="w-1/5 md:w-16 hidden md:block h-1.5 bg-gradient-to-r from-orange-500 to-red-500 rounded-full"></div>
             <h1 className="text-3xl md:text-5xl font-bold mb-1">
               <span className="bg-clip-text text-transparent bg-gradient-to-r from-orange-500 to-red-600">
@@ -92,10 +92,10 @@ export default function CompanyInformation({ companyId }) {
             <div className="block md:hidden w-1/3 md:w-16 h-1.5 bg-gradient-to-r from-orange-500 to-red-500 rounded-full"></div>
           </div>
 
-          <div className="bg-white rounded-lg shadow-lg p-6 border border-orange-200 mt-10">
+          <div className="bg-gradient-to-br from-white to-orange-50 rounded-lg shadow-2xl p-6 border border-orange-200 mt-10">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Founded */}
-              <div className="border border-gray-200 rounded-lg p-4 flex items-start">
+              <div className="border border-gray-200 rounded-lg p-4 flex items-start bg-white">
                 <div className="bg-orange-500 rounded-full p-3 mr-4">
                   <Calendar className="text-white" size={20} />
                 </div>
@@ -108,7 +108,7 @@ export default function CompanyInformation({ companyId }) {
               </div>
 
               {/* SDG Alignment */}
-              <div className="border border-gray-200 rounded-lg p-4 flex items-start">
+              <div className="border border-gray-200 rounded-lg p-4 flex items-start bg-white">
                 <div className="bg-orange-500 rounded-full p-3 mr-4">
                   <Target className="text-white" size={20} />
                 </div>
@@ -123,7 +123,7 @@ export default function CompanyInformation({ companyId }) {
               </div>
 
               {/* Location */}
-              <div className="border border-gray-200 rounded-lg p-4 flex items-start">
+              <div className="border border-gray-200 rounded-lg p-4 flex items-start bg-white">
                 <div className="bg-orange-500 rounded-full p-3 mr-4">
                   <MapPin className="text-white" size={20} />
                 </div>
@@ -136,7 +136,7 @@ export default function CompanyInformation({ companyId }) {
               </div>
 
               {/* Team Size */}
-              <div className="border border-gray-200 rounded-lg p-4 flex items-start">
+              <div className="border border-gray-200 rounded-lg p-4 flex items-start bg-white">
                 <div className="bg-orange-500 rounded-full p-3 mr-4">
                   <Users className="text-white" size={20} />
                 </div>
@@ -153,7 +153,7 @@ export default function CompanyInformation({ companyId }) {
               </div>
 
               {/* Website */}
-              <div className="border border-gray-200 rounded-lg p-4 flex items-start">
+              <div className="border border-gray-200 rounded-lg p-4 flex items-start bg-white">
                 <div className="bg-orange-500 rounded-full p-3 mr-4">
                   <Globe className="text-white" size={20} />
                 </div>
@@ -177,7 +177,7 @@ export default function CompanyInformation({ companyId }) {
               </div>
 
               {/* Contact Email */}
-              <div className="border border-gray-200 rounded-lg p-4 flex items-start">
+              <div className="border border-gray-200 rounded-lg p-4 flex items-start bg-white">
                 <div className="bg-orange-500 rounded-full p-3 mr-4">
                   <Shield className="text-white" size={20} />
                 </div>

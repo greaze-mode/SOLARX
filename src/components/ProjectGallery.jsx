@@ -272,27 +272,11 @@ const ProjectGallery = ({ companyId }) => {
     if (selectedProject) {
       document.addEventListener('keydown', handleEscapeKey);
       document.addEventListener('click', handleOutsideClick);
-      
-      // Prevent scrolling on the body when popup is open
-      document.body.style.overflow = 'hidden';
-      document.body.style.position = 'fixed';
-      document.body.style.width = '100%';
-      document.body.style.top = `-${window.scrollY}px`;
     }
     
     return () => {
       document.removeEventListener('keydown', handleEscapeKey);
       document.removeEventListener('click', handleOutsideClick);
-      
-      // Restore scrolling when popup is closed
-      if (selectedProject) {
-        const scrollY = document.body.style.top;
-        document.body.style.overflow = '';
-        document.body.style.position = '';
-        document.body.style.width = '';
-        document.body.style.top = '';
-        window.scrollTo(0, parseInt(scrollY || '0') * -1);
-      }
     };
   }, [selectedProject]);
 
@@ -516,22 +500,14 @@ const ProjectGallery = ({ companyId }) => {
                 <FileText size={64} className="text-white opacity-50" />
               </div>
             )}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent flex flex-col justify-end p-6">
-              <h2 className="text-3xl font-bold text-white">
-                {selectedProject.name}
-              </h2>
-              {selectedProject.oneLiner && (
-                <p className="text-lg text-orange-200 mt-2">
-                  {selectedProject.oneLiner}
-                </p>
-              )}
-              {/* Type display removed as requested */}
-            </div>
           </div>
 
           {/* Project content */}
           <div className="p-6 sm:p-8">
             <div className="prose prose-orange max-w-none">
+                <h2 className="text-3xl font-bold mb-8">
+                  {selectedProject.name}
+                </h2>
               {/* Render the rich text content */}
               {Array.isArray(selectedProject.overview) && selectedProject.overview.length > 0 ? (
                 renderRichText(selectedProject.overview)
