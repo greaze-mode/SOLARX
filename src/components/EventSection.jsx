@@ -83,7 +83,7 @@ export const EventSection = () => {
 
     return (
         <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 py-12 ml-10">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 text-center">
+            <h1 className="text-4xl md:text-5xl font-bold mb-4 text-center">
                 <span className="bg-clip-text text-transparent bg-gradient-to-r from-orange-500 to-red-600">
                     Event Gallery
                 </span>

@@ -2,9 +2,9 @@ export const eventData = [
     {
         id: "mahakumbh-2025",
         imgSrc: [
-            {src: "/imgs/event/3.jpeg", alt: ""},
-            {src: "/imgs/event/2.jpeg", alt: ""},
             {src: "/imgs/event/1.jpeg", alt: ""},
+            {src: "/imgs/event/2.jpeg", alt: ""},
+            {src: "/imgs/event/3.jpeg", alt: ""},
             {src: "/imgs/event/4.jpeg", alt: ""}],
         title: "Startup Mahakumbh 2025 - New Delhi, India",
         date: "3rd to 5th April 2025",

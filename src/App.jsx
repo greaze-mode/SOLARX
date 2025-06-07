@@ -11,6 +11,7 @@ import MediaCoverageSection from "./components/MediaCoverageSection";
 import AboutSolarXChallenge from "./components/AboutSolarXChallenge";
 import GlobalImpactSection from "./components/GlobalImpactSection";
 import SolarXGlobalReach from "./components/SolarXGlobalReach";
+import {EventSection} from "./components/EventSection.jsx";
 
 export default function App() {
   const [isMobile, setIsMobile] = useState(false);
@@ -44,6 +45,7 @@ export default function App() {
         <MediaCoverageSection isMobile={isMobile} />
 
         <GlobalImpactSection isMobile={isMobile} />
+        <EventSection />
         <AboutSolarXChallenge isMobile={isMobile} />
         <Footer />
       </div>
