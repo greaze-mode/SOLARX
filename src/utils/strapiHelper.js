@@ -67,8 +67,12 @@ export async function getLocationFromLatLong(latitude, longitude) {
     return null;
   }
   // const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=6`);
-  const response = await fetch(`https://us1.api-bdc.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=en`);
-  const data = await response.json();
+  // const response = await fetch(`https://us1.api-bdc.net/data/reverse-geocode?latitude=${latitude}&longitude=${longitude}&localityLanguage=en`);
+  // const data = await response.json();
+  let data = {
+    "city": "San Francisco",
+    "countryName": "United States"
+  };
 
   console.log('Reverse geocode data:', data);
 
@@ -77,4 +81,19 @@ export async function getLocationFromLatLong(latitude, longitude) {
   } else {
     return 'Location not found';
   }
+}
+
+export function parseRichText(content) {
+  if (!content || !Array.isArray(content)) return "";
+  let fin = "";
+  content.forEach((block) => {
+    if (block.type === "paragraph") {
+      fin += block.children
+        .map((child) => child.text || "")
+        .join("")
+        .trim() + "\n";
+    }
+  })
+
+  return fin.trim();
 }

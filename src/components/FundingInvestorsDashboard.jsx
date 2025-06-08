@@ -96,6 +96,7 @@ export default function FundingInvestorsDashboard() {
   }, []);
 
   const parseFundingData = (fundingItem) => {
+    console.warn("Funding Item:", fundingItem);
     const {
       Round,
       Amount_Raised,

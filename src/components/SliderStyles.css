@@ -87,20 +87,7 @@
   flex-direction: column !important;
 }
 
-/* Make the image section fixed height */
-.company-card .image-container {
-  height: 200px !important;
-  overflow: hidden;
-  position: relative;
-}
 
-/* Style the images within the container */
-.company-card .image-container img {
-  width: 100% !important;
-  height: 100% !important;
-  object-fit: cover !important;
-  object-position: center !important;
-}
 
 /* Make the content section fixed height */
 .company-card .content-container {

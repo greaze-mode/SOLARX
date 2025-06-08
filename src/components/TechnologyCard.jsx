@@ -1,6 +1,5 @@
-// src/components/TechnologyCard.jsx
-import React from "react";
 import { Zap, Clock, Sun, CheckCircle, Settings, Package } from "lucide-react"; // Example icons
+import { parseRichText } from "../utils/strapiHelper";
 
 // Helper to pick an icon based on highlight title (you can expand this)
 const getHighlightIcon = (title) => {
@@ -17,22 +16,15 @@ const getHighlightIcon = (title) => {
   return <CheckCircle size={18} className="text-orange-600 mr-2" />;
 };
 
-const TechnologyCard = ({ technology }) => {
-  const strapiBaseUrl = import.meta.env.VITE_API_URL; // Define your Strapi base URL
+const TechnologyCard = ({ technology, techTags }) => {
+  // const strapiBaseUrl = import.meta.env.VITE_API_URL; // Define your Strapi base URL
+
+  // console.warn(technology);
 
   const demonstrationImage =
     technology.Demonstration && technology.Demonstration.length > 0
       ? technology.Demonstration[0]
       : null;
-
-  // Function to safely extract text from rich text (already in your main component, can be a util)
-  const parseRichText = (content) => {
-    if (!content || !Array.isArray(content)) return "";
-    return content
-      .map((block) => block.children?.map((child) => child.text).join("") || "")
-      .join("\n")
-      .trim();
-  };
 
   return (
     <div className="rounded-xl shadow-md border border-orange-200 p-8 md:py-10 md:px-20 w-full overflow-hidden h-full">
@@ -41,10 +33,9 @@ const TechnologyCard = ({ technology }) => {
           <div className="flex items-center mb-3">
             <div className="p-2 bg-orange-100 rounded-full mr-3">
               <Sun size={24} className="text-orange-600" />{" "}
-              {/* Generic technology icon */}
             </div>
             <h2 className="text-3xl sm:text-4xl font-bold text-orange-600">
-              {technology.Name}
+              {technology.Name || "No Name Provided"}
             </h2>
           </div>
 
@@ -52,20 +43,18 @@ const TechnologyCard = ({ technology }) => {
             {parseRichText(technology.Description)}
           </p>
 
-          {technology.Technology_Tags &&
-            technology.Technology_Tags.length > 0 && (
-              <div className="flex flex-wrap gap-2 mb-8">
-                {technology.Technology_Tags.map((tag, i) => (
-                  <span
-                    key={i}
-                    className="bg-orange-100 text-orange-700 px-3 py-1.5 rounded-full text-xs sm:text-sm font-medium"
-                  >
-                    {tag.split("|").pop().trim()}{" "}
-                    {/* Show only the last part of the tag */}
-                  </span>
-                ))}
-              </div>
-            )}
+          {techTags && techTags.length > 0 && (
+            <div className="flex flex-wrap gap-2 mb-8">
+              {techTags.map((tag, idx) => (
+                <span
+                  key={idx}
+                  className="bg-orange-100 text-orange-700 px-3 py-1.5 rounded-full text-xs sm:text-sm font-medium"
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+          )}
 
           {technology.Highlights && technology.Highlights.length > 0 && (
             <div className="space-y-4">
@@ -81,7 +70,7 @@ const TechnologyCard = ({ technology }) => {
                     </h4>
                   </div>
                   <p className="text-gray-600 text-sm sm:text-base pl-8">
-                    {highlight.Description}
+                    {parseRichText(highlight.Description) || "No description provided."}
                   </p>
                 </div>
               ))}

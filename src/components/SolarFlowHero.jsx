@@ -22,26 +22,28 @@ const SolarFlowHero = ({ companyId }) => {
           `${baseUrl}/api/startups?filters[id][$eq]=${companyId}&populate=*`
         );
         const result = await response.json();
-        const company = result.data && result.data.length > 0 ? result.data[0] : null;
+        const company =
+          result.data && result.data.length > 0 ? result.data[0] : null;
 
         const logoUrl = company.Company_Logo?.url;
+        console.warn("LOGO URL:", logoUrl);
 
         if (company) {
           const data = {
             id: company.id,
             name: company.Name,
             description: company.Description[0].children[0].text,
-            website: company.Website_URL,
-            contactEmail: company.Contact_Email,
-            foundingYear: company.Founding_Year,
-            headquarters:
-              (await getLocationFromLatLong(
-                company.HQ_Location.lat,
-                company.HQ_Location.lng
-              )) || "Location not specified",
-            teamSize: company.Team_Size,
+            // website: company.Website_URL,
+            // contactEmail: company.Contact_Email,
+            // foundingYear: company.Founding_Year,
+            // headquarters:
+            //   (await getLocationFromLatLong(
+            //     company.HQ_Location.lat,
+            //     company.HQ_Location.lng
+            //   )) || "Location not specified",
+            // teamSize: company.Team_Size,
             LogoUrl: logoUrl,
-            coverImage: company.Cover_Image?.url,
+            // coverImage: company.Cover_Image?.url,
           };
 
           setCompanyData(data);
@@ -119,7 +121,7 @@ const SolarFlowHero = ({ companyId }) => {
         <div className="w-full lg:w-1/3 relative">
           {companyData && companyData.LogoUrl ? (
             <img
-              src={`${import.meta.env.VITE_API_URL}${companyData.LogoUrl}`}
+              src={companyData.LogoUrl}
               alt={companyData.name || "Cover Image"}
               className="w-full h-full object-contain rounded-lg shadow-lg"
             />

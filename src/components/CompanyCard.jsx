@@ -19,19 +19,18 @@ export default function CompanyCard({
       to={`/startup/${id}`}
       className="flex flex-col h-full bg-white rounded-xl max-w-xl sm:rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 ease-in-out group"
     >
-      <div className="relative overflow-hidden image-container h-40 sm:h-48">
+      <div className="relative h-40 sm:h-48 bg-red-900">
         {logo ? (
           <img
             src={logo.startsWith("http") ? logo : `${APP_URL}${logo}`}
             alt={`${name} Logo`}
-            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+            className="bg-white h-40 sm:h-48 p-4 w-full object-contain transition-transform duration-300 group-hover:scale-105 overflow-hidden"
           />
         ) : (
           <div className="w-full h-full bg-gray-200 flex items-center justify-center">
             <span className="text-gray-400 text-sm">No Logo Available</span>
           </div>
         )}
-        <div className="absolute inset-0 " />
         <div className="absolute top-2.5 right-2.5 flex flex-row space-x-1.5 z-10">
           {regions.map((region, idx) => (
             <span
@@ -44,7 +43,7 @@ export default function CompanyCard({
         </div>
       </div>
 
-      <div className="p-4 sm:p-5 flex flex-col flex-grow">
+      <div className="p-4 sm:p-5 flex flex-col flex-grow border-t-2 border-orange-100">
         <h3
           className="text-lg sm:text-xl font-bold mb-1 text-gray-800 line-clamp-1"
           title={name}

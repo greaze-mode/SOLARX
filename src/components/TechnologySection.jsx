@@ -30,6 +30,7 @@ const NextButton = ({ enabled, onClick }) => (
 
 export default function TechnologySection({ companyId }) {
   const [techData, setTechData] = useState([]);
+  const [techTags, setTechTags] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null); // Add error state
 
@@ -102,22 +103,15 @@ export default function TechnologySection({ companyId }) {
           !startup.Technology ||
           startup.Technology.length === 0
         ) {
-          console.log("No technology data found for company:", companyId);
+          // console.log("No technology data found for company:", companyId);
           setTechData([]);
         } else {
-          // The API response for Technology seems to be what we need directly
-          // but let's ensure Highlights description is parsed if it's rich text.
-          const technologies = startup.Technology.map((tech) => ({
-            ...tech, // Spread all properties like Name, Description, Technology_Tags, Demonstration, Link
-            Highlights: tech.Highlights
-              ? tech.Highlights.map((h) => ({
-                  ...h,
-                  Description: parseRichTextForSection(h.Description), // Parse highlight description
-                }))
-              : [],
-          }));
-          console.log("Fetched and processed technologies:", technologies);
+          const technologies = startup.Technology;
+          // console.log("Fetched and processed technologies:", technologies);
           setTechData(technologies);
+          // randomise and limit to 5 items for Technology_Tags
+          const randomTags = startup.Technology_Tags.sort(() => 0.5 - Math.random()).slice(0, 5);
+          setTechTags(randomTags || []);
         }
       } catch (err) {
         console.error("Error fetching technology data:", err);
@@ -171,8 +165,7 @@ export default function TechnologySection({ companyId }) {
                   key={techItem.id || index}
                 >
                   <div className="h-full">
-
-                  <TechnologyCard technology={techItem} />
+                    <TechnologyCard technology={techItem} techTags={techTags}/>
                   </div>
                 </div>
               ))}

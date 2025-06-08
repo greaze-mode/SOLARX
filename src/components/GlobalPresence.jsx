@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { MapPin, Globe, Zap, Cpu } from "lucide-react"; // Example icons
+import axios from "axios";
+import { API_URL } from "../services/api";
 
 const GlobalPresence = ({ companyId }) => {
   const [darkMode, setDarkMode] = useState(false); // Keep for demo or if you have a site-wide dark mode
@@ -15,7 +17,7 @@ const GlobalPresence = ({ companyId }) => {
   const [error, setError] = useState(null);
   const [startupData, setStartupData] = useState({
     sectorFocus: [],
-    technologyTypes: []
+    technologyTypes: [],
   });
 
   // Fetch sector focus and technology types data
@@ -24,19 +26,42 @@ const GlobalPresence = ({ companyId }) => {
       if (!companyId) {
         return;
       }
-      
-      try {
-        // Fetch startup details including sector focus and technology types
-        const baseUrl = import.meta.env.VITE_API_URL;
-        const apiUrl = `${baseUrl}/api/startups?filters[id][$eq]=${companyId}&populate=Sector_Focus&populate=Technology_Types`;
-        const response = await fetch(apiUrl);
-        
-        if (!response.ok) {
-          const errorData = await response.json().catch(() => null);
-          const errorMessage = errorData?.error?.message || 
-            `API request failed: ${response.status} ${response.statusText}`;
+
+      axios
+        .get(`${API_URL}/startups?filters[id][$eq]=${companyId}`)
+        .then((response) => {
+          if (
+            response.data &&
+            response.data.data &&
+            response.data.data.length > 0
+          ) {
+            const startup = response.data.data[0];
+            const sectorFocus =
+              startup.Sector_Tags && startup.Sector_Tags.length > 0
+                ? startup.Sector_Tags
+                : [];
+
+            const technologyTags =
+              startup.Technology_Tags && startup.Technology_Tags.length > 0
+                ? startup.Technology_Tags
+                : [];
+
+            setStartupData({
+              sectorFocus: sectorFocus,
+              technologyTypes: technologyTags,
+            });
+          }
+          else {
+            setStartupData({
+              sectorFocus: [],
+              technologyTypes: [],
+            });
+          }
+        })
+        .catch((error) => {
+          const errorMessage =
+            error || `API request failed: ${error.status} ${error.statusText}`;
           console.error("Error fetching startup data:", errorMessage);
-          
           // Use fallback data if API request fails
           setStartupData({
             sectorFocus: [
@@ -52,95 +77,11 @@ const GlobalPresence = ({ companyId }) => {
               "IoT for Agriculture",
               "Telemedicine Platforms",
               "Offline Educational Content Delivery",
-            ]
-          });
-          return;
-        }
-        
-        const result = await response.json();
-        console.log("Startup Data API Response:", result);
-        
-        if (result && result.data && result.data.length > 0) {
-          const startup = result.data[0].attributes;
-          
-          // Extract sector focus data
-          const sectorFocus = startup.Sector_Focus?.data?.map(item => 
-            item.attributes?.Name || item.attributes?.Title || "Unnamed Sector"
-          ) || [];
-          
-          // Extract technology types data
-          const technologyTypes = startup.Technology_Types?.data?.map(item => 
-            item.attributes?.Name || item.attributes?.Title || "Unnamed Technology"
-          ) || [];
-          
-          // If we got empty arrays from the API, use fallback data
-          const finalSectorFocus = sectorFocus.length > 0 ? sectorFocus : [
-            "Rural Electrification",
-            "Clean Water Access",
-            "Sustainable Agriculture",
-            "Community Health",
-            "Digital Literacy",
-          ];
-          
-          const finalTechnologyTypes = technologyTypes.length > 0 ? technologyTypes : [
-            "Decentralized Solar Grids",
-            "Water Purification Systems",
-            "IoT for Agriculture",
-            "Telemedicine Platforms",
-            "Offline Educational Content Delivery",
-          ];
-          
-          setStartupData({
-            sectorFocus: finalSectorFocus,
-            technologyTypes: finalTechnologyTypes
-          });
-          
-          console.log("Processed startup data:", { 
-            sectorFocus: finalSectorFocus, 
-            technologyTypes: finalTechnologyTypes 
-          });
-        } else {
-          console.log("No startup data found for this ID.");
-          // Set fallback data if no startup data is found
-          setStartupData({
-            sectorFocus: [
-              "Rural Electrification",
-              "Clean Water Access",
-              "Sustainable Agriculture",
-              "Community Health",
-              "Digital Literacy",
             ],
-            technologyTypes: [
-              "Decentralized Solar Grids",
-              "Water Purification Systems",
-              "IoT for Agriculture",
-              "Telemedicine Platforms",
-              "Offline Educational Content Delivery",
-            ]
           });
-        }
-      } catch (err) {
-        console.error("Error processing startup data:", err);
-        // Set fallback data if an error occurs
-        setStartupData({
-          sectorFocus: [
-            "Rural Electrification",
-            "Clean Water Access",
-            "Sustainable Agriculture",
-            "Community Health",
-            "Digital Literacy",
-          ],
-          technologyTypes: [
-            "Decentralized Solar Grids",
-            "Water Purification Systems",
-            "IoT for Agriculture",
-            "Telemedicine Platforms",
-            "Offline Educational Content Delivery",
-          ]
         });
-      }
     };
-    
+
     fetchStartupData();
   }, [companyId]);
 
@@ -423,7 +364,9 @@ const GlobalPresence = ({ companyId }) => {
           </div>
         ) : (
           <p
-            className={`text-sm ${darkMode ? "text-gray-400" : "text-gray-500"}`}
+            className={`text-sm ${
+              darkMode ? "text-gray-400" : "text-gray-500"
+            }`}
           >
             No {title.toLowerCase()} specified yet.
           </p>
@@ -476,7 +419,7 @@ const GlobalPresence = ({ companyId }) => {
         {!loading && !error && (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
             <div
-              className={`lg:col-span-2 rounded-xl overflow-hidden shadow-xl transition-all duration-300 ${
+              className={`lg:col-span-2 rounded-xl overflow-hidden shadow-xl transition-all duration-300 h-max ${
                 darkMode
                   ? "bg-gray-800 border border-gray-700"
                   : "bg-white border border-gray-200"
@@ -583,10 +526,7 @@ const GlobalPresence = ({ companyId }) => {
                 icon={<Globe />}
                 cardColor="text-orange-500"
               /> */}
-              <InfoCard
-                title="Sector Focus"
-                items={startupData.sectorFocus}
-              />
+              <InfoCard title="Sector Focus" items={startupData.sectorFocus} />
               <InfoCard
                 title="Technology Types"
                 items={startupData.technologyTypes}
