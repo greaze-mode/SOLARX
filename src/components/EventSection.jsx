@@ -82,13 +82,13 @@ export const EventSection = () => {
     };
 
     return (
-        <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 py-12 ml-10">
+        <div className="w-full px-[69px] py-12">
             <h1 className="text-4xl md:text-5xl font-bold mb-4 text-center">
                 <span className="bg-clip-text text-transparent bg-gradient-to-r from-orange-500 to-red-600">
                     Event Gallery
                 </span>
             </h1>
-            <div className="w-1/4 h-1 mx-auto bg-gradient-to-r from-orange-500 to-red-500 rounded-full mb-10 md:mb-16"></div>
+            <div className="w-28 h-1.5 mx-auto bg-gradient-to-r from-orange-500 to-red-500 rounded-full mb-10 md:mb-16"></div>
 
             <div className="relative">
                 {showSlider && (

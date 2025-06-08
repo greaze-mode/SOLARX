@@ -462,23 +462,6 @@ export default function FundingJourney({companyId}) {
                     </div>
                 </div>
             </div>
-            <div
-                className={`mt-8 transform transition-all duration-1000 delay-700 ${
-                    isVisible ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
-                }`}
-            >
-                <div className="bg-gradient-to-r from-gray-700 to-gray-800 p-6 rounded-xl shadow-lg text-white">
-                    <h4 className="font-semibold mb-2">Further Insights</h4>
-                    <p className="text-sm text-gray-300 mb-4">
-                        For more detailed financial information or investment opportunities,
-                        please reach out.
-                    </p>
-                    <button
-                        className="bg-white text-gray-700 px-4 py-2 rounded-lg font-medium text-sm hover:bg-gray-100 transition-colors duration-300">
-                        Contact Us
-                    </button>
-                </div>
-            </div>
         </>
     );
 

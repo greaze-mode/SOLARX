@@ -376,47 +376,61 @@ const GlobalPresence = ({ companyId }) => {
     // Reload map if locations or dark mode changes
   }, [mapLocations, darkMode, loading, error]);
 
-  const InfoCard = ({ title, items }) => (
-    <div
-      className={`rounded-xl p-6 shadow-lg transition-all duration-300 ${
-        darkMode
-          ? "bg-gray-800 border border-gray-700 hover:border-orange-500"
-          : "bg-white border border-gray-200 hover:border-orange-300"
-      }`}
-    >
-      <div className="flex items-center mb-4">
-        <h3
-          className={`text-xl font-semibold ${
-            darkMode ? "text-white" : "text-gray-800"
-          }`}
-        >
-          {title}
-        </h3>
-      </div>
-      {items && items.length > 0 ? (
-        <div className="flex flex-wrap gap-2">
-          {items.map((item, index) => (
-            <span
-              key={index}
-              className={`px-3 py-1.5 rounded-full text-sm font-medium ${
-                darkMode
-                  ? "bg-gray-700 text-orange-300"
-                  : "bg-orange-50 text-orange-700"
-              }`}
-            >
-              {item}
-            </span>
-          ))}
+  const InfoCard = ({ title, items }) => {
+    const getIcon = () => {
+      switch (title) {
+        case "Technology Types":
+          return <Cpu className="w-6 h-6 mr-2 text-orange-500" />;
+        case "Sector Focus":
+          return <Globe className="w-6 h-6 mr-2 text-orange-500" />;
+        default:
+          return <Zap className="w-6 h-6 mr-2 text-orange-500" />;
+      }
+    };
+
+    return (
+      <div
+        className={`rounded-xl p-6 shadow-lg transition-all duration-300 ${
+          darkMode
+            ? "bg-gray-800 border border-gray-700 hover:border-orange-500"
+            : "bg-white border border-gray-200 hover:border-orange-300"
+        }`}
+      >
+        <div className="flex items-center mb-4">
+          {getIcon()}
+          <h3
+            className={`text-xl font-semibold ${
+              darkMode ? "text-white" : "text-gray-800"
+            }`}
+          >
+            {title}
+          </h3>
         </div>
-      ) : (
-        <p
-          className={`text-sm ${darkMode ? "text-gray-400" : "text-gray-500"}`}
-        >
-          No {title.toLowerCase()} specified yet.
-        </p>
-      )}
-    </div>
-  );
+        {items && items.length > 0 ? (
+          <div className="flex flex-wrap gap-2">
+            {items.map((item, index) => (
+              <span
+                key={index}
+                className={`px-3 py-1.5 rounded-full text-sm font-medium ${
+                  darkMode
+                    ? "bg-gray-700 text-orange-300"
+                    : "bg-orange-50 text-orange-700"
+                }`}
+              >
+                {item}
+              </span>
+            ))}
+          </div>
+        ) : (
+          <p
+            className={`text-sm ${darkMode ? "text-gray-400" : "text-gray-500"}`}
+          >
+            No {title.toLowerCase()} specified yet.
+          </p>
+        )}
+      </div>
+    );
+  };
 
   return (
     <section

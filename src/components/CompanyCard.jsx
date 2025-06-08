@@ -31,7 +31,7 @@ export default function CompanyCard({
             <span className="text-gray-400 text-sm">No Logo Available</span>
           </div>
         )}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/30 to-transparent" />
+        <div className="absolute inset-0 " />
         <div className="absolute top-2.5 right-2.5 flex flex-row space-x-1.5 z-10">
           {regions.map((region, idx) => (
             <span
