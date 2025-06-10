@@ -100,7 +100,7 @@ export default function MentorCarousel({ darkMode = false, companyId }) {
         darkMode ? "bg-gray-900" : "bg-gray-50"
       }`}
     >
-      <div className="container mx-auto px-4">
+      <div className="container px-[69px]">
         <div className="text-center mb-12">
           <h1 className="text-3xl sm:text-4xl font-extrabold mb-4">
             <span className="bg-clip-text text-transparent bg-gradient-to-r from-orange-500 to-red-600">

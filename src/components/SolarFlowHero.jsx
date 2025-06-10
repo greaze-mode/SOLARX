@@ -123,7 +123,7 @@ const SolarFlowHero = ({ companyId }) => {
             <img
               src={companyData.LogoUrl}
               alt={companyData.name || "Cover Image"}
-              className="w-full h-full object-contain rounded-lg shadow-lg"
+              className="w-full h-full object-contain rounded-lg shadow-2xl border-4 border-white border-solid p-2 ring-2 ring-orange-300"
             />
           ) : (
             <div className="flex items-center justify-center h-full w-full">

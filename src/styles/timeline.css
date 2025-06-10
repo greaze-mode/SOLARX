@@ -36,7 +36,6 @@ section.writeup {
     padding: 2rem clamp(1rem, 5vw, 5rem);
     /* Responsive horizontal padding */
     width: 100%;
-    max-width: 1280px;
     /* Standard max-width for content */
     margin: 0 auto;
     /* Center the container */
