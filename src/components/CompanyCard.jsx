@@ -12,7 +12,6 @@ export default function CompanyCard({
   description,
   categories,
   logo,
-  coverImage,
 }) {
   return (
     <Link
