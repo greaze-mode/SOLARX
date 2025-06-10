@@ -23,21 +23,6 @@ const REGIONS_OPTIONS = [
   "Africa",
 ];
 
-const limiter = new Bottleneck({
-  minTime: 500, // 500ms between each request (2 per second)
-  maxConcurrent: 1, // Queue requests one at a time
-});
-
-const throttledGetLocation = limiter.wrap(async (lat, lng) => {
-  try {
-    const location = await getLocationFromLatLong(lat, lng);
-    return location || "Something";
-  } catch (e) {
-    console.warn("Failed to get location from lat/long", e);
-    return "Something";
-  }
-});
-
 const shuffleArray = (array) => {
   if (!Array.isArray(array) || array.length === 0) return array;
 
@@ -48,19 +33,7 @@ const shuffleArray = (array) => {
   return array;
 };
 
-const transformStartupData = async (rawStartup) => {
-  let location = "Location not specified";
-  if (rawStartup.HQ_Location?.lat && rawStartup.HQ_Location?.lng) {
-    try {
-      location = await getLocationFromLatLong(
-        rawStartup.HQ_Location.lat,
-        rawStartup.HQ_Location.lng
-      );
-    } catch (e) {
-      console.warn("Failed to get location from lat/long", e);
-    }
-  }
-
+const transformStartupData = (rawStartup) => {
   // console.log("Transforming startup data:", rawStartup.id, rawStartup);
 
   return {
@@ -68,7 +41,7 @@ const transformStartupData = async (rawStartup) => {
     documentId: rawStartup.documentId,
     name: rawStartup.Name || "Unnamed Startup",
     regions: rawStartup.Regions || [],
-    location,
+    location: rawStartup.HQ_Location_Name || "Location not specified",
     description:
       rawStartup.Description?.[0]?.children?.[0]?.text ||
       "No description available",
@@ -76,7 +49,7 @@ const transformStartupData = async (rawStartup) => {
       "General",
     ],
     logo: rawStartup.Company_Logo?.url || "",
-    coverImage: rawStartup.Cover_Image?.formats?.small?.url || "",
+    // coverImage: rawStartup.Cover_Image?.formats?.small?.url || "",
   };
 };
 
@@ -105,10 +78,8 @@ export default function SolarXWinners() {
           if (rawStartups.length === 0) {
             setStartups([]);
           } else {
-            const cleanedStartups = await Promise.all(
-              rawStartups.map(transformStartupData)
-            );
-            // console.log("Cleaned startups data:", cleanedStartups);
+            const cleanedStartups = rawStartups.map(transformStartupData);
+            console.log("Cleaned startups data:", cleanedStartups);
             setStartups(cleanedStartups);
           }
         } else {
@@ -118,7 +89,7 @@ export default function SolarXWinners() {
           setStartups([]);
         }
       } catch (err) {
-        console.error("Error fetching or processing companies:", err);
+        // console.error("Error fetching or processing companies:", err);
         setError("Failed to load SolarX Winners. Please try again later.");
         setStartups([]);
       } finally {
