@@ -2,7 +2,10 @@ import { useState, useEffect } from "react";
 import logo from "/logo.svg";
 
 // TODO: Reuse this component in StartupDetails.jsx
-export default function SolarXNavbar({centerTop = "SolarX", centerBottom = "Startup Challenge"}) {
+export default function SolarXNavbar({
+  centerTop = "SolarX",
+  centerBottom = "Startup Challenge",
+}) {
   const [bannerVisible, setBannerVisible] = useState(true);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 

@@ -6,12 +6,12 @@ import StatsSection from "./components/StatsSection";
 import Footer from "./components/Footer";
 import HeroCarousel from "./components/HeroCarousel";
 import FundingInvestorsDashboard from "./components/FundingInvestorsDashboard";
-import SuccessStories from "./components/SuccessStories";
+// import SuccessStories from "./components/SuccessStories";
 import MediaCoverageSection from "./components/MediaCoverageSection";
 import AboutSolarXChallenge from "./components/AboutSolarXChallenge";
 import GlobalImpactSection from "./components/GlobalImpactSection";
 import SolarXGlobalReach from "./components/SolarXGlobalReach";
-import {EventSection} from "./components/EventSection.jsx";
+import { EventSection } from "./components/EventSection.jsx";
 
 export default function App() {
   const [isMobile, setIsMobile] = useState(false);
@@ -43,7 +43,6 @@ export default function App() {
         <SolarXGlobalReach isMobile={isMobile} />
         {/* <SuccessStories isMobile={isMobile} /> */}
         <MediaCoverageSection isMobile={isMobile} />
-
         <GlobalImpactSection isMobile={isMobile} />
         <EventSection />
         <AboutSolarXChallenge isMobile={isMobile} />
