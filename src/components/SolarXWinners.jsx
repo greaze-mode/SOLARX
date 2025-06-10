@@ -12,8 +12,6 @@ import {
   Loader2,
   AlertTriangle,
 } from "lucide-react";
-import { getLocationFromLatLong } from "../utils/strapiHelper";
-import Bottleneck from "bottleneck";
 
 const REGIONS_OPTIONS = [
   "All Regions",
