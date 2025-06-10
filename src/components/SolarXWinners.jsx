@@ -110,8 +110,8 @@ export default function SolarXWinners({ isMobile }) {
   const chunkedCompanies = useMemo(() => {
     const chunkedItems = [];
     if (!isMobile) {
-    for (let i = 0; i < filteredCompanies.length; i += 6) {
-      chunkedItems.push(filteredCompanies.slice(i, i + 6));
+      for (let i = 0; i < filteredCompanies.length; i += 6) {
+        chunkedItems.push(filteredCompanies.slice(i, i + 6));
       }
     } else {
       for (let i = 0; i < filteredCompanies.length; i += 2) {
@@ -248,20 +248,20 @@ export default function SolarXWinners({ isMobile }) {
           <div className="mt-4">
             {showSliderNavButtons && (
               <>
-                  <button
-                    onClick={() => sliderRef.current?.slickPrev()}
+                <button
+                  onClick={() => sliderRef.current?.slickPrev()}
                   className="absolute left-4 md:left-6 top-1/2 transform -translate-y-1/2 z-30 w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-full bg-white text-orange-600 hover:bg-orange-100 shadow-md hover:shadow-lg transition-all border border-gray-200"
-                    aria-label="Previous slide"
-                  >
-                    <ChevronLeftIcon className="h-5 w-5 sm:h-6 sm:w-6" />
-                  </button>
-                  <button
-                    onClick={() => sliderRef.current?.slickNext()}
+                  aria-label="Previous slide"
+                >
+                  <ChevronLeftIcon className="h-5 w-5 sm:h-6 sm:w-6" />
+                </button>
+                <button
+                  onClick={() => sliderRef.current?.slickNext()}
                   className="absolute right-4 md:right-6 top-1/2 transform -translate-y-1/2 z-30 w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-full bg-white text-orange-600 hover:bg-orange-100 shadow-md hover:shadow-lg transition-all border border-gray-200"
-                    aria-label="Next slide"
-                  >
-                    <ChevronRightIcon className="h-5 w-5 sm:h-6 sm:w-6" />
-                  </button>
+                  aria-label="Next slide"
+                >
+                  <ChevronRightIcon className="h-5 w-5 sm:h-6 sm:w-6" />
+                </button>
               </>
             )}
 
