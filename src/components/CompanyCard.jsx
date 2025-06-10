@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Link } from "react-router-dom";
 import { APP_URL } from "../services/api";
 import { MapPin } from "lucide-react";
