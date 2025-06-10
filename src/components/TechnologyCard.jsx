@@ -70,7 +70,8 @@ const TechnologyCard = ({ technology, techTags }) => {
                     </h4>
                   </div>
                   <p className="text-gray-600 text-sm sm:text-base pl-8">
-                    {parseRichText(highlight.Description) || "No description provided."}
+                    {parseRichText(highlight.Description) ||
+                      "No description provided."}
                   </p>
                 </div>
               ))}
@@ -83,8 +84,9 @@ const TechnologyCard = ({ technology, techTags }) => {
           {demonstrationImage ? (
             <div className="w-full max-w-md h-[300px] md:h-[450px] bg-orange-500 rounded-lg shadow-lg flex items-center justify-center">
               {/* <img
-                src={`${strapiBaseUrl}${demonstrationImage.url}`}
+                src={`${demonstrationImage.url}`}
                 alt={`${technology.Name} demonstration`}
+                height={450}
                 className="object-fit w-full h-full rounded-lg scale-50"
               /> */}
               <span className="text-3xl sm:text-4xl font-bold text-white opacity-80">

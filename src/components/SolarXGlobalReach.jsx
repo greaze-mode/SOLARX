@@ -164,9 +164,9 @@ const SolarXGlobalReach = () => {
                   "No description available.",
               });
             } else {
-              console.warn(
-                `Startup ID ${startup.id} (${startup.Name}) missing or invalid HQ_Location data.`
-              );
+              // console.warn(
+              //   `Startup ID ${startup.id} (${startup.Name}) missing or invalid HQ_Location data.`
+              // );
             }
           });
         }

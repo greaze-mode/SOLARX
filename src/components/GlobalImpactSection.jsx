@@ -1,26 +1,26 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { Target, AlertTriangle, Loader2, Globe, BarChart3 } from "lucide-react";
+import { Target, AlertTriangle, Loader2 } from "lucide-react";
 import KeyImpactMetricsScroller from "../components/KeyImpactMetricsScroller";
 import { API_URL } from "../services/api";
-import sdgIcon1 from "../../public/imgs/sdgs/SDG_01.jpg";
-import sdgIcon2 from "../../public/imgs/sdgs/SDG_02.jpg";
-import sdgIcon3 from "../../public/imgs/sdgs/SDG_03.jpg";
-import sdgIcon4 from "../../public/imgs/sdgs/SDG_04.jpg";
-import sdgIcon5 from "../../public/imgs/sdgs/SDG_05.jpg";
-import sdgIcon6 from "../../public/imgs/sdgs/SDG_06.jpg";
-import sdgIcon7 from "../../public/imgs/sdgs/SDG_07.jpg";
-import sdgIcon8 from "../../public/imgs/sdgs/SDG_08.jpg";
-import sdgIcon9 from "../../public/imgs/sdgs/SDG_09.png";
-import sdgIcon10 from "../../public/imgs/sdgs/SDG_10.jpg";
-import sdgIcon11 from "../../public/imgs/sdgs/SDG_11.jpg";
-import sdgIcon12 from "../../public/imgs/sdgs/SDG_12.jpg";
-import sdgIcon13 from "../../public/imgs/sdgs/SDG_13.jpg";
-import sdgIcon14 from "../../public/imgs/sdgs/SDG_14.jpg";
-import sdgIcon15 from "../../public/imgs/sdgs/SDG_15.jpg";
-import sdgIcon16 from "../../public/imgs/sdgs/SDG_16.jpg";
-import sdgIcon17 from "../../public/imgs/sdgs/SDG_17.jpg";
-import sdgLogo from "../../public/imgs/sdgs/SDG_LOGO.png"; // Replace with actual path to SDG wheel logo
+import sdgIcon1 from "../assets/imgs/sdgs/SDG_01.jpg";
+import sdgIcon2 from "../assets/imgs/sdgs/SDG_02.jpg";
+import sdgIcon3 from "../assets/imgs/sdgs/SDG_03.jpg";
+import sdgIcon4 from "../assets/imgs/sdgs/SDG_04.jpg";
+import sdgIcon5 from "../assets/imgs/sdgs/SDG_05.jpg";
+import sdgIcon6 from "../assets/imgs/sdgs/SDG_06.jpg";
+import sdgIcon7 from "../assets/imgs/sdgs/SDG_07.jpg";
+import sdgIcon8 from "../assets/imgs/sdgs/SDG_08.jpg";
+import sdgIcon9 from "../assets/imgs/sdgs/SDG_09.png";
+import sdgIcon10 from "../assets/imgs/sdgs/SDG_10.jpg";
+import sdgIcon11 from "../assets/imgs/sdgs/SDG_11.jpg";
+import sdgIcon12 from "../assets/imgs/sdgs/SDG_12.jpg";
+import sdgIcon13 from "../assets/imgs/sdgs/SDG_13.jpg";
+import sdgIcon14 from "../assets/imgs/sdgs/SDG_14.jpg";
+import sdgIcon15 from "../assets/imgs/sdgs/SDG_15.jpg";
+import sdgIcon16 from "../assets/imgs/sdgs/SDG_16.jpg";
+import sdgIcon17 from "../assets/imgs/sdgs/SDG_17.jpg";
+import sdgLogo from "../assets/imgs/sdgs/SDG_LOGO.png"; // Replace with actual path to SDG wheel logo
 
 const allSdgs = [
   { number: 1, title: "NO POVERTY", color: "#E5243B", icon: sdgIcon1 },
@@ -92,24 +92,38 @@ const allSdgs = [
   },
 ];
 
-/**
- * Shuffles array elements randomly
- * @param {Array} arr - Array to shuffle
- * @returns {Array} - New shuffled array
- */
 const shuffleArray = (arr) => [...arr].sort(() => 0.5 - Math.random());
 
 /**
  * Component to display an SDG Goal tile in the grid
  */
-const SdgGoalTile = ({ icon, startupCount }) => (
-  <div className="aspect-square shadow-lg hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300">
-    <img
-      src={icon} // Use the SDG wheel logo as background
-      className="w-full h-full object-cover rounded-md"
-    />
+const SdgGoalTile = ({ icon, title, startupCount }) => (
+  <div className="relative group aspect-square">
+    <div className="w-full h-full rounded-md overflow-hidden shadow-lg group-hover:shadow-2xl transform group-hover:-translate-y-1 transition-all duration-300">
+      {/* Background Image */}
+      <img
+        src={icon}
+        alt={title}
+        className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+      />
+
+      {/* Full-card overlay that appears on hover, making the card lighter */}
+
+      <div className="absolute inset-0 bg-gray-700/60 backdrop-blur-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10 px-2">
+        <div className="text-center flex flex-col items-center">
+          <span className="text-white text-8xl font-extrabold drop-shadow-md">
+            {startupCount}
+          </span>
+          <span className="text-white text-6xl font-meidum drop-shadow-md">
+            Startup{startupCount == 1 ? "" : "s"}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    {/* Small count badge in corner (hides on hover) */}
     {startupCount > 0 && (
-      <div className="absolute -top-2 -right-2 w-8 h-8 bg-white text-orange-500 rounded-full flex items-center justify-center text-base font-bold ring-2 ring-orange-600 z-10">
+      <div className="absolute -top-2 -right-2 w-8 h-8 bg-white text-orange-500 rounded-full flex items-center justify-center text-lg font-bold ring-2 ring-orange-600 z-50 transition-all duration-300 group-hover:opacity-0 group-hover:scale-0">
         {startupCount}
       </div>
     )}

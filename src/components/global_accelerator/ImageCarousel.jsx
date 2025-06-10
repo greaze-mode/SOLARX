@@ -69,9 +69,9 @@ const ImageCarousel = ({
   // Preload first few images (optional, but good for performance)
   useEffect(() => {
     if (images && images.length > 0) {
-      images.slice(0, 2).forEach((image) => {
+      images.slice(0, 2).map((image) => {
         const img = new Image();
-        img.src = image.src;
+        img.src = image;
       });
     }
   }, [images]);
@@ -99,8 +99,8 @@ const ImageCarousel = ({
               key={image.id || index} // Use a unique id if available, else index
             >
               <img
-                src={image.src}
-                alt={image.alt}
+                src={image}
+                alt={`Slide ${index + 1}`}
                 className="absolute inset-0 w-full h-full object-cover" // Use absolute for bg-like effect
                 loading={index < 2 ? "eager" : "lazy"}
               />
@@ -111,7 +111,6 @@ const ImageCarousel = ({
       {/* Dots Navigation */}
       {images.length > 1 && ( // Only show dots if more than one image
         <div className="carousel-dots">
-          {" "}
           {/* Styles from timeline.css */}
           {scrollSnaps.map((_, index) => (
             <DotButton

@@ -60,8 +60,8 @@ export default function CompanyInformation({ companyId }) {
     }
   }, [id]);
   return (
-    <div className="relative w-full h-full">
-      <div
+    <div className="relative h-full">
+      {/* <div
         className="absolute inset-0 z-0"
         style={{
           background: `
@@ -69,9 +69,9 @@ export default function CompanyInformation({ companyId }) {
             linear-gradient(to right, oklch(90.1% 0.076 70.697), #F97316)
           `,
         }}
-      />
-      <div className="relative z-20 py-20">
-        <div className="max-w-screen-2xl lg:px-10 mx-auto font-sans w-full">
+      /> */}
+      <div className="relative z-20 py-16">
+        <div className="px-[69px] w-full font-sans">
           {loading && (
             <div className="flex justify-center items-center py-20">
               <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-orange-500"></div>

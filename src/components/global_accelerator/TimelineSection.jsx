@@ -185,7 +185,7 @@ const TimelineSection = () => {
   const stickyParentRef = useRef(null);
   const [isMobile, setIsMobile] = useState(false);
 
-  console.log(transformedTimelineEvents);
+  // console.log(transformedTimelineEvents);
 
   const [dimensions, setDimensions] = useState({
     scrollWidth: 0,

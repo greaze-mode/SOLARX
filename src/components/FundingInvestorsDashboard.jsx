@@ -96,7 +96,7 @@ export default function FundingInvestorsDashboard() {
   }, []);
 
   const parseFundingData = (fundingItem) => {
-    console.warn("Funding Item:", fundingItem);
+    // console.warn("Funding Item:", fundingItem);
     const {
       Round,
       Amount_Raised,
@@ -143,7 +143,7 @@ export default function FundingInvestorsDashboard() {
           );
         }
         const result = await response.json();
-        console.log("Funding Data Result:", result);
+        // console.log("Funding Data Result:", result);
 
         if (result?.data?.length > 0) {
           let allRounds = [];

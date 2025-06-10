@@ -18,7 +18,7 @@ export default function StatsSection() {
       try {
         const res = await axios.get(`${API_URL}/startups?populate[0]=funding`);
 
-        console.log("Response from API:", res.data);
+        // console.log("Response from API:", res.data);
 
         if (res && res.data && res.data.data) {
           const regionsCount = () => {
@@ -173,7 +173,7 @@ export default function StatsSection() {
             Our Reach and Impact
           </h2>
           <div className="w-16 sm:w-24 h-1 bg-orange-500 mx-auto rounded-full mt-4 sm:mt-4"></div>
-          <p className="text-base sm:text-lg text-gray-600 max-w-3xl mx-auto pt-4">
+          <p className="text-base sm:text-xl text-gray-900 max-w-3xl mx-auto pt-4">
             Transforming the solar energy landscape with innovative solutions
             across the globe
           </p>

@@ -1,19 +1,19 @@
 // src/components/global_accelerator/MediaMentionCard.jsx
-import React from "react";
 import { ExternalLink, MessageSquare } from "lucide-react"; // Assuming you use lucide-react
 
 const MediaMentionCard = ({
+  id,
   headline,
   publisher,
   platform,
-  year,
+  date,
   link,
-  quotePlaceholder,
-  logoUrl,
+  quote,
 }) => {
   const truncate = (string, length, end = "...") => {
     return string.length < length ? string : string.substring(0, length) + end;
   };
+  console.log(date)
   return (
     <a
       href={link}
@@ -27,7 +27,8 @@ const MediaMentionCard = ({
           <span className="mx-1">|</span>
           <span>{platform}</span>
           <span className="mx-1">|</span>
-          <span>{year}</span>
+          <span>{date}</span>
+          {/* <span>{date.toLocaleDateString()}</span> */}
         </p>
 
         <h3 className="text-md sm:text-lg font-semibold text-gray-800 mb-3 leading-tight group-hover:text-orange-600 transition-colors">
@@ -40,7 +41,7 @@ const MediaMentionCard = ({
             size={16}
             className="inline-block mr-2 mb-0.5 text-orange-400"
           />
-          "{truncate(quotePlaceholder, 100)}"
+          "{truncate(quote, 100)}"
         </div>
       </div>
       <div className="bg-gray-50 px-5 py-3 sm:px-6 sm:py-4 border-t border-gray-100 text-right">

@@ -110,7 +110,9 @@ export default function TechnologySection({ companyId }) {
           // console.log("Fetched and processed technologies:", technologies);
           setTechData(technologies);
           // randomise and limit to 5 items for Technology_Tags
-          const randomTags = startup.Technology_Tags.sort(() => 0.5 - Math.random()).slice(0, 5);
+          const randomTags = startup.Technology_Tags.sort(
+            () => 0.5 - Math.random()
+          ).slice(0, 5);
           setTechTags(randomTags || []);
         }
       } catch (err) {
@@ -126,74 +128,80 @@ export default function TechnologySection({ companyId }) {
   }, [companyId]);
 
   return (
-    <div className="w-full px-[69px] mt-12 md:mt-20 pb-16">
-      <div className="flex flex-col md:flex-row items-center justify-between md:justify-start mb-8 space-y-3 md:space-y-0 md:space-x-3 w-full">
-        <div className="w-1/5 md:w-16 hidden md:block h-1.5 bg-gradient-to-r from-orange-500 to-red-500 rounded-full"></div>
-        <h1 className="text-4xl md:text-5xl font-bold mb-1 ">
-          <span className="bg-clip-text text-transparent bg-gradient-to-r from-orange-500 to-red-600  left-[20px]">
-            Technologies
-          </span>
-        </h1>
-        <div className="block md:hidden w-1/3 md:w-16 h-1.5 bg-gradient-to-r from-orange-500 to-red-500 rounded-full"></div>
-      </div>
-      {loading && (
-        <div className="flex justify-center items-center py-20 min-h-[300px]">
-          <Loader2 className="w-12 h-12 text-orange-500 animate-spin" />
-          <p className="ml-3 text-orange-600">Loading Technologies...</p>
+    techData.length !== 0 &&
+    techTags.length !== 0 && (
+      <div className="w-full px-[69px] mt-12 md:mt-20 pb-16">
+        <div className="flex flex-col md:flex-row items-center justify-between md:justify-start mb-8 space-y-3 md:space-y-0 md:space-x-3 w-full">
+          <div className="w-1/5 md:w-16 hidden md:block h-1.5 bg-gradient-to-r from-orange-500 to-red-500 rounded-full"></div>
+          <h1 className="text-4xl md:text-5xl font-bold mb-1 ">
+            <span className="bg-clip-text text-transparent bg-gradient-to-r from-orange-500 to-red-600  left-[20px]">
+              Technologies
+            </span>
+          </h1>
+          <div className="block md:hidden w-1/3 md:w-16 h-1.5 bg-gradient-to-r from-orange-500 to-red-500 rounded-full"></div>
         </div>
-      )}
-      {error && !loading && (
-        <div className="bg-red-50 border-l-4 border-red-500 text-red-700 p-6 rounded-md text-center shadow-md">
-          <p className="font-semibold">{error}</p>
-        </div>
-      )}
-      {!loading && !error && techData.length === 0 && (
-        <div className="bg-white rounded-xl shadow-sm p-8 text-center">
-          <p className="text-gray-600 text-lg">
-            No specific technology details available for this company.
-          </p>
-        </div>
-      )}
-      {!loading && !error && techData.length > 0 && (
-        <div className="relative">
-          <div className="embla overflow-hidden rounded-xl" ref={emblaRef}>
-            <div className="embla__container flex my-8">
-              {techData.map((techItem, index) => (
-                <div
-                  className="embla__slide min-w-0 p-1 sm:p-2 h-full" // min-w-0 important for flex items
-                  style={{ flex: "0 0 100%" }} // Each slide takes full viewport width
-                  key={techItem.id || index}
-                >
-                  <div className="h-full">
-                    <TechnologyCard technology={techItem} techTags={techTags}/>
-                  </div>
-                </div>
-              ))}
-            </div>
+        {loading && (
+          <div className="flex justify-center items-center py-20 min-h-[300px]">
+            <Loader2 className="w-12 h-12 text-orange-500 animate-spin" />
+            <p className="ml-3 text-orange-600">Loading Technologies...</p>
           </div>
-          {techData.length > 1 && ( // Show nav only if multiple slides
-            <>
-              <PrevButton onClick={scrollPrev} enabled={prevBtnEnabled} />
-              <NextButton onClick={scrollNext} enabled={nextBtnEnabled} />
-              <div className="embla__dots absolute bottom-[-30px] sm:bottom-[-35px] left-1/2 -translate-x-1/2 flex gap-2 mt-4">
-                {scrollSnaps.map((_, index) => (
-                  <button
-                    key={index}
-                    onClick={() => scrollTo(index)}
-                    className={`w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full transition-all duration-300 ease-in-out focus:outline-none ring-offset-1 ring-offset-white/50 dark:ring-offset-gray-800/50 focus:ring-2
+        )}
+        {error && !loading && (
+          <div className="bg-red-50 border-l-4 border-red-500 text-red-700 p-6 rounded-md text-center shadow-md">
+            <p className="font-semibold">{error}</p>
+          </div>
+        )}
+        {!loading && !error && techData.length === 0 && (
+          <div className="bg-white rounded-xl shadow-sm p-8 text-center">
+            <p className="text-gray-600 text-lg">
+              No specific technology details available for this company.
+            </p>
+          </div>
+        )}
+        {!loading && !error && techData.length > 0 && (
+          <div className="relative">
+            <div className="embla overflow-hidden rounded-xl" ref={emblaRef}>
+              <div className="embla__container flex my-8">
+                {techData.map((techItem, index) => (
+                  <div
+                    className="embla__slide min-w-0 p-1 sm:p-2 h-full" // min-w-0 important for flex items
+                    style={{ flex: "0 0 100%" }} // Each slide takes full viewport width
+                    key={techItem.id || index}
+                  >
+                    <div className="h-full">
+                      <TechnologyCard
+                        technology={techItem}
+                        techTags={techTags}
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+            {techData.length > 1 && ( // Show nav only if multiple slides
+              <>
+                <PrevButton onClick={scrollPrev} enabled={prevBtnEnabled} />
+                <NextButton onClick={scrollNext} enabled={nextBtnEnabled} />
+                <div className="embla__dots absolute bottom-[-30px] sm:bottom-[-35px] left-1/2 -translate-x-1/2 flex gap-2 mt-4">
+                  {scrollSnaps.map((_, index) => (
+                    <button
+                      key={index}
+                      onClick={() => scrollTo(index)}
+                      className={`w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full transition-all duration-300 ease-in-out focus:outline-none ring-offset-1 ring-offset-white/50 dark:ring-offset-gray-800/50 focus:ring-2
                                 ${
                                   index === selectedIndex
                                     ? "bg-orange-500 ring-orange-500 scale-110"
                                     : "bg-gray-300 hover:bg-gray-400 ring-transparent"
                                 }`}
-                    aria-label={`Go to slide ${index + 1}`}
-                  />
-                ))}
-              </div>
-            </>
-          )}
-        </div>
-      )}
-    </div>
+                      aria-label={`Go to slide ${index + 1}`}
+                    />
+                  ))}
+                </div>
+              </>
+            )}
+          </div>
+        )}
+      </div>
+    )
   );
 }

@@ -61,6 +61,8 @@ const transformStartupData = async (rawStartup) => {
     }
   }
 
+  // console.log("Transforming startup data:", rawStartup.id, rawStartup);
+
   return {
     id: rawStartup.id,
     documentId: rawStartup.documentId,
@@ -73,7 +75,7 @@ const transformStartupData = async (rawStartup) => {
     categories: shuffleArray(rawStartup.Sector_Tags)?.slice(0, 2) || [
       "General",
     ],
-    logo: rawStartup.Company_Logo?.formats?.small?.url || "",
+    logo: rawStartup.Company_Logo?.url || "",
     coverImage: rawStartup.Cover_Image?.formats?.small?.url || "",
   };
 };
@@ -93,12 +95,12 @@ export default function SolarXWinners() {
 
       try {
         const response = await axios.get(
-          `${API_URL}/startups?populate[0]=Company_Logo&populate[1]=Cover_Image`
+          `${API_URL}/startups?populate=Company_Logo`
         );
 
         if (response && response.data && response.data.data) {
           const rawStartups = response.data.data;
-          console.log("Fetched raw companies data:", rawStartups);
+          // console.log("Fetched raw companies data:", rawStartups);
 
           if (rawStartups.length === 0) {
             setStartups([]);
@@ -106,7 +108,7 @@ export default function SolarXWinners() {
             const cleanedStartups = await Promise.all(
               rawStartups.map(transformStartupData)
             );
-            console.log("Cleaned startups data:", cleanedStartups);
+            // console.log("Cleaned startups data:", cleanedStartups);
             setStartups(cleanedStartups);
           }
         } else {
@@ -136,11 +138,20 @@ export default function SolarXWinners() {
     );
   }, [startups, selectedRegion]);
 
+  const chunkedCompanies = useMemo(() => {
+    const chunkedItems = [];
+    for (let i = 0; i < filteredCompanies.length; i += 6) {
+      chunkedItems.push(filteredCompanies.slice(i, i + 6));
+    }
+    return chunkedItems;
+  }, [filteredCompanies]);
+
   const sliderSettings = useMemo(() => {
     const numItems = filteredCompanies.length;
 
     const calculateResponsiveSettings = (maxSlidesForView) => {
-      const slidesToShow = Math.min(maxSlidesForView, Math.max(1, numItems)); // Ensure at least 1 slide is shown
+      // const slidesToShow = Math.min(maxSlidesForView, Math.max(1, numItems)); // Ensure at least 1 slide is shown
+      const slidesToShow = 1;
       return {
         slidesToShow: slidesToShow,
         slidesToScroll: slidesToShow,
@@ -287,12 +298,16 @@ export default function SolarXWinners() {
                 {...sliderSettings}
                 className="company-slider"
               >
-                {filteredCompanies.map((company) => (
+                {chunkedCompanies.map((group, index) => (
                   <div
-                    key={company.id} // Using company.id as the primary unique key
+                    key={index}
                     className="px-2 sm:px-3 h-full card-container"
                   >
-                    <CompanyCard {...company} />
+                    <div className="grid grid-cols-3 gap-6">
+                      {group.map((item) => (
+                        <CompanyCard {...item} />
+                      ))}
+                    </div>
                   </div>
                 ))}
               </Slider>

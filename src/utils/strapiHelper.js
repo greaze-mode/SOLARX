@@ -68,16 +68,32 @@ export async function getLocationFromLatLong(latitude, longitude) {
   }
   // const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=6`);
   // const response = await fetch(`https://us1.api-bdc.net/data/reverse-geocode?latitude=${latitude}&longitude=${longitude}&localityLanguage=en`);
-  // const data = await response.json();
-  let data = {
-    "city": "San Francisco",
-    "countryName": "United States"
-  };
+  const response = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=AIzaSyDJ3tSaumpWhGp7smd96Svg3eeOe1-4JWE`);
+  const data = await response.json();
 
-  console.log('Reverse geocode data:', data);
+  // console.log('Reverse geocode data:', data);
 
-  if (data) {
-    return `${data.city}, ${data.countryName}`;
+  let city = '';
+  let country = '';
+
+
+  data.results[0].address_components.forEach((component) => {
+    if (component.types.includes("administrative_area_level_2")) {
+      city = component.long_name;
+    }
+    if (component.types.includes("country")) {
+      country = component.long_name;
+      // console.log('Country:', component.long_name);
+    }
+  })
+
+  if (city !== '' && country !== '') {
+    return `${city}, ${country}`;
+    // return data.results[0].formatted_address || 'Location not found';
+  } else if (city !== '') {
+    return city;
+  } else if (country !== '') {
+    return country;
   } else {
     return 'Location not found';
   }
@@ -97,3 +113,4 @@ export function parseRichText(content) {
 
   return fin.trim();
 }
+

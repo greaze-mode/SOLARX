@@ -7,12 +7,8 @@ const GlobalPresence = ({ companyId }) => {
   const [darkMode, setDarkMode] = useState(false); // Keep for demo or if you have a site-wide dark mode
   const mapRef = useRef(null);
   const mapInstanceRef = useRef(null);
-  const [mapLocations, setMapLocations] = useState({
-    currentOperations: [],
-    expansionTargets: [],
-    partnerLocations: [], // Kept for potential future use or if API adds it
-  });
-  const [operationalRegions, setOperationalRegions] = useState([]); // For text display
+  const [mapLocations, setMapLocations] = useState(null);
+  const [operationalRegions, setOperationalRegions] = useState(null); // For text display
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [startupData, setStartupData] = useState({
@@ -50,8 +46,7 @@ const GlobalPresence = ({ companyId }) => {
               sectorFocus: sectorFocus,
               technologyTypes: technologyTags,
             });
-          }
-          else {
+          } else {
             setStartupData({
               sectorFocus: [],
               technologyTypes: [],
@@ -61,7 +56,7 @@ const GlobalPresence = ({ companyId }) => {
         .catch((error) => {
           const errorMessage =
             error || `API request failed: ${error.status} ${error.statusText}`;
-          console.error("Error fetching startup data:", errorMessage);
+          // console.error("Error fetching startup data:", errorMessage);
           // Use fallback data if API request fails
           setStartupData({
             sectorFocus: [
@@ -112,12 +107,12 @@ const GlobalPresence = ({ companyId }) => {
         }
 
         const result = await response.json();
-        console.log("Global Presence API Response:", result);
+        // console.log("Global Presence API Response:", result);
 
         if (result && result.data && result.data.length > 0) {
           // Assuming the first entry is the relevant one for this startup,
           // or that the filter ensures only one relevant entry.
-          const presenceData = result.data[0];
+          const presences = result.data;
 
           const newMapLocations = {
             currentOperations: [],
@@ -126,51 +121,53 @@ const GlobalPresence = ({ companyId }) => {
           };
           const regionsSet = new Set(); // To store unique region names derived from locations
 
-          if (presenceData.Presence && Array.isArray(presenceData.Presence)) {
-            presenceData.Presence.forEach((item) => {
-              if (
-                item.Location &&
-                typeof item.Location.lat === "number" &&
-                typeof item.Location.lng === "number"
-              ) {
-                const locationDetail = {
-                  lat: item.Location.lat,
-                  lng: item.Location.lng,
-                  // Name could be derived or fixed if API doesn't provide it per point
-                  name: item.Type, // Using Type as a placeholder name, ideally API gives a specific name
-                };
+          presences.forEach((presenceData) => {
+            if (presenceData.Presence && Array.isArray(presenceData.Presence)) {
+              presenceData.Presence.forEach((item) => {
+                if (
+                  item.Location &&
+                  typeof item.Location.lat === "number" &&
+                  typeof item.Location.lng === "number"
+                ) {
+                  const locationDetail = {
+                    lat: item.Location.lat,
+                    lng: item.Location.lng,
+                    // Name could be derived or fixed if API doesn't provide it per point
+                    name: item.Type, // Using Type as a placeholder name, ideally API gives a specific name
+                  };
 
-                if (item.Type === "Current Operations") {
-                  newMapLocations.currentOperations.push({
-                    ...locationDetail,
-                    type: "current",
-                  });
-                  regionsSet.add(item.Location.country || "Region (Current)"); // Placeholder if country not available
-                } else if (item.Type === "Expansion Targets") {
-                  newMapLocations.expansionTargets.push({
-                    ...locationDetail,
-                    type: "expansion",
-                  });
-                  regionsSet.add(item.Location.country || "Region (Expansion)"); // Placeholder
+                  if (item.Type === "Current Operations") {
+                    newMapLocations.currentOperations.push({
+                      ...locationDetail,
+                      type: "current",
+                    });
+                    regionsSet.add(item.Location.country || "Region (Current)"); // Placeholder if country not available
+                  } else if (item.Type === "Expansion Targets") {
+                    newMapLocations.expansionTargets.push({
+                      ...locationDetail,
+                      type: "expansion",
+                    });
+                    regionsSet.add(
+                      item.Location.country || "Region (Expansion)"
+                    ); // Placeholder
+                  }
+                  // Add other types like 'Partner Locations' if they exist in API
                 }
-                // Add other types like 'Partner Locations' if they exist in API
-              }
-            });
-          }
+              });
+            }
+          });
           setMapLocations(newMapLocations);
           setOperationalRegions(Array.from(regionsSet)); // Example: use actual region names if available
         } else {
-          console.log("No global presence data found for this startup.");
-          setMapLocations({
-            currentOperations: [],
-            expansionTargets: [],
-            partnerLocations: [],
-          });
-          setOperationalRegions([]);
+          // console.log("No global presence data found for this startup.");
+          setMapLocations(null);
+          setOperationalRegions(null);
           // setError('No global presence data available for this startup.'); // Optional: set an error/message
         }
       } catch (err) {
-        console.error("Error fetching global presence data:", err);
+        // console.error("Error fetching global presence data:", err);
+        setMapLocations(null);
+        setOperationalRegions(null);
         setError(err.message || "An unknown error occurred.");
       } finally {
         setLoading(false);
@@ -302,7 +299,7 @@ const GlobalPresence = ({ companyId }) => {
       }
     };
 
-    if (!loading && !error) {
+    if (!loading && !error && mapLocations) {
       // Only load/initialize map if data is ready and no error
       loadLeaflet();
     }
@@ -376,166 +373,172 @@ const GlobalPresence = ({ companyId }) => {
   };
 
   return (
-    <section
-      className={`py-16 relative transition-colors duration-300 px-[69px] w-full ${
-        darkMode ? "bg-gray-900" : "bg-gray-50"
-      }`}
-    >
-      <div className="">
-        <div className="flex flex-col md:flex-row items-center justify-between md:justify-start mb-8 space-y-3 md:space-y-0 md:space-x-3 w-full">
-          <div className="w-1/5 md:w-16 hidden md:block h-1.5 bg-gradient-to-r from-orange-500 to-red-500 rounded-full"></div>
-          <h1 className="text-3xl md:text-5xl font-bold mb-1">
-            <span className="bg-clip-text text-transparent bg-gradient-to-r from-orange-500 to-red-600">
-              Our Global Footprint
-            </span>
-          </h1>
-          <div className="block md:hidden w-1/3 md:w-16 h-1.5 bg-gradient-to-r from-orange-500 to-red-500 rounded-full"></div>
-        </div>
-
-        {loading && (
-          <div className="flex flex-col justify-center items-center py-20">
-            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-orange-500"></div>
-            <p
-              className={`mt-4 ${darkMode ? "text-gray-300" : "text-gray-700"}`}
-            >
-              Loading global presence...
-            </p>
+    mapLocations && (
+      <section
+        className={`py-16 relative transition-colors duration-300 px-[69px] w-full ${
+          darkMode ? "bg-gray-900" : "bg-gray-50"
+        }`}
+      >
+        <div className="">
+          <div className="flex flex-col md:flex-row items-center justify-between md:justify-start mb-8 space-y-3 md:space-y-0 md:space-x-3 w-full">
+            <div className="w-1/5 md:w-16 hidden md:block h-1.5 bg-gradient-to-r from-orange-500 to-red-500 rounded-full"></div>
+            <h1 className="text-3xl md:text-5xl font-bold mb-1">
+              <span className="bg-clip-text text-transparent bg-gradient-to-r from-orange-500 to-red-600">
+                Our Global Footprint
+              </span>
+            </h1>
+            <div className="block md:hidden w-1/3 md:w-16 h-1.5 bg-gradient-to-r from-orange-500 to-red-500 rounded-full"></div>
           </div>
-        )}
-        {error && !loading && (
-          <div
-            className={`border px-4 py-3 rounded-lg relative max-w-2xl mx-auto mb-8 ${
-              darkMode
-                ? "bg-red-900 border-red-700 text-red-300"
-                : "bg-red-100 border-red-400 text-red-700"
-            }`}
-            role="alert"
-          >
-            <strong className="font-bold">Error! </strong>
-            <span className="block sm:inline">{error}</span>
-          </div>
-        )}
 
-        {!loading && !error && (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
-            <div
-              className={`lg:col-span-2 rounded-xl overflow-hidden shadow-xl transition-all duration-300 h-max ${
-                darkMode
-                  ? "bg-gray-800 border border-gray-700"
-                  : "bg-white border border-gray-200"
-              }`}
-            >
-              <div
-                className={`p-5 border-b ${
-                  darkMode ? "border-gray-700" : "border-gray-200"
+          {loading && (
+            <div className="flex flex-col justify-center items-center py-20">
+              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-orange-500"></div>
+              <p
+                className={`mt-4 ${
+                  darkMode ? "text-gray-300" : "text-gray-700"
                 }`}
               >
-                <h3
-                  className={`text-2xl font-bold flex items-center ${
-                    darkMode ? "text-white" : "text-gray-800"
+                Loading global presence...
+              </p>
+            </div>
+          )}
+          {error && !loading && (
+            <div
+              className={`border px-4 py-3 rounded-lg relative max-w-2xl mx-auto mb-8 ${
+                darkMode
+                  ? "bg-red-900 border-red-700 text-red-300"
+                  : "bg-red-100 border-red-400 text-red-700"
+              }`}
+              role="alert"
+            >
+              <strong className="font-bold">Error! </strong>
+              <span className="block sm:inline">{error}</span>
+            </div>
+          )}
+
+          {!loading && !error && (
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
+              <div
+                className={`lg:col-span-2 rounded-xl overflow-hidden shadow-xl transition-all duration-300 h-max ${
+                  darkMode
+                    ? "bg-gray-800 border border-gray-700"
+                    : "bg-white border border-gray-200"
+                }`}
+              >
+                <div
+                  className={`p-5 border-b ${
+                    darkMode ? "border-gray-700" : "border-gray-200"
                   }`}
                 >
-                  <MapPin className="w-7 h-7 mr-3 text-orange-500" />{" "}
-                  Operational Map
-                </h3>
-              </div>
-              <div className="relative">
-                <div
-                  ref={mapRef}
-                  className="h-96 md:h-[500px] w-full z-10"
-                  style={{ background: darkMode ? "#374151" : "#f0f0f0" }}
-                >
-                  {/* Map will render here. Show placeholder if no locations. */}
-                  {mapLocations.currentOperations.length === 0 &&
-                    mapLocations.expansionTargets.length === 0 && (
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <p
-                          className={`text-lg ${
-                            darkMode ? "text-gray-400" : "text-gray-500"
-                          }`}
-                        >
-                          Map data not available or no locations specified.
-                        </p>
-                      </div>
-                    )}
-                </div>
-                {(mapLocations.currentOperations.length > 0 ||
-                  mapLocations.expansionTargets.length > 0 ||
-                  mapLocations.partnerLocations.length > 0) && (
-                  <div
-                    className={`absolute bottom-3 right-3 p-3 rounded-lg z-20 shadow-md text-xs ${
-                      darkMode
-                        ? "bg-gray-900/80 border border-gray-700 backdrop-blur-sm"
-                        : "bg-white/80 border border-gray-200 backdrop-blur-sm"
+                  <h3
+                    className={`text-2xl font-bold flex items-center ${
+                      darkMode ? "text-white" : "text-gray-800"
                     }`}
                   >
-                    <h4
-                      className={`font-bold mb-1.5 ${
-                        darkMode ? "text-white" : "text-gray-800"
+                    <MapPin className="w-7 h-7 mr-3 text-orange-500" />{" "}
+                    Operational Map
+                  </h3>
+                </div>
+                <div className="relative">
+                  <div
+                    ref={mapRef}
+                    className="h-96 md:h-[500px] w-full z-10"
+                    style={{ background: darkMode ? "#374151" : "#f0f0f0" }}
+                  >
+                    {/* Map will render here. Show placeholder if no locations. */}
+                    {mapLocations.currentOperations.length === 0 &&
+                      mapLocations.expansionTargets.length === 0 && (
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <p
+                            className={`text-lg ${
+                              darkMode ? "text-gray-400" : "text-gray-500"
+                            }`}
+                          >
+                            Map data not available or no locations specified.
+                          </p>
+                        </div>
+                      )}
+                  </div>
+                  {(mapLocations.currentOperations.length > 0 ||
+                    mapLocations.expansionTargets.length > 0 ||
+                    mapLocations.partnerLocations.length > 0) && (
+                    <div
+                      className={`absolute bottom-3 right-3 p-3 rounded-lg z-20 shadow-md text-xs ${
+                        darkMode
+                          ? "bg-gray-900/80 border border-gray-700 backdrop-blur-sm"
+                          : "bg-white/80 border border-gray-200 backdrop-blur-sm"
                       }`}
                     >
-                      Legend
-                    </h4>
-                    <div className="space-y-1.5">
-                      {mapLocations.currentOperations.length > 0 && (
-                        <div className="flex items-center">
-                          <div className="w-3 h-3 rounded-full bg-orange-500 mr-1.5 ring-1 ring-offset-1 ring-orange-600 ring-offset-transparent"></div>
-                          <span
-                            className={
-                              darkMode ? "text-gray-300" : "text-gray-700"
-                            }
-                          >
-                            Current Operations
-                          </span>
-                        </div>
-                      )}
-                      {mapLocations.expansionTargets.length > 0 && (
-                        <div className="flex items-center">
-                          <div className="w-3 h-3 rounded-full bg-blue-500 mr-1.5 ring-1 ring-offset-1 ring-blue-600 ring-offset-transparent"></div>
-                          <span
-                            className={
-                              darkMode ? "text-gray-300" : "text-gray-700"
-                            }
-                          >
-                            Expansion Targets
-                          </span>
-                        </div>
-                      )}
-                      {mapLocations.partnerLocations.length > 0 && (
-                        <div className="flex items-center">
-                          <div className="w-3 h-3 rounded-full bg-green-500 mr-1.5 ring-1 ring-offset-1 ring-green-600 ring-offset-transparent"></div>
-                          <span
-                            className={
-                              darkMode ? "text-gray-300" : "text-gray-700"
-                            }
-                          >
-                            Partner Locations
-                          </span>
-                        </div>
-                      )}
+                      <h4
+                        className={`font-bold mb-1.5 ${
+                          darkMode ? "text-white" : "text-gray-800"
+                        }`}
+                      >
+                        Legend
+                      </h4>
+                      <div className="space-y-1.5">
+                        {mapLocations.currentOperations.length > 0 && (
+                          <div className="flex items-center">
+                            <div className="w-3 h-3 rounded-full bg-orange-500 mr-1.5 ring-1 ring-offset-1 ring-orange-600 ring-offset-transparent"></div>
+                            <span
+                              className={
+                                darkMode ? "text-gray-300" : "text-gray-700"
+                              }
+                            >
+                              Current Operations
+                            </span>
+                          </div>
+                        )}
+                        {mapLocations.expansionTargets.length > 0 && (
+                          <div className="flex items-center">
+                            <div className="w-3 h-3 rounded-full bg-blue-500 mr-1.5 ring-1 ring-offset-1 ring-blue-600 ring-offset-transparent"></div>
+                            <span
+                              className={
+                                darkMode ? "text-gray-300" : "text-gray-700"
+                              }
+                            >
+                              Expansion Targets
+                            </span>
+                          </div>
+                        )}
+                        {mapLocations.partnerLocations.length > 0 && (
+                          <div className="flex items-center">
+                            <div className="w-3 h-3 rounded-full bg-green-500 mr-1.5 ring-1 ring-offset-1 ring-green-600 ring-offset-transparent"></div>
+                            <span
+                              className={
+                                darkMode ? "text-gray-300" : "text-gray-700"
+                              }
+                            >
+                              Partner Locations
+                            </span>
+                          </div>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                )}
+                  )}
+                </div>
               </div>
-            </div>
 
-            <div className="space-y-6">
-              {/* <InfoCard
+              <div className="space-y-6">
+                {/* <InfoCard
                 title="Operational Regions"
                 items={operationalRegions}
                 icon={<Globe />}
                 cardColor="text-orange-500"
               /> */}
-              <InfoCard title="Sector Focus" items={startupData.sectorFocus} />
-              <InfoCard
-                title="Technology Types"
-                items={startupData.technologyTypes}
-              />
+                <InfoCard
+                  title="Sector Focus"
+                  items={startupData.sectorFocus}
+                />
+                <InfoCard
+                  title="Technology Types"
+                  items={startupData.technologyTypes}
+                />
+              </div>
             </div>
-          </div>
-        )}
+          )}
 
-        {/* <div className="text-center mt-8">
+          {/* <div className="text-center mt-8">
           <button
             onClick={() => setDarkMode(!darkMode)}
             className={`px-5 py-2.5 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 ${
@@ -547,8 +550,9 @@ const GlobalPresence = ({ companyId }) => {
             Toggle {darkMode ? "Light" : "Dark"} Mode
           </button>
         </div> */}
-      </div>
-    </section>
+        </div>
+      </section>
+    )
   );
 };
 
