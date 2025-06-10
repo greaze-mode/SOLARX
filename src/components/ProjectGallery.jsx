@@ -112,12 +112,12 @@ const ProjectGallery = ({ companyId }) => {
         const baseUrl = import.meta.env.VITE_API_URL;
         // Fix the populate syntax - using the correct format for Strapi v4
         const apiUrl = `${baseUrl}/api/projects?filters[startup][id][$eq]=${companyId}&populate=*`;
-        console.log("Fetching projects from:", apiUrl);
+        // console.log("Fetching projects from:", apiUrl);
         const response = await fetch(apiUrl);
 
         if (!response.ok) {
           const errorData = await response.json().catch(() => null);
-          console.log("API Error Response:", errorData);
+          // console.log("API Error Response:", errorData);
 
           let errorMessage;
           if (response.status === 404) {
@@ -139,7 +139,7 @@ const ProjectGallery = ({ companyId }) => {
         }
 
         const result = await response.json();
-        console.log("Projects data from API:", result);
+        // console.log("Projects data from API:", result);
 
         if (result && result.data && result.data.length > 0) {
           const processedProjects = result.data.map((apiProject) => {
@@ -147,7 +147,7 @@ const ProjectGallery = ({ companyId }) => {
             const projectData = apiProject.attributes || apiProject;
 
             // Log the entire project structure to understand the data format
-            console.log("Processing project:", apiProject);
+            // console.log("Processing project:", apiProject);
 
             // Extract overview text safely
             const overviewText =
@@ -177,7 +177,7 @@ const ProjectGallery = ({ companyId }) => {
             }
 
             // Log the image data for debugging
-            console.log("Banner Image data:", projectData.Banner_Image);
+            // console.log("Banner Image data:", projectData.Banner_Image);
 
             // Store the full overview for the popup
             const overview = projectData.Overview || [];
@@ -185,15 +185,15 @@ const ProjectGallery = ({ companyId }) => {
             const projectType = projectData.Type || "";
 
             // Log additional fields for debugging
-            console.log("Project fields:", {
-              name: projectData.Name,
-              oneLiner: projectData.One_Line_Description,
-              documentId,
-              type: projectType,
-            });
+            // console.log("Project fields:", {
+            //   name: projectData.Name,
+            //   oneLiner: projectData.One_Line_Description,
+            //   documentId,
+            //   type: projectType,
+            // });
 
             // Log the overview structure to help with debugging
-            console.log("Project overview structure:", overview);
+            // console.log("Project overview structure:", overview);
 
             return {
               id: apiProject.id,
@@ -213,7 +213,7 @@ const ProjectGallery = ({ companyId }) => {
 
           setProjects(processedProjects);
         } else {
-          console.log(`No projects found for companyId: ${companyId}.`);
+          // console.log(`No projects found for companyId: ${companyId}.`);
           // Provide a specific message if no projects, rather than placeholders if not desired
           setProjects([]); // Or set placeholder if required by design
           // setError(`No projects found for this company.`); // Optionally set error for no data
