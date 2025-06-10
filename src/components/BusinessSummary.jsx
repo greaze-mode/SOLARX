@@ -103,42 +103,8 @@ export default function BusinessSummary({ companyId }) {
                   ))}
                 </div>
               ) : (
-                <div className="bg-orange-50 border border-orange-100 rounded-lg p-6 text-center">
-                  <h3 className="text-xl font-medium text-orange-700 mb-2">
-                    No Business Features Available
-                  </h3>
-                  <p className="text-orange-600">
-                    Please add business features in the Strapi admin panel under
-                    Business Summary.
-                  </p>
-                </div>
+                <></>
               )}
-            </div>
-          )}
-
-          {!loading && !businessData && (
-            <div className="bg-white rounded-xl shadow-2xl p-8 mb-6">
-              <div className="bg-orange-50 border border-orange-100 rounded-lg p-8 text-center">
-                <h3 className="text-xl font-medium text-orange-700 mb-4">
-                  No Business Summary Available
-                </h3>
-                <p className="text-orange-600 mb-4">
-                  Please add business summary data in the Strapi admin panel for
-                  this company.
-                </p>
-                <div className="flex justify-center">
-                  <a
-                    href={`${
-                      import.meta.env.VITE_API_URL
-                    }/admin/content-manager/collectionType/api::business-summary.business-summary/create`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-md transition-colors duration-300"
-                  >
-                    Add Business Summary
-                  </a>
-                </div>
-              </div>
             </div>
           )}
         </div>

@@ -6,9 +6,9 @@ export default function StatsSection() {
   const [stats2, setStats] = useState([]);
 
   const formatCurrency = (amount) => {
-    if (amount >= 1000000) return `$${(amount / 1000000).toFixed(1)}M`;
-    if (amount >= 1000) return `$${(amount / 1000).toFixed(1)}K`;
-    return `$${amount.toFixed(0)}`;
+    if (amount >= 1000000) return `USD ${(amount / 1000000).toFixed(1)}M`;
+    if (amount >= 1000) return `USD ${(amount / 1000).toFixed(1)}K`;
+    return `USD ${amount.toFixed(0)}`;
   };
 
   useEffect(() => {
@@ -46,7 +46,6 @@ export default function StatsSection() {
               }
             });
             return formatCurrency(total);
-            
           };
           const statsData = {
             startupsCount: res.data.data.length,
@@ -56,10 +55,12 @@ export default function StatsSection() {
 
           setStats(statsData);
         } else {
-          console.error("Unexpected response structure:", res.data);
+          // console.error("Unexpected response structure:", res.data);
+          setStats([]);
         }
       } catch (error) {
         console.error("Error fetching stats:", error);
+        setStats([]);
       }
     };
 
@@ -111,7 +112,7 @@ export default function StatsSection() {
     },
     {
       id: 3,
-      value: `${stats2.funding || "$0"}`,
+      value: `${stats2.funding || "USD 0"}`,
       label: "Funding Facilitated",
       icon: (
         <svg

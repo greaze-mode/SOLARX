@@ -1,4 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
+import Slider from "react-slick";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 import {
   ChevronLeft,
   ChevronRight,
@@ -32,7 +35,6 @@ const extractRichTextToString = (richTextArray) => {
   return text.trim();
 };
 
-// Helper function to render rich text content as JSX
 const renderRichText = (richTextArray) => {
   if (!Array.isArray(richTextArray) || richTextArray.length === 0) {
     return <p className="text-gray-600">No content available.</p>;
@@ -59,7 +61,17 @@ const renderRichText = (richTextArray) => {
       case "paragraph":
         return (
           <p key={blockIndex} className="text-gray-600 mb-4">
-            {children.map((child, i) => child.text)}
+            {children.map((child, i) => {
+              console.log("Child:", child);
+              if (child.bold === true) {
+                return <span className="font-bold">{child.text}</span>;
+              } else if (child.italic === true) {
+                return <span className="italic">{child.text}</span>;
+              } else if (child.underline === true) {
+                return <span className="underline">{child.text}</span>;
+              }
+              return child.text;
+            })}
           </p>
         );
 
@@ -94,8 +106,9 @@ const ProjectGallery = ({ companyId }) => {
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [selectedProject, setSelectedProject] = useState(null); // Track which project popup is open
+  const [selectedProject, setSelectedProject] = useState(null);
+  const [showSliderControls, setShowSliderControls] = useState(false);
+  const sliderRef = useRef(null);
 
   useEffect(() => {
     const fetchProjects = async () => {
@@ -160,20 +173,12 @@ const ProjectGallery = ({ companyId }) => {
             let imageAlt = projectData.Name || "Project image";
 
             // Check for Banner_Image in different possible structures
-            const bannerImage = projectData.Banner_Image?.data;
+            const bannerImage = projectData.Banner_Image;
 
             if (bannerImage) {
               // Get image attributes
-              const img = bannerImage.attributes || bannerImage;
-              // Get URL from formats or directly
-              const rawUrl =
-                img.formats?.medium?.url || img.formats?.small?.url || img.url;
-
-              // Construct full URL if we have a raw URL
-              imageUrl = rawUrl
-                ? `${import.meta.env.VITE_API_URL}${rawUrl}`
-                : null;
-              imageAlt = img.alternativeText || img.name || imageAlt;
+              imageUrl = bannerImage.url || null;
+              // imageAlt = img.alternativeText || img.name || imageAlt;
             }
 
             // Log the image data for debugging
@@ -200,7 +205,7 @@ const ProjectGallery = ({ companyId }) => {
               name: projectData.Name || `Project ${apiProject.id}`,
               description: overviewText,
               oneLiner: projectData.One_Line_Description || "",
-              image: imageUrl ? { url: imageUrl, alt: imageAlt } : null,
+              image: imageUrl ? { url: imageUrl, alt: "" } : null,
               externalUrl: projectData.URL || null, // Main project URL
               // Additional data for the popup
               overview: overview,
@@ -232,32 +237,25 @@ const ProjectGallery = ({ companyId }) => {
     fetchProjects();
   }, [companyId]);
 
-  const itemsPerView = 3; // Number of projects visible at a time
-  const totalItems = projects.length;
-
-  // Adjust itemsPerView based on screen size for responsiveness
-  const getResponsiveItemsPerView = () => {
-    if (typeof window !== "undefined") {
-      if (window.innerWidth < 768) return 1; // Small screens
-      if (window.innerWidth < 1024) return 2; // Medium screens
-    }
-    return 3; // Large screens
-  };
-
-  const [effectiveItemsPerView, setEffectiveItemsPerView] = useState(
-    getResponsiveItemsPerView()
-  );
-
+  // Logic to show/hide slider controls based on project count and screen size
   useEffect(() => {
-    const handleResize = () => {
-      setEffectiveItemsPerView(getResponsiveItemsPerView());
+    const updateSliderVisibility = () => {
+      if (typeof window !== "undefined") {
+        const width = window.innerWidth;
+        if (width < 768) {
+          setShowSliderControls(projects.length > 1);
+        } else if (width < 1024) {
+          setShowSliderControls(projects.length > 2);
+        } else {
+          setShowSliderControls(projects.length > 3);
+        }
+      }
     };
-    if (typeof window !== "undefined") {
-      window.addEventListener("resize", handleResize);
-      handleResize(); // Initial check
-      return () => window.removeEventListener("resize", handleResize);
-    }
-  }, []);
+
+    updateSliderVisibility();
+    window.addEventListener("resize", updateSliderVisibility);
+    return () => window.removeEventListener("resize", updateSliderVisibility);
+  }, [projects.length]);
 
   // Handle escape key and outside click for popup
   useEffect(() => {
@@ -285,22 +283,31 @@ const ProjectGallery = ({ companyId }) => {
     };
   }, [selectedProject]);
 
-  const showSlider = totalItems > effectiveItemsPerView;
-  const maxIndex = Math.max(0, totalItems - effectiveItemsPerView);
-
-  const goToPrevious = () => {
-    setCurrentIndex((prev) => Math.max(0, prev - 1));
+  // React Slick settings
+  const sliderSettings = {
+    dots: true,
+    infinite: projects.length > 3,
+    speed: 500,
+    slidesToShow: 3,
+    slidesToScroll: 1,
+    arrows: false, // Using custom external arrows
+    responsive: [
+      {
+        breakpoint: 1023, // Medium screens
+        settings: {
+          slidesToShow: 2,
+          infinite: projects.length > 2,
+        },
+      },
+      {
+        breakpoint: 767, // Small screens
+        settings: {
+          slidesToShow: 1,
+          infinite: projects.length > 1,
+        },
+      },
+    ],
   };
-
-  const goToNext = () => {
-    setCurrentIndex((prev) => Math.min(maxIndex, prev + 1));
-  };
-
-  // Calculate visible projects based on currentIndex and *effective* itemsPerView
-  const visibleProjects = projects.slice(
-    currentIndex,
-    currentIndex + effectiveItemsPerView
-  );
 
   // Fallback content if no projects are loaded or available
   const renderFallbackContent = () => {
@@ -325,7 +332,7 @@ const ProjectGallery = ({ companyId }) => {
 
   return (
     projects.length !== 0 && (
-      <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 py-12 ml-10">
+      <div className="px-4 sm:px-6 lg:px-[69px] mx-auto py-12 ml-10">
         <div className="flex flex-col md:flex-row items-start md:items-center justify-start mb-8 space-y-3 md:space-y-0 md:space-x-3 w-full">
           <div className="w-1/5 md:w-16 hidden md:block h-1.5 bg-gradient-to-r from-orange-500 to-red-500 rounded-full"></div>
           <h1 className="text-3xl md:text-5xl font-bold mb-1 text-left">
@@ -345,19 +352,13 @@ const ProjectGallery = ({ companyId }) => {
 
         {error && !loading && (
           <div
-            className="bg-red-50 border border-red-200 text-red-700 px-6 py-4 rounded-lg relative max-w-2xl mb-8 shadow-sm"
+            className="bg-red-50 border border-red-200 text-red-700 px-6 py-4 rounded-lg relative max-w-2xl"
             role="alert"
           >
             <h3 className="text-lg font-semibold mb-2">
               Unable to Load Projects
             </h3>
             <p className="text-sm">{error}</p>
-            {companyId && (
-              <p className="text-xs mt-2 text-gray-600">
-                Company ID: {companyId} | This company may not exist or have no
-                projects.
-              </p>
-            )}
           </div>
         )}
 
@@ -365,29 +366,18 @@ const ProjectGallery = ({ companyId }) => {
 
         {!loading && !error && projects.length > 0 && (
           <div className="relative">
-            {showSlider && (
+            {showSliderControls && (
               <>
                 <button
-                  onClick={goToPrevious}
-                  disabled={currentIndex === 0}
-                  className={`absolute left-0 top-1/2 transform -translate-y-1/2 -ml-3 sm:-ml-5 z-20 p-2 rounded-full shadow-lg transition-all duration-200 ${
-                    currentIndex === 0
-                      ? "bg-gray-200 text-gray-400 cursor-not-allowed opacity-50"
-                      : "bg-white text-gray-700 hover:bg-orange-500 hover:text-white hover:shadow-xl"
-                  }`}
+                  onClick={() => sliderRef.current?.slickPrev()}
+                  className="absolute left-0 top-1/2 transform -translate-y-1/2 -ml-3 sm:-ml-5 z-20 p-2 rounded-full shadow-lg transition-all duration-200 bg-white text-gray-700 hover:bg-orange-500 hover:text-white hover:shadow-xl"
                   aria-label="Previous projects"
                 >
                   <ChevronLeft size={28} />
                 </button>
-
                 <button
-                  onClick={goToNext}
-                  disabled={currentIndex >= maxIndex}
-                  className={`absolute right-0 top-1/2 transform -translate-y-1/2 -mr-3 sm:-mr-5 z-20 p-2 rounded-full shadow-lg transition-all duration-200 ${
-                    currentIndex >= maxIndex
-                      ? "bg-gray-200 text-gray-400 cursor-not-allowed opacity-50"
-                      : "bg-white text-gray-700 hover:bg-orange-500 hover:text-white hover:shadow-xl"
-                  }`}
+                  onClick={() => sliderRef.current?.slickNext()}
+                  className="absolute right-0 top-1/2 transform -translate-y-1/2 -mr-3 sm:-mr-5 z-20 p-2 rounded-full shadow-lg transition-all duration-200 bg-white text-gray-700 hover:bg-orange-500 hover:text-white hover:shadow-xl"
                   aria-label="Next projects"
                 >
                   <ChevronRight size={28} />
@@ -395,87 +385,80 @@ const ProjectGallery = ({ companyId }) => {
               </>
             )}
 
-            <div
-              className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 justify-items-start ${
-                effectiveItemsPerView === 2 ? "lg:grid-cols-2" : ""
-              } ${
-                effectiveItemsPerView === 1
-                  ? "md:grid-cols-1 lg:grid-cols-1"
-                  : ""
-              }`}
-            >
-              {visibleProjects.map((project) => (
-                <div
-                  key={project.id}
-                  className="bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden flex flex-col group w-full"
-                >
-                  <div className="relative h-56 sm:h-64 overflow-hidden">
-                    {project.image ? (
-                      <img
-                        src={project.image.url}
-                        alt={project.image.alt}
-                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                      />
-                    ) : (
-                      <div className="w-full h-full bg-gradient-to-br from-orange-400 to-red-500 flex items-center justify-center">
-                        <FileText size={48} className="text-white opacity-50" />
+            <div className="-mx-3">
+              <Slider ref={sliderRef} {...sliderSettings}>
+                {projects.map((project) => (
+                  <div key={project.id} className="px-3 h-full">
+                    {" "}
+                    {/* Padding for gap */}
+                    <div className="bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden flex flex-col group w-full h-full">
+                      <div className="relative h-56 sm:h-64 overflow-hidden">
+                        {project.image ? (
+                          <img
+                            src={project.image.url}
+                            alt={project.image.alt}
+                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                          />
+                        ) : (
+                          <div className="w-full h-full bg-gradient-to-br from-orange-400 to-red-500 flex items-center justify-center">
+                            <FileText
+                              size={48}
+                              className="text-white opacity-50"
+                            />
+                          </div>
+                        )}
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent flex flex-col justify-end p-4">
+                          <h3 className="text-xl font-bold text-white text-left">
+                            {project.name}
+                          </h3>
+                          {project.oneLiner && (
+                            <p className="text-sm text-orange-200 mt-1 truncate text-left">
+                              {project.oneLiner}
+                            </p>
+                          )}
+                        </div>
                       </div>
-                    )}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent flex flex-col justify-end p-4">
-                      <h3 className="text-xl font-bold text-white text-left">
-                        {project.name}
-                      </h3>
-                      {project.oneLiner && (
-                        <p className="text-sm text-orange-200 mt-1 truncate text-left">
-                          {project.oneLiner}
+                      <div className="p-5 flex-grow flex flex-col text-left">
+                        <p className="text-gray-600 text-sm leading-relaxed mb-4 line-clamp-4 flex-grow text-left">
+                          {project.description}
                         </p>
-                      )}
+                        <div className="mt-auto pt-4 border-t border-gray-200 text-left">
+                          <button
+                            onClick={() => setSelectedProject(project)}
+                            className="inline-flex items-center text-orange-600 hover:text-orange-700 font-medium text-sm hover:underline transition-colors duration-200 group/link"
+                          >
+                            Learn More
+                            <ExternalLink
+                              size={16}
+                              className="ml-1.5 transform transition-transform duration-300 group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5"
+                            />
+                          </button>
+                        </div>
+                      </div>
                     </div>
                   </div>
-
-                  <div className="p-5 flex-grow flex flex-col text-left">
-                    <p className="text-gray-600 text-sm leading-relaxed mb-4 line-clamp-4 flex-grow text-left">
-                      {project.description}
-                    </p>
-
-                    <div className="mt-auto pt-4 border-t border-gray-200 text-left">
-                      <button
-                        onClick={() => setSelectedProject(project)}
-                        className="inline-flex items-center text-orange-600 hover:text-orange-700 font-medium text-sm hover:underline transition-colors duration-200 group/link"
-                      >
-                        Learn More
-                        <ExternalLink
-                          size={16}
-                          className="ml-1.5 transform transition-transform duration-300 group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5"
-                        />
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {showSlider && totalItems > effectiveItemsPerView && (
-              <div className="flex justify-start mt-8 space-x-2">
-                {Array.from({
-                  length: Math.ceil(totalItems / 1) - effectiveItemsPerView + 1,
-                }).map((_, index) => (
-                  <button
-                    key={index}
-                    onClick={() => setCurrentIndex(index)} // Each dot represents a starting index for a "view"
-                    className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ease-in-out transform hover:scale-125 ${
-                      index === currentIndex
-                        ? "bg-orange-500 scale-125"
-                        : "bg-gray-300 hover:bg-gray-400"
-                    }`}
-                    aria-label={`Go to project set ${index + 1}`}
-                  />
                 ))}
-              </div>
-            )}
+              </Slider>
+            </div>
           </div>
         )}
-        <style jsx>{`
+
+        {/* Style overrides for react-slick and line-clamp */}
+        <style jsx global>{`
+          .slick-dots {
+            bottom: -30px; /* Position dots below the slider */
+          }
+          .slick-dots li button:before {
+            font-size: 10px;
+            color: #d1d5db; /* gray-300 */
+            opacity: 1;
+            transition: all 0.3s ease;
+          }
+          .slick-dots li.slick-active button:before {
+            color: #f97316; /* orange-500 */
+            opacity: 1;
+            transform: scale(1.5);
+          }
           .line-clamp-4 {
             display: -webkit-box;
             -webkit-line-clamp: 4;
@@ -484,14 +467,13 @@ const ProjectGallery = ({ companyId }) => {
           }
         `}</style>
 
-        {/* Project Details Popup */}
+        {/* Project Details Popup (unchanged) */}
         {selectedProject && (
           <div
             className="fixed inset-0 bg-black bg-opacity-75 z-[9999] flex items-start justify-center overflow-y-auto"
             style={{ paddingTop: "80px", paddingBottom: "40px" }}
           >
             <div className="relative bg-white rounded-xl shadow-2xl max-w-4xl w-full my-4 mx-4 max-h-[calc(100vh-120px)] overflow-y-auto">
-              {/* Close button */}
               <button
                 onClick={() => setSelectedProject(null)}
                 className="absolute top-4 right-4 bg-white rounded-full p-2 shadow-lg hover:bg-gray-100 transition-colors z-50"
@@ -500,8 +482,6 @@ const ProjectGallery = ({ companyId }) => {
               >
                 <X size={24} className="text-gray-800" />
               </button>
-
-              {/* Project image header */}
               <div className="relative w-full h-64 sm:h-80 overflow-hidden">
                 {selectedProject.image ? (
                   <img
@@ -515,14 +495,11 @@ const ProjectGallery = ({ companyId }) => {
                   </div>
                 )}
               </div>
-
-              {/* Project content */}
               <div className="p-6 sm:p-8">
                 <div className="prose prose-orange max-w-none">
                   <h2 className="text-3xl font-bold mb-8">
                     {selectedProject.name}
                   </h2>
-                  {/* Render the rich text content */}
                   {Array.isArray(selectedProject.overview) &&
                   selectedProject.overview.length > 0 ? (
                     renderRichText(selectedProject.overview)
@@ -532,8 +509,6 @@ const ProjectGallery = ({ companyId }) => {
                     </p>
                   )}
                 </div>
-
-                {/* External link if available */}
                 {selectedProject.externalUrl && (
                   <div className="mt-8 pt-4 border-t border-gray-200">
                     <a

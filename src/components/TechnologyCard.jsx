@@ -82,16 +82,16 @@ const TechnologyCard = ({ technology, techTags }) => {
         {/* Right Column: Demonstration Image/Video */}
         <div className="flex items-center justify-center md:justify-end w-full h-full">
           {demonstrationImage ? (
-            <div className="w-full max-w-md h-[300px] md:h-[450px] bg-orange-500 rounded-lg shadow-lg flex items-center justify-center">
-              {/* <img
+            <div className="relative w-full max-w-md h-[300px] md:h-[450px] bg-orange-500 rounded-lg shadow-lg flex items-center justify-center">
+              <img
                 src={`${demonstrationImage.url}`}
                 alt={`${technology.Name} demonstration`}
                 height={450}
-                className="object-fit w-full h-full rounded-lg scale-50"
-              /> */}
-              <span className="text-3xl sm:text-4xl font-bold text-white opacity-80">
+                className="object-cover w-full h-full rounded-lg border-2 border-orange-200 shadow-md hover:shadow-2xl transition-shadow duration-300"
+              />
+              {/* <span className="text-3xl sm:text-4xl font-bold text-white opacity-80">
                 Image
-              </span>
+              </span> */}
             </div>
           ) : technology.Link ? (
             <div className="w-full max-w-md h-[300px] md:h-[450px] bg-orange-500 rounded-lg shadow-lg flex flex-col items-center justify-center text-white p-6 text-center">

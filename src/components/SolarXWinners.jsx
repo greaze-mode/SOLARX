@@ -122,7 +122,7 @@ export default function SolarXWinners({ isMobile }) {
   }, [filteredCompanies, isMobile]);
 
   const sliderSettings = useMemo(() => {
-    const numItems = filteredCompanies.length;
+    const numItems = chunkedCompanies.length;
 
     const calculateResponsiveSettings = (maxSlidesForView) => {
       // const slidesToShow = Math.min(maxSlidesForView, Math.max(1, numItems)); // Ensure at least 1 slide is shown
@@ -161,7 +161,7 @@ export default function SolarXWinners({ isMobile }) {
         },
       ],
     };
-  }, [filteredCompanies.length]);
+  }, [chunkedCompanies.length]);
 
   const showSliderNavButtons = sliderSettings.infinite;
 

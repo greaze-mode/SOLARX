@@ -16,9 +16,9 @@ import {
 
 // Helper function to format currency
 const formatCurrency = (amount) => {
-  if (amount >= 1000000) return `$${(amount / 1000000).toFixed(1)}M`;
-  if (amount >= 1000) return `$${(amount / 1000).toFixed(1)}K`;
-  return `$${amount.toFixed(0)}`;
+  if (amount >= 1000000) return `USD ${(amount / 1000000).toFixed(1)}M`;
+  if (amount >= 1000) return `USD ${(amount / 1000).toFixed(1)}K`;
+  return `USD ${amount.toFixed(0)}`;
 };
 
 // Component for individual investor display
