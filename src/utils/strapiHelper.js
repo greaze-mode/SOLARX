@@ -68,7 +68,7 @@ export async function getLocationFromLatLong(latitude, longitude) {
   }
   // const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=6`);
   // const response = await fetch(`https://us1.api-bdc.net/data/reverse-geocode?latitude=${latitude}&longitude=${longitude}&localityLanguage=en`);
-  const response = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=AIzaSyDJ3tSaumpWhGp7smd96Svg3eeOe1-4JWE`);
+  const response = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${import.meta.env.GOOGLE_API_KEY}`);
   const data = await response.json();
 
   // console.log('Reverse geocode data:', data);
