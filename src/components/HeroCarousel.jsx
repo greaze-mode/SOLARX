@@ -55,7 +55,7 @@ const DotButton = ({ selected, onClick, index }) => (
 );
 
 export default function HeroCarousel() {
-  const NAVBAR_HEIGHT = "4.5rem";
+  const NAVBAR_HEIGHT = "4rem";
   const AUTOPLAY_DELAY = 7000;
   const AUTOPLAY_RESUME_DELAY = 5000;
 
@@ -107,7 +107,8 @@ export default function HeroCarousel() {
           }
         })
         .catch((error) => {
-          console.error("Error fetching carousel data:", error);
+          // console.error("Error fetching carousel data:", error);
+          setSlides([]);
         });
     };
 
@@ -201,6 +202,7 @@ export default function HeroCarousel() {
         case "top":
           return `${baseTransition} opacity-0 -translate-y-12`;
         case "center":
+          return `${baseTransition} opacity-0 translate-x-0 translate-y-0 scale-90`;
         default:
           return `${baseTransition} opacity-0 scale-90`;
       }
@@ -236,7 +238,7 @@ export default function HeroCarousel() {
               key={slide.id}
             >
               <div className="absolute inset-0 z-0">
-                <div className="absolute inset-0 bg-black/50 z-10"></div>
+                <div className="absolute inset-0 bg-black/60 z-10"></div>
                 <img
                   src={slide.imgUrl}
                   alt={`${slide.title}`}
@@ -256,13 +258,13 @@ export default function HeroCarousel() {
                   <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-4 md:mb-6 text-shadow">
                     {slide.title}
                   </h1>
-                  <p className="text-lg md:text-xl mb-6 md:mb-8 text-white/90 leading-relaxed max-w-2xl text-center justify-center items-center mx-auto">
+                  <p className="text-lg md:text-xl font-medium mb-6 md:mb-8 text-white/90 leading-relaxed max-w-2xl text-center justify-center items-center mx-auto">
                     {slide.description}
                   </p>
                   <div className="flex flex-col sm:flex-row gap-4 justify-center ">
                     <a
                       href={slide.button1Url}
-                      className="bg-white hover:bg-opacity-90 font-semibold py-3 px-7 rounded-full shadow-xl hover:scale-105 transition-all duration-300 ease-in-out text-base md:text-lg text-orange-600"
+                      className="bg-white text-lg hover:bg-opacity-90 font-semibold py-3 px-7 rounded-full shadow-xl hover:scale-105 transition-all duration-300 ease-in-out md:text-lg text-orange-600"
                     >
                       {slide.button1Text}
                     </a>
