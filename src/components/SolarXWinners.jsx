@@ -53,7 +53,7 @@ const transformStartupData = (rawStartup) => {
   };
 };
 
-export default function SolarXWinners() {
+export default function SolarXWinners({ isMobile }) {
   const sliderRef = useRef(null);
   const [startups, setStartups] = useState([]);
   const [selectedRegion, setSelectedRegion] = useState(REGIONS_OPTIONS[0]);
@@ -111,11 +111,17 @@ export default function SolarXWinners() {
 
   const chunkedCompanies = useMemo(() => {
     const chunkedItems = [];
+    if (!isMobile) {
     for (let i = 0; i < filteredCompanies.length; i += 6) {
       chunkedItems.push(filteredCompanies.slice(i, i + 6));
+      }
+    } else {
+      for (let i = 0; i < filteredCompanies.length; i += 2) {
+        chunkedItems.push(filteredCompanies.slice(i, i + 2));
+      }
     }
     return chunkedItems;
-  }, [filteredCompanies]);
+  }, [filteredCompanies, isMobile]);
 
   const sliderSettings = useMemo(() => {
     const numItems = filteredCompanies.length;
@@ -243,24 +249,22 @@ export default function SolarXWinners() {
         ) : (
           <div className="mt-4">
             {showSliderNavButtons && (
-              <div className="flex justify-end items-centerpx-1 sm:px-0">
-                <div className="flex gap-2">
+              <>
                   <button
                     onClick={() => sliderRef.current?.slickPrev()}
-                    className="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-full bg-white text-orange-600 hover:bg-orange-100 shadow-md hover:shadow-lg transition-all border border-gray-200"
+                  className="absolute left-4 md:left-6 top-1/2 transform -translate-y-1/2 z-30 w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-full bg-white text-orange-600 hover:bg-orange-100 shadow-md hover:shadow-lg transition-all border border-gray-200"
                     aria-label="Previous slide"
                   >
                     <ChevronLeftIcon className="h-5 w-5 sm:h-6 sm:w-6" />
                   </button>
                   <button
                     onClick={() => sliderRef.current?.slickNext()}
-                    className="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-full bg-white text-orange-600 hover:bg-orange-100 shadow-md hover:shadow-lg transition-all border border-gray-200"
+                  className="absolute right-4 md:right-6 top-1/2 transform -translate-y-1/2 z-30 w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-full bg-white text-orange-600 hover:bg-orange-100 shadow-md hover:shadow-lg transition-all border border-gray-200"
                     aria-label="Next slide"
                   >
                     <ChevronRightIcon className="h-5 w-5 sm:h-6 sm:w-6" />
                   </button>
-                </div>
-              </div>
+              </>
             )}
 
             <div className="slider-container -mx-2 sm:-mx-3">
@@ -274,7 +278,7 @@ export default function SolarXWinners() {
                     key={index}
                     className="px-2 sm:px-3 h-full card-container"
                   >
-                    <div className="grid grid-cols-3 gap-6">
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                       {group.map((item) => (
                         <CompanyCard {...item} />
                       ))}
