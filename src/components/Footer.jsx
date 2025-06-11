@@ -30,11 +30,11 @@ const Footer = ({
     <footer id="footer" className="bg-[#f2f3f5] text-gray-900 py-6">
       <div className="max-w-screen-2xl mx-auto px-4 sm:px-20">
         <div className="flex flex-col items-center space-y-6">
-          <div className="w-full">
+          <div className="lg:w-full">
             <img
               src={logo}
               alt="International Solar Alliance Logo"
-              className="w-36 self-start"
+              className="w-36 self-center lg:self-start"
             />
           </div>
           <hr className="bg-gray-300 h-0.5 w-full rounded-xl" />

@@ -143,9 +143,9 @@ const SolarXGlobalReach = () => {
               typeof hqLocation.lat === "number" &&
               typeof hqLocation.lng === "number"
             ) {
-              console.log(
-                `Processing startup: ${startup.Name} (ID: ${startup.id}) (country code: ${startup.Country})`
-              );
+              // console.log(
+              //   `Processing startup: ${startup.Name} (ID: ${startup.id}) (country code: ${startup.Country})`
+              // );
               points.push({
                 id: `startup-hq-${startup.id}`,
                 lat: hqLocation.lat,
@@ -246,9 +246,9 @@ const SolarXGlobalReach = () => {
       width = rect.width;
       height = rect.height;
       if (width === 0 || height === 0) {
-        console.warn(
-          "Globe container has zero dimensions. Cannot initialize Three.js canvas."
-        );
+        // console.warn(
+        //   "Globe container has zero dimensions. Cannot initialize Three.js canvas."
+        // );
         return;
       }
     }

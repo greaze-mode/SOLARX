@@ -13,7 +13,7 @@ const MediaMentionCard = ({
   const truncate = (string, length, end = "...") => {
     return string.length < length ? string : string.substring(0, length) + end;
   };
-  console.log(date)
+  // console.log(date)
   return (
     <a
       href={link}

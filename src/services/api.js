@@ -899,7 +899,7 @@ export const fetchMentors = async (id) => {
     const response = await axios.get(`${API_URL}/founders?populate=*&filters[startup][id][$eq]=${id}`);
 
     // Log the response to help with debugging
-    console.log('Mentors API response (from founders):', response.data);
+    // console.log('Mentors API response (from founders):', response.data);
 
     return response.data;
   } catch (error) {

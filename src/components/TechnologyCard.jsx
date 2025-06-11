@@ -45,7 +45,7 @@ const getHighlightIcon = (title) => {
 const TechnologyCard = ({ technology, techTags }) => {
   // const strapiBaseUrl = import.meta.env.VITE_API_URL; // Define your Strapi base URL
 
-  console.warn(technology);
+  // console.warn(technology);
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true });
 
   const demonstrationImages = technology.Demonstration || [];
@@ -87,7 +87,8 @@ const TechnologyCard = ({ technology, techTags }) => {
   return (
     <div className="rounded-xl shadow-md border border-orange-200 p-8 md:py-10 md:px-20 w-full overflow-hidden h-full">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center">
-        <div className="flex flex-col">
+        {/* Left Side */}
+        <div className={`flex flex-col ${demonstrationImages.length > 0 ? "h-full" : "h-auto col-span-2"}`}>
           <div className="flex items-center mb-3">
             <div className="p-2 bg-orange-100 rounded-full mr-3">
               <Sun size={24} className="text-orange-600" />{" "}
@@ -139,7 +140,7 @@ const TechnologyCard = ({ technology, techTags }) => {
 
         {/* Right Column: Demonstration Image/Video */}
         <div className="flex flex-col items-center justify-center w-full h-full">
-          {demonstrationImages.length > 0 ? (
+          {demonstrationImages.length > 0 && (
             // --- CASE 1: Render Embla Carousel if images exist ---
             <div className="w-full max-w-md">
               <div className="relative">
@@ -192,48 +193,6 @@ const TechnologyCard = ({ technology, techTags }) => {
                   </>
                 )}
               </div>
-
-              {/* --- Display link underneath the carousel if it exists --- */}
-              {demonstrationLink && (
-                <a
-                  href={
-                    demonstrationLink.startsWith("http")
-                      ? demonstrationLink
-                      : `http://${demonstrationLink}`
-                  }
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="block mt-6 text-center font-semibold text-orange-600 hover:text-orange-800 hover:underline transition-colors"
-                >
-                  View Product Demonstration
-                </a>
-              )}
-            </div>
-          ) : demonstrationLink ? (
-            // --- CASE 2: No images, but a link is available ---
-            <div className="w-full max-w-md h-[300px] md:h-[450px] bg-orange-500 rounded-lg shadow-lg flex flex-col items-center justify-center text-white p-6 text-center">
-              <h3 className="text-2xl font-semibold mb-4">
-                Product Demonstration
-              </h3>
-              <a
-                href={
-                  demonstrationLink.startsWith("http")
-                    ? demonstrationLink
-                    : `http://${demonstrationLink}`
-                }
-                target="_blank"
-                rel="noopener noreferrer"
-                className="bg-white text-orange-600 font-semibold py-3 px-6 rounded-full shadow hover:bg-orange-100 transition-colors"
-              >
-                Watch Video
-              </a>
-            </div>
-          ) : (
-            // --- CASE 3: Placeholder if no image or video link ---
-            <div className="w-full max-w-md h-[300px] md:h-[450px] bg-orange-500 rounded-lg shadow-lg flex items-center justify-center">
-              <span className="text-3xl sm:text-4xl font-bold text-white opacity-80">
-                {technology.Name.split(" ")[0]}
-              </span>
             </div>
           )}
         </div>
