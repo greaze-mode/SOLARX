@@ -114,9 +114,9 @@ const SdgGoalTile = ({ icon, title, startupCount }) => (
           <span className="text-white text-8xl font-extrabold drop-shadow-md">
             {startupCount}
           </span>
-          <span className="text-white text-6xl font-meidum drop-shadow-md">
+          {/* <span className="text-white text-6xl font-meidum drop-shadow-md">
             Startup{startupCount == 1 ? "" : "s"}
-          </span>
+          </span> */}
         </div>
       </div>
     </div>

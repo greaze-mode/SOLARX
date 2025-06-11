@@ -113,4 +113,3 @@ export function parseRichText(content) {
 
   return fin.trim();
 }
-

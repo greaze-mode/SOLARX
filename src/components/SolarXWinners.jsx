@@ -13,6 +13,14 @@ import {
   AlertTriangle,
 } from "lucide-react";
 
+import * as countryCodes from "country-codes-list";
+
+const getCountryNameFromCode = (code) => {
+  if (!code || typeof code !== "string") return null;
+  const country = countryCodes.findOne("countryCode", code.toUpperCase());
+  return country ? country.countryNameEn : "Unknown Country";
+};
+
 const REGIONS_OPTIONS = [
   "All Regions",
   "Asia-Pacific",
@@ -39,7 +47,10 @@ const transformStartupData = (rawStartup) => {
     documentId: rawStartup.documentId,
     name: rawStartup.Name || "Unnamed Startup",
     regions: rawStartup.Regions || [],
-    location: rawStartup.HQ_Location_Name || "Location not specified",
+    location: rawStartup.HQ_Location_Name || "",
+    country:
+      getCountryNameFromCode(rawStartup.Country_Code) ||
+      "Location not specified",
     description:
       rawStartup.Description?.[0]?.children?.[0]?.text ||
       "No description available",

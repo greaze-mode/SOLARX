@@ -13,11 +13,11 @@ const formatCurrency = (amount) => {
   const numericAmount = parseFloat(amount);
 
   if (numericAmount >= 1000000) {
-    return `$${(numericAmount / 1000000).toFixed(1)}M`;
+    return `USD ${(numericAmount / 1000000).toFixed(1)}M`;
   } else if (numericAmount >= 1000) {
-    return `$${(numericAmount / 1000).toFixed(1)}K`;
+    return `USD ${(numericAmount / 1000).toFixed(1)}K`;
   } else {
-    return `$${numericAmount.toFixed(0)}`;
+    return `USD ${numericAmount.toFixed(0)}`;
   }
 };
 
@@ -82,7 +82,7 @@ export default function FundingJourney({ companyId }) {
   const [investors, setInvestors] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [totalRaised, setTotalRaised] = useState("$0");
+  const [totalRaised, setTotalRaised] = useState("USD 0");
 
   // Animation effect
   useEffect(() => {
@@ -148,7 +148,7 @@ export default function FundingJourney({ companyId }) {
   const resetState = () => {
     setFundingRounds([]);
     setInvestors([]);
-    setTotalRaised("$0");
+    setTotalRaised("USD 0");
   };
 
   /**

@@ -12,8 +12,17 @@ import {
   Loader2,
   MapPin,
 } from "lucide-react";
+import * as countryCodes from "country-codes-list";
 
-const STARTUPS_API_URL = `${import.meta.env.VITE_API_URL}/api/startups?populate=*`;
+const getCountryNameFromCode = (code) => {
+  if (!code || typeof code !== "string") return "Unknown Country";
+  const country = countryCodes.findOne("countryCode", code.toUpperCase());
+  return country ? country.countryNameEn : "Unknown Country";
+};
+
+const STARTUPS_API_URL = `${
+  import.meta.env.VITE_API_URL
+}/api/startups?populate=*`;
 
 const HQ_MARKER_COLOR_HEX = 0xff5722; // Orange color for HQ markers
 const GLOBE_RADIUS = 1;
@@ -21,30 +30,28 @@ const GLOBE_RADIUS = 1;
 // Add region color constants
 const REGION_COLORS = {
   ASIA_PACIFIC: 0xff5722, // Orange
-  AFRICA: 0x4CAF50,      // Green
-  DEFAULT: 0x2196F3      // Blue
+  AFRICA: 0x4caf50, // Green
+  DEFAULT: 0x2196f3, // Blue
 };
 
 // Add region names mapping
 const REGION_NAMES = {
   ASIA_PACIFIC: "Asia-Pacific",
   AFRICA: "Africa",
-  DEFAULT: "Other Regions"
+  DEFAULT: "Other Regions",
 };
 
 const isInAsiaPacific = (lat, lng) => {
   // Asia-Pacific region boundaries
   return (
     (lat >= -10 && lat <= 60 && lng >= 60 && lng <= 180) || // Main Asia
-    (lat >= -10 && lat <= 30 && lng >= 100 && lng <= 180)   // Southeast Asia
+    (lat >= -10 && lat <= 30 && lng >= 100 && lng <= 180) // Southeast Asia
   );
 };
 
 const isInAfrica = (lat, lng) => {
   // Africa region boundaries
-  return (
-    lat >= -35 && lat <= 37 && lng >= -20 && lng <= 55
-  );
+  return lat >= -35 && lat <= 37 && lng >= -20 && lng <= 55;
 };
 
 const getRegionColor = (lat, lng) => {
@@ -123,7 +130,7 @@ const SolarXGlobalReach = () => {
         }
 
         const startupsResult = await startupsResponse.json();
-        const fetchedStartups = startupsResult.data || []; 
+        const fetchedStartups = startupsResult.data || [];
         setAllStartups(fetchedStartups);
 
         const points = [];
@@ -136,6 +143,9 @@ const SolarXGlobalReach = () => {
               typeof hqLocation.lat === "number" &&
               typeof hqLocation.lng === "number"
             ) {
+              console.log(
+                `Processing startup: ${startup.Name} (ID: ${startup.id}) (country code: ${startup.Country})`
+              );
               points.push({
                 id: `startup-hq-${startup.id}`,
                 lat: hqLocation.lat,
@@ -144,8 +154,9 @@ const SolarXGlobalReach = () => {
                 type: "Headquarters",
                 startupId: startup.id,
                 startupName: startup.Name || "N/A",
-                startupLocationString: startup.Location || "N/A",
-                startupCountry: startup.Country || "N/A",
+                startupLocationString: startup.HQ_Location_Name || "N/A",
+                startupCountry:
+                  getCountryNameFromCode(startup.Country) || "N/A",
                 startupRegions: startup.Regions?.join(", ") || "N/A",
                 startupSectors:
                   startup.Sector_Tags?.map((t) =>
@@ -603,15 +614,21 @@ const SolarXGlobalReach = () => {
   // Add Legend component before the main render
   const RegionLegend = () => (
     <div className="absolute bottom-4 left-4 bg-white/90 backdrop-blur-sm p-3 rounded-lg shadow-lg z-10">
-      <h4 className="text-sm font-semibold text-gray-700 mb-2">Region Colors</h4>
+      <h4 className="text-sm font-semibold text-gray-700 mb-2">
+        Region Colors
+      </h4>
       <div className="space-y-2">
         {Object.entries(REGION_COLORS).map(([region, color]) => (
           <div key={region} className="flex items-center space-x-2">
-            <div 
-              className="w-4 h-4 rounded-full" 
-              style={{ backgroundColor: `#${color.toString(16).padStart(6, '0')}` }}
+            <div
+              className="w-4 h-4 rounded-full"
+              style={{
+                backgroundColor: `#${color.toString(16).padStart(6, "0")}`,
+              }}
             />
-            <span className="text-xs text-gray-600">{REGION_NAMES[region]}</span>
+            <span className="text-xs text-gray-600">
+              {REGION_NAMES[region]}
+            </span>
           </div>
         ))}
       </div>
@@ -630,7 +647,7 @@ const SolarXGlobalReach = () => {
           <button
             onClick={toggleFullscreen}
             title="Exit Fullscreen"
-            className="absolute top-4 right-4 sm:top-5 sm:right-5 z-[1001] bg-white/20 hover:bg-white/30 text-white p-2.5 sm:p-3 rounded-full backdrop-blur-sm transition-all"
+            className="absolute bottom-4 right-4 sm:bottom-5 sm:right-5 z-[1001] bg-white/20 hover:bg-white/30 text-white p-2.5 sm:p-3 rounded-full backdrop-blur-sm transition-all"
           >
             <Minimize size={20} sm={24} />
           </button>

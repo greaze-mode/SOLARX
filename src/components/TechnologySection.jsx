@@ -107,7 +107,7 @@ export default function TechnologySection({ companyId }) {
           setTechData([]);
         } else {
           const technologies = startup.Technology;
-          // console.log("Fetched and processed technologies:", technologies);
+          console.log("Fetched and processed technologies:", technologies);
           setTechData(technologies);
           // randomise and limit to 5 items for Technology_Tags
           const randomTags = startup.Technology_Tags.sort(
@@ -158,7 +158,7 @@ export default function TechnologySection({ companyId }) {
           </div>
         )}
         {!loading && !error && techData.length > 0 && (
-          <div className="">
+          <div className="relative">
             <div className="embla overflow-hidden rounded-xl" ref={emblaRef}>
               <div className="embla__container flex my-8">
                 {techData.map((techItem, index) => (

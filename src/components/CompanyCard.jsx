@@ -8,6 +8,7 @@ export default function CompanyCard({
   name,
   regions,
   location,
+  country,
   description,
   categories,
   logo,
@@ -50,8 +51,8 @@ export default function CompanyCard({
         </h3>
         <div className="flex items-center mb-2">
           <MapPin size={15} className="mr-1 text-orange-600" />
-          <p className="text-base text-gray-500 line-clamp-1" title={location}>
-            {location}
+          <p className="text-base text-gray-500 line-clamp-1" title={location !== "" ? location : country}>
+            {location !== "" ? location : country}
           </p>
         </div>
         <p

@@ -5,6 +5,7 @@ import FutureSection from "../components/global_accelerator/FutureSection";
 import ProgressBar from "../components/global_accelerator/ProgressBar";
 import SolarXNavbar from "../components/SolarXNavbar";
 import MediaHighlightsSection from "../components/global_accelerator/MediaHighlightsSection";
+import Footer from "../components/Footer";
 import "../styles/timeline.css";
 
 const GlobalAccelerator = () => {
@@ -17,6 +18,7 @@ const GlobalAccelerator = () => {
       <MediaHighlightsSection />
       <FutureSection />
       <ProgressBar />
+      <Footer centerBottom="Global Accelerator Program" />
     </>
   );
 };
