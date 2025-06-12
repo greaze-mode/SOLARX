@@ -105,7 +105,7 @@ export default function FundingJourney({ companyId }) {
         setLoading(true);
         setError(null);
 
-        const apiUrl = `${API_URL}/startups?populate[0]=funding&populate[1]=funding.investors&filters[id][$eq]=${companyId}`;
+        const apiUrl = `${API_URL}/startups?populate[0]=funding&populate[1]=funding.investors&filters[id][$eq]=${companyId}&pagination[pageSize]=100`;
 
         const response = await fetch(apiUrl);
 

@@ -107,7 +107,7 @@ export default function ImpactMetrics({ companyId }) {
       try {
         setLoading(true);
         const baseUrl = import.meta.env.VITE_API_URL;
-        const url = `${baseUrl}/api/startups?filters[id][$eq]=${companyId}&populate[0]=Environmental_Impact_Metrics&populate[1]=Social_Impact_Metrics&populate[2]=Economic_Impact_Metrics&populate[3]=Technology_And_Scalability_Metrics`;
+        const url = `${baseUrl}/api/startups?filters[id][$eq]=${companyId}&populate[0]=Environmental_Impact_Metrics&populate[1]=Social_Impact_Metrics&populate[2]=Economic_Impact_Metrics&populate[3]=Technology_And_Scalability_Metrics&pagination[pageSize]=100`;
         const res = await axios.get(url);
         const startup = res.data.data[0];
 

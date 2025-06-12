@@ -233,76 +233,80 @@ section.writeup {
 }
 
 .embla {
-    overflow: hidden;
-    /* This is the viewport */
+    position: relative;
+    width: 100%;
     height: 100%;
-    /* Take full height of .carousel-container */
+    overflow: hidden;
 }
 
 .embla__container {
     display: flex;
-    /* Essential for horizontal layout */
     height: 100%;
-    /* Embla will handle transform for sliding */
 }
 
 .embla__slide {
     position: relative;
-    /* For absolute positioning of image inside */
     flex: 0 0 100%;
-    /* Each slide takes 100% of the viewport width */
     min-width: 0;
-    /* Important for flex items */
-    height: 100%;
 }
 
-/* img tag inside embla__slide will be absolutely positioned */
-.embla__slide img {
+.embla__button {
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    /* Cover the slide area */
-    display: block;
+    z-index: 10;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(4px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 9999px;
+    width: 3rem;
+    height: 3rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
 }
 
+.embla__button:hover {
+    background-color: rgba(255, 255, 255, 0.3);
+}
 
-.carousel-dots {
+.embla__button:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.embla__button--prev {
+    left: 1.5rem;
+}
+
+.embla__button--next {
+    right: 1.5rem;
+}
+
+.embla__dots {
     position: absolute;
-    bottom: 15px;
+    z-index: 10;
+    bottom: 1.5rem;
     left: 50%;
     transform: translateX(-50%);
     display: flex;
-    gap: 10px;
-    z-index: 1;
-    /* Ensure dots are above slides if needed */
+    align-items: center;
+    gap: 0.75rem;
 }
 
-.carousel-dots button,
-/* Target generic button if DotButton doesn't have specific class */
-.carousel-dot {
-    /* Add this class to DotButton component */
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    border: none;
-    background-color: rgba(255, 255, 255, 0.5);
+.embla__dot {
+    width: 0.75rem;
+    height: 0.75rem;
+    border-radius: 9999px;
+    background-color: rgba(255, 255, 255, 0.3);
     cursor: pointer;
-    padding: 0;
-    transition: background-color 0.3s ease, transform 0.3s ease;
+    transition: all 0.2s ease;
 }
 
-.carousel-dots button.active,
-.carousel-dot.active {
-    background-color: #ff9900;
-    /* Main orange for active */
-    transform: scale(1.3);
-}
-
-.carousel-dots button:focus-visible,
-.carousel-dot:focus-visible {
-    outline: 2px solid #ffc966;
-    outline-offset: 2px;
+.embla__dot--selected {
+    background-color: white;
+    width: 2rem;
 }

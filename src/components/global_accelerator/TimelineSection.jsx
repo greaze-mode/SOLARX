@@ -1,5 +1,33 @@
-import { useEffect, useRef, useState } from "react";
-import { mentorsData } from "./mentorData";
+import React, { useState, useEffect, useRef, useCallback } from "react";
+import useEmblaCarousel from "embla-carousel-react";
+import { mentorsData } from "./mentorData"; // Ensure this path is correct
+import "../../styles/timeline.css";
+
+const PrevButton = ({ enabled, onClick }) => (
+  <button
+    className="embla__button embla__button--prev"
+    onClick={onClick}
+    disabled={!enabled}
+    aria-label="Previous slide"
+  >
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M15.41 7.41L14 6L8 12L14 18L15.41 16.59L10.83 12L15.41 7.41Z" />
+    </svg>
+  </button>
+);
+
+const NextButton = ({ enabled, onClick }) => (
+  <button
+    className="embla__button embla__button--next"
+    onClick={onClick}
+    disabled={!enabled}
+    aria-label="Next slide"
+  >
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M8.59 16.59L10 18L16 12L10 6L8.59 7.41L13.17 12L8.59 16.59Z" />
+    </svg>
+  </button>
+);
 
 const webinarSeriesData = {
   type: "webinarSeries", // To identify this special event
@@ -98,7 +126,11 @@ const webinarSeriesData = {
 const transformedTimelineEvents = webinarSeriesData.sessions.map(
   (session, index) => {
     let isUpcoming = false;
-    if (session.month != "March" && session.month != "April") {
+    if (
+      session.month != "March" &&
+      session.month != "April" &&
+      session.month != "May"
+    ) {
       isUpcoming = true;
     }
 
@@ -158,6 +190,7 @@ const transformedTimelineEvents = webinarSeriesData.sessions.map(
 
 // const allEventsRaw = [...transformedTimelineEvents];
 const sortedTimelineEventsData = [...transformedTimelineEvents];
+// console.log("Sorted Timeline Events Data:", sortedTimelineEventsData);
 
 // const sortedTimelineEventsData = allEventsRaw.sort((a, b) => {
 //   const dateA = getMonthDay(
@@ -179,229 +212,113 @@ const sortedTimelineEventsData = [...transformedTimelineEvents];
 // });
 
 // --- TimelineSection Component ---
-const MOBILE_BREAKPOINT = 768; // Tailwind's 'md' breakpoint
 const TimelineSection = () => {
-  const scrollSectionRef = useRef(null);
-  const stickyParentRef = useRef(null);
-  const [isMobile, setIsMobile] = useState(false);
+  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true });
+  const [prevBtnEnabled, setPrevBtnEnabled] = useState(false);
+  const [nextBtnEnabled, setNextBtnEnabled] = useState(false);
+  const [selectedIndex, setSelectedIndex] = useState(0);
+  const [scrollSnaps, setScrollSnaps] = useState([]);
 
-  // console.log(transformedTimelineEvents);
+  const scrollPrev = useCallback(
+    () => emblaApi && emblaApi.scrollPrev(),
+    [emblaApi]
+  );
+  const scrollNext = useCallback(
+    () => emblaApi && emblaApi.scrollNext(),
+    [emblaApi]
+  );
+  const scrollTo = useCallback(
+    (index) => emblaApi && emblaApi.scrollTo(index),
+    [emblaApi]
+  );
 
-  const [dimensions, setDimensions] = useState({
-    scrollWidth: 0,
-    viewportWidth: 0,
-    stickyParentOffsetTop: 0,
-    stickyParentHeight: 0,
-    viewportHeight: 0,
-  });
+  const onSelect = useCallback(() => {
+    if (!emblaApi) return;
+    setSelectedIndex(emblaApi.selectedScrollSnap());
+    setPrevBtnEnabled(emblaApi.canScrollPrev());
+    setNextBtnEnabled(emblaApi.canScrollNext());
+  }, [emblaApi]);
 
   useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < MOBILE_BREAKPOINT);
-    };
-
-    const calculateDimensions = () => {
-      checkMobile(); // Check mobile state on dimension calculation
-      if (scrollSectionRef.current && stickyParentRef.current) {
-        setDimensions({
-          scrollWidth: scrollSectionRef.current.scrollWidth,
-          viewportWidth: window.innerWidth,
-          stickyParentOffsetTop: stickyParentRef.current.offsetTop,
-          stickyParentHeight: stickyParentRef.current.offsetHeight,
-          viewportHeight: window.innerHeight,
-        });
-      }
-    };
-
-    // Debounce calculateDimensions to avoid excessive calls during resize storm
-    let resizeTimer;
-    const debouncedCalculateDimensions = () => {
-      clearTimeout(resizeTimer);
-      resizeTimer = setTimeout(calculateDimensions, 100);
-    };
-
-    calculateDimensions(); // Initial calculation
-    const resizeObserver = new ResizeObserver(debouncedCalculateDimensions);
-    if (scrollSectionRef.current)
-      resizeObserver.observe(scrollSectionRef.current);
-    if (stickyParentRef.current)
-      resizeObserver.observe(stickyParentRef.current);
-    window.addEventListener("resize", debouncedCalculateDimensions);
-
+    if (!emblaApi) return;
+    setScrollSnaps(emblaApi.scrollSnapList());
+    onSelect();
+    emblaApi.on("select", onSelect).on("reInit", onSelect);
     return () => {
-      resizeObserver.disconnect();
-      window.removeEventListener("resize", debouncedCalculateDimensions);
-      clearTimeout(resizeTimer);
+      emblaApi.off("select", onSelect).off("reInit", onSelect);
     };
-  }, []);
-
-  useEffect(() => {
-    if (isMobile) {
-      // If mobile, don't apply scroll-driven animation
-      if (scrollSectionRef.current) {
-        scrollSectionRef.current.style.transform = "translate3d(0px, 0, 0)";
-      }
-      return;
-    }
-
-    const scrollSectionNode = scrollSectionRef.current;
-    if (
-      !scrollSectionNode ||
-      dimensions.scrollWidth === 0 ||
-      dimensions.viewportWidth === 0
-    )
-      return;
-
-    const updateScrollAnimation = () => {
-      const scrollY = window.scrollY;
-      const {
-        stickyParentOffsetTop,
-        stickyParentHeight,
-        viewportHeight,
-        scrollWidth,
-        viewportWidth,
-      } = dimensions;
-
-      const start = stickyParentOffsetTop;
-      // Ensure end calculation is valid
-      const scrollableDistance = stickyParentHeight - viewportHeight;
-      if (scrollableDistance <= 0) {
-        // Not enough space to scroll sticky parent
-        scrollSectionNode.style.transform = `translate3d(0px, 0, 0)`;
-        return;
-      }
-      const end = start + scrollableDistance;
-
-      if (scrollWidth <= viewportWidth) {
-        scrollSectionNode.style.transform = `translate3d(0px, 0, 0)`;
-        return;
-      }
-      const maxTranslate = scrollWidth - viewportWidth;
-
-      if (scrollY >= start && scrollY <= end) {
-        const progress = Math.max(
-          0,
-          Math.min(1, (scrollY - start) / scrollableDistance)
-        );
-        const translateX = -progress * maxTranslate;
-        scrollSectionNode.style.transform = `translate3d(${translateX}px, 0, 0)`;
-      } else {
-        if (scrollY < start) {
-          scrollSectionNode.style.transform = `translate3d(0px, 0, 0)`;
-        } else {
-          // scrollY > end
-          scrollSectionNode.style.transform = `translate3d(${-maxTranslate}px, 0, 0)`;
-        }
-      }
-    };
-
-    window.addEventListener("scroll", updateScrollAnimation, { passive: true });
-    updateScrollAnimation(); // Initial call to set position
-
-    return () => window.removeEventListener("scroll", updateScrollAnimation);
-  }, [dimensions]); // Re-run this effect when dimensions change
+  }, [emblaApi, onSelect]);
 
   return (
-    <section className="timeline-section-container bg-gradient-to-tr from-gray-900 via-orange-900 to-orange-700 text-white py-16 md:py-20">
-      <div
-        className="relative w-full h-[600vh]" // This height drives the scroll duration of the effect
-        ref={!isMobile ? stickyParentRef : undefined}
-      >
-        <div
-          className={`overflow-hidden ${
-            !isMobile ? "sticky" : ""
-          } top-0 h-screen w-screen`}
-        >
-          <div
-            className="absolute top-0 left-0 pt-24 h-full flex items-center" // scroll-section
-            ref={!isMobile ? scrollSectionRef : undefined}
-            style={{ willChange: "transform" }}
-          >
-            {sortedTimelineEventsData.map(
-              (
-                event // Use sorted data
-              ) => (
-                <div
-                  className="flex flex-row justify-center items-center w-screen flex-shrink-0 h-full box-border px-6 sm:px-12 md:px-20 lg:px-24" // timeline-event
-                  key={event.key || event.title} // Use the key property or fallback
-                >
-                  <div className="relative">
-                    {event.isUpcoming && (
-                      <div
-                        className="absolute top-5 right-36 transform -translate-x-1/2 bg-gradient-to-r from-red-600 to-orange-500 text-white text-xs font-bold py-2 px-6 rounded-md z-10"
-                        style={{
-                          animation: "pulse-banner 2s infinite",
-                          fontSize: "12px",
-                        }}
-                      >
-                        UPCOMING
-                      </div>
-                    )}
-                    <img
-                      src={event.img}
-                      alt={event.title}
-                      className="w-[650px] max-w-[70%] xl:max-w-[70%] h-[80vh] max-h-[600px] object-cover object-center shadow-[0_20px_40px_-10px_rgba(0,0,0,0.35)] rounded-2xl mr-8 xl:mr-12 border-2 border-white/10 transition-all duration-400 ease-[cubic-bezier(0.25,0.8,0.25,1)] hover:scale-[1.03] hover:-translate-y-1 hover:shadow-[0_25px_50px_-12px_rgba(0,0,0,0.45)]"
-                    />
-                    <style jsx>{`
-                      @keyframes pulse-banner {
-                        0% {
-                          opacity: 1;
-                          transform: translateX(-50%) scale(1);
-                          box-shadow: 0 0 0 0 rgba(255, 0, 0, 0.7);
-                        }
-                        50% {
-                          opacity: 0.8;
-                          transform: translateX(-50%) scale(1.05);
-                          box-shadow: 0 0 0 10px rgba(255, 0, 0, 0);
-                        }
-                        100% {
-                          opacity: 1;
-                          transform: translateX(-50%) scale(1);
-                          box-shadow: 0 0 0 0 rgba(255, 0, 0, 0);
-                        }
-                      }
-                    `}</style>
-                  </div>
-                  <div className="w-full md:w-[55%] xl:w-[60%] h-full flex flex-col justify-center items-start md:pl-4">
-                    <div className="flex flex-col items-start mb-6 relative">
-                      <h2 className="text-5xl lg:text-5xl font-bold pb-2.5 relative mb-2 text-white h-3/5 self-start">
-                        {event.title}
-                        <div className="w-2/5 h-1.5 mt-4 bg-gradient-to-r from-orange-500 to-red-500 rounded-full"></div>
-                      </h2>
-                      <div className="h-2/5 self-end w-full">
-                        <div className="w-full flex flex-col items-start justify-start space-x-4">
-                          <img
-                            src={event.imgSrc}
-                            alt={`${event.id}'s image`}
-                            className="ml-4"
-                            style={{
-                              width: "120px",
-                              height: "120px",
-                              borderRadius: "9999px",
-                              objectFit: "cover",
+    <section className="w-screen h-screen bg-gradient-to-tr from-gray-900 via-orange-900 to-orange-700 text-white">
+      <div className="embla" ref={emblaRef}>
+        <div className="embla__container">
+          {transformedTimelineEvents.map((event) => (
+            <div className="embla__slide" key={event.key}>
+              {/* --- THIS IS THE RESPONSIVE VERSION OF YOUR ORIGINAL LAYOUT --- */}
+              <div className="flex flex-col md:flex-row justify-center items-center w-full h-full box-border p-6 md:p-12 lg:px-24">
+                {/* Image Section */}
+                <div className="relative flex-shrink-0 w-full max-w-xs md:max-w-none md:w-auto mb-6 md:mb-0 md:mr-8 lg:mr-12">
+                  {event.isUpcoming && (
+                    <div className="absolute top-4 right-4 md:top-5 md:right-36 md:transform md:-translate-x-1/2 bg-gradient-to-r from-red-600 to-orange-500 text-white text-xs font-bold py-2 px-4 md:px-6 rounded-full z-10 animate-pulse">
+                      UPCOMING
+                    </div>
+                  )}
+                  <img
+                    src={event.img}
+                    alt={event.title}
+                    className="w-full md:w-[650px] md:max-w-[40vw] h-auto max-h-[40vh] md:max-h-[80vh] object-cover md:object-contain shadow-2xl rounded-2xl border-2 border-white/10"
+                  />
+                </div>
+
+                {/* Content Section */}
+                <div className="w-full md:w-1/2 flex flex-col justify-center items-center md:items-start text-center md:text-left">
+                  <h2 className="text-3xl md:text-5xl font-bold pb-2.5 mb-2 text-white">
+                    {event.title}
+                    <div className="w-1/3 h-1.5 mt-4 mx-auto md:mx-0 bg-gradient-to-r from-orange-500 to-red-500 rounded-full"></div>
+                  </h2>
+
+                  <div className="mt-4 w-full">
+                    <div className="flex flex-col items-center md:items-start space-y-4">
+                      <div className="flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-4">
+                        <img
+                          src={event.imgSrc}
+                          alt={`${event.id}'s image`}
+                          className="w-24 h-24 md:w-28 md:h-28 rounded-full object-cover border-4 border-white/20 flex-shrink-0"
+                        />
+                        <h3 className="text-lg md:text-xl font-semibold text-white">
+                          <span
+                            dangerouslySetInnerHTML={{
+                              __html: event.description,
                             }}
                           />
-                          <h3 className="text-2xl font-semibold text-white">
-                            <a href={`#${event.id}`}>
-                              <span // description
-                                className="w-full max-h-[40vh] overflow-y-auto scrollbar-thin scrollbar-thumb-slate-500 scrollbar-track-slate-700/50 pr-2 [&_ul]:list-outside [&_ul]:mt-3 [&_ul]:pl-5 [&_li]:mb-1.5 [&_li]:text-white [&_strong]:text-white"
-                                dangerouslySetInnerHTML={{
-                                  __html: event.description,
-                                }}
-                              ></span>
-                            </a>
-                          </h3>
-                          <div className="text-3xl text-white font-medium mt-8">
-                            {event.date}
-                          </div>
-                        </div>
+                        </h3>
+                      </div>
+                      <div className="text-xl md:text-3xl text-white/80 font-medium pt-4">
+                        {event.date}
                       </div>
                     </div>
                   </div>
                 </div>
-              )
-            )}
-          </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <PrevButton onClick={scrollPrev} enabled={prevBtnEnabled} />
+        <NextButton onClick={scrollNext} enabled={nextBtnEnabled} />
+
+        <div className="embla__dots">
+          {scrollSnaps.map((_, index) => (
+            <button
+              key={index}
+              className={`embla__dot ${
+                index === selectedIndex ? "embla__dot--selected" : ""
+              }`}
+              onClick={() => scrollTo(index)}
+              aria-label={`Go to slide ${index + 1}`}
+            />
+          ))}
         </div>
       </div>
     </section>

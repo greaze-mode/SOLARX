@@ -43,7 +43,7 @@ export const fetchCompanies = async () => {
     // Build query parameters
     // console.log(`${API_URL}/startups${queryParams}`);
 
-    const response = await axios.get(`${API_URL}/startups${queryParams}`);
+    const response = await axios.get(`${API_URL}/startups${queryParams}&pagination[pageSize]=100`);
     return response.data;
   } catch (error) {
     console.error('Error fetching companies data:', error);
@@ -64,7 +64,7 @@ export const fetchCompanyById = async (id) => {
 
     // For this implementation, we'll use the same endpoint as fetchCompanies
     // but filter by ID to get a specific company
-    const response = await axios.get(`${API_URL}/startups?filters[id][$eq]=${id}&populate=*`);
+    const response = await axios.get(`${API_URL}/startups?filters[id][$eq]=${id}&populate=*&pagination[pageSize]=100`);
     console.log(`Fetched company ${id}:`, response.data);
 
     // Return the first item in the data array (should be only one since we filtered by ID)
@@ -114,7 +114,7 @@ export const fetchCompanyWithRelationships = async (id) => {
     // Use fetch instead of axios to match the working approach in StartupDetail.jsx
     try {
       // Use filter query approach since direct endpoint is returning 404
-      const response = await fetch(`${API_URL}/companies?filters[id][$eq]=${id}&populate=Logo`);
+      const response = await fetch(`${API_URL}/companies?filters[id][$eq]=${id}&populate=Logo&pagination[pageSize]=100`);
       const data = await response.json();
 
       console.log(`Fetched company ${id} with relationships:`, data);
@@ -174,7 +174,7 @@ export const fetchCompanyWithRelationships = async (id) => {
 // Founder data
 export const fetchFounderData = async () => {
   try {
-    const response = await axios.get(`${API_URL}/founders?populate=*`);
+    const response = await axios.get(`${API_URL}/founders?populate=*&pagination[pageSize]=100`);
     return response.data;
   } catch (error) {
     console.error('Error fetching founder data:', error);
@@ -185,7 +185,7 @@ export const fetchFounderData = async () => {
 // Funding data
 export const fetchFundingData = async () => {
   try {
-    const response = await axios.get(`${API_URL}/fundings?populate=*`);
+    const response = await axios.get(`${API_URL}/fundings?populate=*&pagination[pageSize]=100`);
     return response.data;
   } catch (error) {
     console.error('Error fetching funding data:', error);
@@ -196,7 +196,7 @@ export const fetchFundingData = async () => {
 // SDG data
 export const fetchSDGData = async () => {
   try {
-    const response = await axios.get(`${API_URL}/sdgs?populate=*`);
+    const response = await axios.get(`${API_URL}/sdgs?populate=*&pagination[pageSize]=100`);
     return response.data;
   } catch (error) {
     console.error('Error fetching SDG data:', error);
@@ -207,7 +207,7 @@ export const fetchSDGData = async () => {
 // Business Summary data
 export const fetchBusinessSummaryData = async () => {
   try {
-    const response = await axios.get(`${API_URL}/business-summaries?populate=*`);
+    const response = await axios.get(`${API_URL}/business-summaries?populate=*&pagination[pageSize]=100`);
     return response.data;
   } catch (error) {
     console.error('Error fetching business summary data:', error);
@@ -218,7 +218,7 @@ export const fetchBusinessSummaryData = async () => {
 // Technology data
 export const fetchTechnologyData = async () => {
   try {
-    const response = await axios.get(`${API_URL}/technologies?populate=*`);
+    const response = await axios.get(`${API_URL}/technologies?populate=*&pagination[pageSize]=100`);
     return response.data;
   } catch (error) {
     console.error('Error fetching technology data:', error);
@@ -229,7 +229,7 @@ export const fetchTechnologyData = async () => {
 // Impact Metrics data
 export const fetchImpactMetricsData = async () => {
   try {
-    const response = await axios.get(`${API_URL}/impact-metrics?populate=*`);
+    const response = await axios.get(`${API_URL}/impact-metrics?populate=*&pagination[pageSize]=100`);
     return response.data;
   } catch (error) {
     console.error('Error fetching impact metrics data:', error);
@@ -240,7 +240,7 @@ export const fetchImpactMetricsData = async () => {
 // Projects data
 export const fetchProjectsData = async () => {
   try {
-    const response = await axios.get(`${API_URL}/projects?populate=*`);
+    const response = await axios.get(`${API_URL}/projects?populate=*&pagination[pageSize]=100`);
     return response.data;
   } catch (error) {
     console.error('Error fetching projects data:', error);
@@ -251,7 +251,7 @@ export const fetchProjectsData = async () => {
 // Global Presence data
 export const fetchGlobalPresenceData = async () => {
   try {
-    const response = await axios.get(`${API_URL}/global-presences?populate=*`);
+    const response = await axios.get(`${API_URL}/global-presences?populate=*&pagination[pageSize]=100`);
     return response.data;
   } catch (error) {
     console.error('Error fetching global presence data:', error);
@@ -262,7 +262,7 @@ export const fetchGlobalPresenceData = async () => {
 // Milestones data
 export const fetchMilestonesData = async () => {
   try {
-    const response = await axios.get(`${API_URL}/milestones?populate=*`);
+    const response = await axios.get(`${API_URL}/milestones?populate=*&pagination[pageSize]=100`);
     return response.data;
   } catch (error) {
     console.error('Error fetching milestones data:', error);
@@ -273,7 +273,7 @@ export const fetchMilestonesData = async () => {
 // Media Coverage data
 export const fetchMediaCoverageData = async () => {
   try {
-    const response = await axios.get(`${API_URL}/media-coverages?populate=*`);
+    const response = await axios.get(`${API_URL}/media-coverages?populate=*&pagination[pageSize]=100`);
     return response.data;
   } catch (error) {
     console.error('Error fetching media coverage data:', error);
@@ -284,7 +284,7 @@ export const fetchMediaCoverageData = async () => {
 // Generic function to fetch any content type
 export const fetchData = async (contentType, queryParams = '') => {
   try {
-    const response = await axios.get(`${API_URL}/${contentType}${queryParams}`);
+    const response = await axios.get(`${API_URL}/${contentType}${queryParams}&pagination[pageSize]=100`);
     return response.data;
   } catch (error) {
     console.error(`Error fetching ${contentType} data:`, error);
@@ -429,7 +429,7 @@ export const fetchCompanyHeroData = async (id) => {
     // Use the collection endpoint with filter which we know works
     try {
       // Make a direct API call to get company data using the collection endpoint
-      const response = await fetch(`${API_URL}/companies?filters[id][$eq]=${id}&populate=Logo`);
+      const response = await fetch(`${API_URL}/companies?filters[id][$eq]=${id}&populate=Logo&pagination[pageSize]=100`);
       const data = await response.json();
 
       console.log(`API response for company ${id}:`, data);
@@ -515,7 +515,7 @@ export const fetchCompanyBusinessSummary = async (id) => {
 
     // First try to get the business summary directly from the business-summaries endpoint
     try {
-      const response = await fetch(`${API_URL}/business-summaries?filters[company][id][$eq]=${apiId}`);
+      const response = await fetch(`${API_URL}/business-summaries?filters[company][id][$eq]=${apiId}&pagination[pageSize]=100`);
       const result = await response.json();
       console.log(`Business summaries API response:`, result);
 
@@ -529,7 +529,7 @@ export const fetchCompanyBusinessSummary = async (id) => {
         let companyLogo = null;
 
         try {
-          const companyResponse = await fetch(`${API_URL}/companies?filters[id][$eq]=${id}&populate=Logo`);
+          const companyResponse = await fetch(`${API_URL}/companies?filters[id][$eq]=${id}&populate=Logo&pagination[pageSize]=100`);
           const companyResult = await companyResponse.json();
 
           if (companyResult && companyResult.data && companyResult.data.length > 0) {
@@ -587,7 +587,7 @@ export const fetchCompanyBusinessSummary = async (id) => {
 
     // If we couldn't get data from the business-summaries endpoint, try to fetch the company using filter query
     try {
-      const response = await fetch(`http://localhost:1337/api/companies?filters[id][$eq]=${apiId}`);
+      const response = await fetch(`http://localhost:1337/api/companies?filters[id][$eq]=${apiId}&pagination[pageSize]=100`);
       const result = await response.json();
 
       if (!result || !result.data || result.data.length === 0) {
@@ -694,7 +694,7 @@ export const fetchCompanyTechnology = async (id) => {
 
     // First try to get the technology data directly from the technologies endpoint
     try {
-      const response = await fetch(`http://localhost:1337/api/technologies?filters[company][id][$eq]=${id}`);
+      const response = await fetch(`http://localhost:1337/api/technologies?filters[company][id][$eq]=${id}&pagination[pageSize]=100`);
       const result = await response.json();
       console.log(`Technologies API response:`, result);
 
@@ -708,7 +708,7 @@ export const fetchCompanyTechnology = async (id) => {
         let companyLogo = null;
 
         try {
-          const companyResponse = await fetch(`http://localhost:1337/api/companies?filters[id][$eq]=${id}&populate=Logo`);
+          const companyResponse = await fetch(`http://localhost:1337/api/companies?filters[id][$eq]=${id}&populate=Logo&pagination[pageSize]=100`);
           const companyResult = await companyResponse.json();
 
           if (companyResult && companyResult.data && companyResult.data.length > 0) {
@@ -769,7 +769,7 @@ export const fetchCompanyImpactMetrics = async (id) => {
     const apiId = getApiId(id);
     console.log(`Fetching impact metrics for company ID: ${id} (API ID: ${apiId})`);
     try {
-      const response = await fetch(`http://localhost:1337/api/impact-metrics?filters[company][id][$eq]=${apiId}`);
+      const response = await fetch(`http://localhost:1337/api/impact-metrics?filters[company][id][$eq]=${apiId}&pagination[pageSize]=100`);
       const result = await response.json();
       console.log(`Impact metrics API response:`, result);
 
@@ -782,7 +782,7 @@ export const fetchCompanyImpactMetrics = async (id) => {
         let companyLogo = null;
 
         try {
-          const companyResponse = await fetch(`http://localhost:1337/api/companies?filters[id][$eq]=${id}&populate=Logo`);
+          const companyResponse = await fetch(`http://localhost:1337/api/companies?filters[id][$eq]=${id}&populate=Logo&pagination[pageSize]=100`);
           const companyResult = await companyResponse.json();
 
           if (companyResult && companyResult.data && companyResult.data.length > 0) {
@@ -808,7 +808,7 @@ export const fetchCompanyImpactMetrics = async (id) => {
 
     // If we couldn't get data from the impact-metrics endpoint, try to fetch the company using filter query
     try {
-      const response = await fetch(`http://localhost:1337/api/companies?filters[id][$eq]=${apiId}`);
+      const response = await fetch(`http://localhost:1337/api/companies?filters[id][$eq]=${apiId}&pagination[pageSize]=100`);
       const result = await response.json();
 
       if (!result || !result.data || result.data.length === 0) {
@@ -865,7 +865,7 @@ export const fetchCompanyTeam = async (id) => {
 
     // Try to fetch the company using filter query
     try {
-      const response = await fetch(`http://localhost:1337/api/companies?filters[id][$eq]=${apiId}&populate=founders,Logo`);
+      const response = await fetch(`http://localhost:1337/api/companies?filters[id][$eq]=${apiId}&populate=founders,Logo&pagination[pageSize]=100`);
       const result = await response.json();
 
       if (result && result.data && result.data.length > 0) {
@@ -896,7 +896,7 @@ export const fetchCompanyTeam = async (id) => {
 export const fetchMentors = async (id) => {
   try {
     // Using the founders endpoint which contains the mentor data
-    const response = await axios.get(`${API_URL}/founders?populate=*&filters[startup][id][$eq]=${id}`);
+    const response = await axios.get(`${API_URL}/founders?populate=*&filters[startup][id][$eq]=${id}&pagination[pageSize]=100`);
 
     // Log the response to help with debugging
     // console.log('Mentors API response (from founders):', response.data);

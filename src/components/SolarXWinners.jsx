@@ -23,10 +23,12 @@ const getCountryNameFromCode = (code) => {
 
 const REGIONS_OPTIONS = [
   "All Regions",
-  "Asia-Pacific",
-  "LAC",
-  "MENA",
-  "Africa",
+  "Asia-Pacific (APAC)",
+  "Middle East & North Africa (MENA)",
+  "Rest of Africa (RoA)",
+  "Europe",
+  "Latin America & the Caribbean (LAC)",
+  "North America",
 ];
 
 const shuffleArray = (array) => {
@@ -78,7 +80,7 @@ export default function SolarXWinners({ isMobile }) {
 
       try {
         const response = await axios.get(
-          `${API_URL}/startups?populate=Company_Logo`
+          `${API_URL}/startups?populate=Company_Logo&pagination[pageSize]=100`
         );
 
         if (response && response.data && response.data.data) {
@@ -91,6 +93,7 @@ export default function SolarXWinners({ isMobile }) {
             const cleanedStartups = rawStartups.map(transformStartupData);
             // console.log("Cleaned startups data:", cleanedStartups);
             setStartups(cleanedStartups);
+            console.log("Transformed SolarX Winners data:", cleanedStartups);
           }
         } else {
           // console.warn(
@@ -112,10 +115,11 @@ export default function SolarXWinners({ isMobile }) {
 
   const filteredCompanies = useMemo(() => {
     if (selectedRegion === "All Regions") {
+      // console.log(startups);
       return startups;
     }
     return startups.filter(
-      (company) => company.regions && company.regions.includes(selectedRegion)
+      (company) => company.regions && company.regions === selectedRegion
     );
   }, [startups, selectedRegion]);
 

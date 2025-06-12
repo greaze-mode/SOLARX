@@ -81,7 +81,7 @@ const FutureSection = () => {
     const fetchFutureData = async () => {
       axios
         .get(
-          `${API_URL}/global-accelerator?populate[0]=last_section&populate[1]=last_section.Carousel`
+          `${API_URL}/global-accelerator?populate[0]=last_section&populate[1]=last_section.Carousel&pagination[pageSize]=100`
         )
         .then((response) => {
           const lastSectionData = response.data.data.last_section;

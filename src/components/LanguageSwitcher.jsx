@@ -1,59 +1,117 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Globe } from "lucide-react";
-import "./LanguageSwitcher.css"; // Import your CSS styles for the dropdown
+import "./LanguageSwitcher.css";
+
+// Define the callback function globally so it's stable.
+const initializeGoogleTranslateWidget = () => {
+  new window.google.translate.TranslateElement(
+    {
+      pageLanguage: "en",
+      autoDisplay: false,
+    },
+    "google_translate_element"
+  );
+};
+window.googleTranslateElementInit = initializeGoogleTranslateWidget;
 
 const LanguageSwitcher = () => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
+  const [isTranslateReady, setIsTranslateReady] = useState(false);
 
   const languages = [
     { code: "en", name: "English", country_code: "gb" },
     { code: "es", name: "Español", country_code: "es" },
-    { code: "fr", name: "Français", country_code: "fr" },
-    { code: "de", name: "Deutsch", country_code: "de" },
     { code: "pt", name: "Português", country_code: "pt" },
+    { code: "fr", name: "Français", country_code: "fr" },
   ];
 
   const handleLanguageChange = (langCode) => {
-    // Set the 'googtrans' cookie
-    document.cookie = `googtrans=/en/${langCode};path=/`;
-    // Reload the page to apply the translation
-    window.location.reload();
+    if (!isTranslateReady) {
+      console.warn("Google Translate widget is not ready yet.");
+      return;
+    }
+    const langSelect = document.querySelector(
+      "#google_translate_element select.goog-te-combo"
+    );
+    if (!langSelect) {
+      console.error("Could not find the Google Translate <select> element.");
+      return;
+    }
+    langSelect.value = langCode;
+    langSelect.dispatchEvent(new Event("change", { bubbles: true }));
+    setIsOpen(false);
   };
 
+  // This is the main effect that handles everything.
   useEffect(() => {
-    // Define the initialization function
-    window.googleTranslateElementInit = () => {
-      new window.google.translate.TranslateElement(
-        {
-          pageLanguage: "en",
-          autoDisplay: false,
-          // We don't need to specify includedLanguages here when using the cookie method
-        },
-        "google_translate_element"
-      );
-    };
+    let scriptLoadTimeoutId = null;
 
-    // Add the Google Translate script to the document if it's not already there
-    const scriptId = "google-translate-script";
-    if (!document.getElementById(scriptId)) {
+    // Define a function to append the script to the page.
+    const loadGoogleTranslateScript = () => {
+      const scriptId = "google-translate-script";
+      if (document.getElementById(scriptId)) {
+        // If script already exists, do nothing.
+        return;
+      }
       const script = document.createElement("script");
       script.id = scriptId;
       script.src =
         "//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
       script.async = true;
       document.body.appendChild(script);
+    };
+
+    // Check if the translation cookie exists.
+    const cookieValue = document.cookie
+      .split("; ")
+      .find((row) => row.startsWith("googtrans="));
+
+    if (cookieValue) {
+      // --- If cookie is found, delay loading the script ---
+      console.log(
+        "Translation cookie found. Delaying Google Translate script load by 2 seconds."
+      );
+      scriptLoadTimeoutId = setTimeout(() => {
+        loadGoogleTranslateScript();
+      }, 3000); // 2-second delay to allow the page to render.
+    } else {
+      // --- If no cookie, load the script immediately ---
+      console.log(
+        "No translation cookie found. Loading Google Translate script immediately."
+      );
+      loadGoogleTranslateScript();
     }
 
-    // Listener to close dropdown on outside click
+    // This polling logic is still necessary to know when the widget is interactable.
+    const intervalId = setInterval(() => {
+      const selectElement = document.querySelector(
+        "#google_translate_element .goog-te-combo"
+      );
+      if (selectElement) {
+        setIsTranslateReady(true);
+        clearInterval(intervalId);
+      }
+    }, 200);
+
+    // This cleanup function is crucial.
+    return () => {
+      clearInterval(intervalId);
+      // If the component unmounts during the timeout, clear it to prevent the script from loading.
+      if (scriptLoadTimeoutId) {
+        clearTimeout(scriptLoadTimeoutId);
+      }
+    };
+  }, []); // Empty dependency array ensures this runs only once on initial mount.
+
+  // This separate effect for the click listener is good practice.
+  useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setIsOpen(false);
       }
     };
-
     document.addEventListener("mousedown", handleClickOutside);
-
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
@@ -71,12 +129,11 @@ const LanguageSwitcher = () => {
         <ul className="language-dropdown">
           {languages.map((lang) => (
             <li key={lang.code} onClick={() => handleLanguageChange(lang.code)}>
-              {lang.name}
+              <span>{lang.name}</span>
             </li>
           ))}
         </ul>
       )}
-      {/* This div is still necessary for the script to initialize */}
       <div id="google_translate_element" style={{ display: "none" }}></div>
     </div>
   );

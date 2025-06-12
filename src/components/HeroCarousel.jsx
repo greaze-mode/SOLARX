@@ -82,7 +82,7 @@ export default function HeroCarousel() {
     const fetchSlides = async () => {
       axios
         .get(
-          `${API_URL}/home-page?populate[0]=carousel&populate=carousel.image`
+          `${API_URL}/home-page?populate[0]=carousel&populate=carousel.image&pagination[pageSize]=100`
         )
         .then((response) => {
           const carouselData = response.data.data.carousel;

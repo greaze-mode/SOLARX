@@ -27,6 +27,69 @@ export default function SolarXNavbar({
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  useEffect(() => {
+    // The selector for the Google Translate banner iframe
+    const bannerSelector = "div[class=skiptranslate]";
+
+    // This observer will watch for attribute changes on the banner iframe
+    let observer;
+
+    const startObserving = (targetNode) => {
+      // Define what to observe: changes to the 'style' attribute
+      const config = { attributes: true, attributeFilter: ["style"] };
+
+      // The callback function to execute when mutations are observed
+      const callback = (mutationsList, obs) => {
+        for (const mutation of mutationsList) {
+          if (
+            mutation.type === "attributes" &&
+            mutation.attributeName === "style"
+          ) {
+            // The style attribute changed. Check if it's visible.
+            const isBannerVisible = targetNode.style.display !== "none";
+            document.body.classList.toggle(
+              "google-translate-banner-visible",
+              isBannerVisible
+            );
+          }
+        }
+      };
+
+      observer = new MutationObserver(callback);
+      observer.observe(targetNode, config);
+    };
+
+    // We need to wait for the iframe to be added to the DOM first.
+    // We can use another observer for that, or simply poll.
+    const intervalId = setInterval(() => {
+      const bannerFrame = document.querySelector(bannerSelector);
+      if (bannerFrame) {
+        // The banner iframe has been found!
+        clearInterval(intervalId); // Stop searching for it.
+
+        // Start observing it for style changes.
+        startObserving(bannerFrame);
+
+        // Initial check in case it's already visible
+        const isVisible = bannerFrame.style.display !== "none";
+        document.body.classList.toggle(
+          "google-translate-banner-visible",
+          isVisible
+        );
+      }
+    }, 200);
+
+    // Cleanup function to run when the component unmounts
+    return () => {
+      clearInterval(intervalId);
+      if (observer) {
+        observer.disconnect();
+      }
+      // Make sure to remove the class on unmount
+      document.body.classList.remove("google-translate-banner-visible");
+    };
+  }, []); // Empty dependency array ensures this runs only once.
+
   // Close mobile menu when window is resized to desktop size
   useEffect(() => {
     const handleResize = () => {
@@ -87,11 +150,11 @@ export default function SolarXNavbar({
           </div>
         </div>
       </a>
-      <nav className="hidden lg:block ">
-        <ul className="flex space-x-6">
+      <nav className="hidden lg:block">
+        <ul className="flex space-x-6 flex-grow">
           {navItems.map((item) => (
             <li key={item.label} className="relative group">
-              <a href={item.href} className="text-stone-50 font-medium text-lg">
+              <a href={item.href} className="text-stone-50 font-medium text-md">
                 {item.label}
                 <span className="absolute left-0 -bottom-0.5 h-0.5 w-0 rounded-md bg-white transition-all duration-300 group-hover:w-full"></span>
               </a>

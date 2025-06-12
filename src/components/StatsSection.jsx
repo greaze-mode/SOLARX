@@ -16,7 +16,7 @@ export default function StatsSection() {
 
     const getStats = async () => {
       try {
-        const res = await axios.get(`${API_URL}/startups?populate[0]=funding`);
+        const res = await axios.get(`${API_URL}/startups?populate[0]=funding&pagination[pageSize]=100`);
 
         // console.log("Response from API:", res.data);
 
@@ -25,9 +25,7 @@ export default function StatsSection() {
             const uniqueRegions = new Set();
             res.data.data.forEach((startup) => {
               if (startup && startup.Regions) {
-                startup.Regions.forEach((region) => {
-                  uniqueRegions.add(region);
-                });
+                uniqueRegions.add(startup.Regions);
               }
             });
 
@@ -70,7 +68,7 @@ export default function StatsSection() {
   const stats = [
     {
       id: 1,
-      value: `${stats2.startupsCount}+` || "0",
+      value: `${stats2.startupsCount}` || "0",
       label: "Innovative Startups",
       icon: (
         <svg

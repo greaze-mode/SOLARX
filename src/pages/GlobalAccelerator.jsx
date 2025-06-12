@@ -31,6 +31,7 @@ const GlobalAccelerator = () => {
       setIsCookieSet(true);
     }
   }, []);
+
   return (
     <div className={`relative ${isCookieSet ? "translate-y-0" : ""}`}>
       <SolarXNavbar centerBottom="Global Accelerator" />

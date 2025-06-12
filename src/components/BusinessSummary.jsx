@@ -12,7 +12,7 @@ export default function BusinessSummary({ companyId }) {
 
       setLoading(true);
       try {
-        const url = `${API_URL}/startups?filters[id][$eq]=${companyId}&populate[0]=Business_Summary&populate[1]=Business_Summary.USP`;
+        const url = `${API_URL}/startups?filters[id][$eq]=${companyId}&populate[0]=Business_Summary&populate[1]=Business_Summary.USP&pagination[pageSize]=100`;
         const response = await fetch(url);
         const result = await response.json();
 

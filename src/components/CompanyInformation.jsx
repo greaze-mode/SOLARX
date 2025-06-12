@@ -10,7 +10,6 @@ const getCountryNameFromCode = (code) => {
   return country ? country.countryNameEn : "Unknown Country";
 };
 
-
 export default function CompanyInformation({ companyId }) {
   // If companyId is not passed as prop, try to get it from URL params
   const params = useParams();
@@ -26,13 +25,12 @@ export default function CompanyInformation({ companyId }) {
 
         // Get all companies first
         const baseUrl = import.meta.env.VITE_API_URL;
-        const response = await fetch(`${baseUrl}/api/startups`);
-        const result = await response.json();
-
-        // Find the company with the matching ID
-        const companyData = result.data.find(
-          (c) => c.id.toString() === id.toString()
+        const response = await fetch(
+          `${baseUrl}/api/startups?filters[id][$eq]=${companyId}&pagination[pageSize]=100`
         );
+        const result = await response.json();
+        const companyData =
+          result.data && result.data.length > 0 ? result.data[0] : null;
 
         if (companyData) {
           // Create a clean company object
@@ -43,7 +41,10 @@ export default function CompanyInformation({ companyId }) {
             Website: companyData.Website_URL || "",
             ContactEmail: companyData.Contact_Email || "",
             FoundingYear: companyData.Founding_Year || "",
-            Location: companyData.HQ_Location_Name || getCountryNameFromCode(companyData.Country) || "Location not specified",
+            Location:
+              companyData.HQ_Location_Name ||
+              getCountryNameFromCode(companyData.Country) ||
+              "Location not specified",
             // Headquarters:
             //   (await getLocationFromLatLong(
             //     companyData.HQ_Location.lat,
@@ -53,7 +54,6 @@ export default function CompanyInformation({ companyId }) {
             sdgs: companyData.SDG,
           };
 
-          // console.log("Company Data:", cleanCompany);
           setCompany(cleanCompany);
         } else {
           setError("Company data not found");

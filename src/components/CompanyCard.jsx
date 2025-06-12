@@ -20,6 +20,7 @@ export default function CompanyCard({
     countryCode && countryFlags[countryCode] ? countryFlags[countryCode] : null;
   // console.log("Country Code:", countryCode);
   // console.log(FlagIcon);
+  // console.log(regions)
   return (
     <Link
       to={`/startup/${id}`}
@@ -38,14 +39,13 @@ export default function CompanyCard({
           </div>
         )}
         <div className="absolute top-2.5 right-2.5 flex flex-row space-x-1.5 z-10">
-          {regions.map((region, idx) => (
+          {regions && regions !== "" && (
             <span
-              key={`${documentId}-region-${idx}`}
               className={`orange-gradient text-white text-[10px] sm:text-xs font-semibold px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full shadow`}
             >
-              {region}
+              {regions}
             </span>
-          ))}
+          )}
         </div>
         <div className="absolute bottom-1 right-1.5 flex flex-row space-x-1.5 z-10">
           {countryCode && countryFlags[countryCode] && (

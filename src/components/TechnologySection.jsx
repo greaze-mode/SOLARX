@@ -94,7 +94,7 @@ export default function TechnologySection({ companyId }) {
       try {
         const baseUrl = import.meta.env.VITE_API_URL;
         const response = await axios.get(
-          `${baseUrl}/api/startups?filters[id][$eq]=${companyId}&populate[0]=Technology&populate[1]=Technology.Highlights&populate[2]=Technology.Demonstration`
+          `${baseUrl}/api/startups?filters[id][$eq]=${companyId}&populate[0]=Technology&populate[1]=Technology.Highlights&populate[2]=Technology.Demonstration&pagination[pageSize]=100`
         );
 
         const startup = response.data?.data?.[0];

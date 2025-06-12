@@ -42,7 +42,7 @@ export const getAdminId = (apiId) => {
  */
 export const getCompanyIdsByName = async () => {
   try {
-    const response = await fetch('http://localhost:1337/api/companies');
+    const response = await fetch('http://localhost:1337/api/companies&pagination[pageSize]=100');
     const data = await response.json();
 
     if (data && data.data && Array.isArray(data.data)) {

@@ -100,7 +100,7 @@ export const EventSection = () => {
     const fetchEvents = async () => {
       axios
         .get(
-          `${API_URL}/home-page?populate[0]=events_gallery&populate[1]=events_gallery.carousel`
+          `${API_URL}/home-page?populate[0]=events_gallery&populate[1]=events_gallery.carousel&pagination[pageSize]=100`
         )
         .then((response) => {
           const eventsData = response.data.data.events_gallery;

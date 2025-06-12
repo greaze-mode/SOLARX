@@ -17,17 +17,6 @@ export default function StartupDetail() {
   const { id } = useParams();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [isCookieSet, setIsCookieSet] = useState(false);
-
-  // Check if the 'googtrans' cookie is set
-  useEffect(() => {
-    const cookieValue = document.cookie
-      .split("; ")
-      .find((row) => row.startsWith("googtrans="));
-    if (cookieValue) {
-      setIsCookieSet(true);
-    }
-  }, []);
 
   const quickLinks = [
     { label: "Home", href: "/" },
@@ -50,7 +39,7 @@ export default function StartupDetail() {
 
           const baseUrl = import.meta.env.VITE_API_URL;
           const response = await fetch(
-            `${baseUrl}/api/startups?filters[id][$eq]=${id}&populate=*`
+            `${baseUrl}/api/startups?filters[id][$eq]=${id}&populate=*&pagination[pageSize]=100`
           );
           const data = await response.json();
 
@@ -71,7 +60,7 @@ export default function StartupDetail() {
 
   if (loading) {
     return (
-      <div className={`relative ${isCookieSet ? "translate-y-0.5" : ""}`}>
+      <div className={`relative`}>
         <SolarXNavbar />
         <div className="container mx-auto px-4 pt-20 pb-6 min-h-screen flex items-center justify-center">
           <div className="text-center">
@@ -100,7 +89,7 @@ export default function StartupDetail() {
   }
 
   return (
-    <div className={`relative ${isCookieSet ? "-translate-y-[32px]" : ""}`}>
+    <div className={`relative`}>
       <SolarXNavbar />
       <div className="max-w-screen-2xl mx-auto px-4 pb-6 mt-[2rem]"></div>
       <SolarFlowHero companyId={id} key={`hero-${id}`} />

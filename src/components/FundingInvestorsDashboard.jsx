@@ -135,7 +135,7 @@ export default function FundingInvestorsDashboard() {
       setError(null);
       try {
         const response = await fetch(
-          `${API_URL}/startups?populate[0]=funding&populate[1]=funding.investors`
+          `${API_URL}/startups?populate[0]=funding&populate[1]=funding.investors&pagination[pageSize]=100`
         );
         if (!response.ok) {
           throw new Error(

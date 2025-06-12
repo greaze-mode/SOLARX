@@ -86,7 +86,7 @@ const HeroSectionGA = () => {
     const fetchHeroData = async () => {
       axios
         .get(
-          `${API_URL}/global-accelerator?populate[0]=main_section&populate[1]=main_section.Carousel`
+          `${API_URL}/global-accelerator?populate[0]=main_section&populate[1]=main_section.Carousel&pagination[pageSize]=100`
         )
         .then((response) => {
           const mainSectionData = response.data.data.main_section;

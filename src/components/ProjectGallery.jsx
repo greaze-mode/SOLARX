@@ -124,7 +124,7 @@ const ProjectGallery = ({ companyId }) => {
 
         const baseUrl = import.meta.env.VITE_API_URL;
         // Fix the populate syntax - using the correct format for Strapi v4
-        const apiUrl = `${baseUrl}/api/projects?filters[startup][id][$eq]=${companyId}&populate=*`;
+        const apiUrl = `${baseUrl}/api/projects?filters[startup][id][$eq]=${companyId}&populate=*&pagination[pageSize]=100`;
         // console.log("Fetching projects from:", apiUrl);
         const response = await fetch(apiUrl);
 

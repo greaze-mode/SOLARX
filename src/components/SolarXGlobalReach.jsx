@@ -22,31 +22,36 @@ const getCountryNameFromCode = (code) => {
 
 const STARTUPS_API_URL = `${
   import.meta.env.VITE_API_URL
-}/api/startups?populate=*`;
+}/api/startups?populate=*&pagination[pageSize]=100`;
 
 const HQ_MARKER_COLOR_HEX = 0xff5722; // Orange color for HQ markers
 const GLOBE_RADIUS = 1;
 
 // Add region color constants
 const REGION_COLORS = {
-  ASIA_PACIFIC: 0xff5722, // Orange
-  AFRICA: 0x4caf50, // Green
-  DEFAULT: 0x2196f3, // Blue
+  APAC: 0x00bcd4, // Cyan
+  MENA: 0xff9800, // Orange
+  ROA: 0x4caf50, // Green
+  EUROPE: 0x2196f3, // Blue
+  LAC: 0x9c27b0, // Purple
+  NA: 0xf44336, // Red
+  DEFAULT: 0x9e9e9e, // Grey for other regions
 };
 
 // Add region names mapping
 const REGION_NAMES = {
-  ASIA_PACIFIC: "Asia-Pacific",
-  AFRICA: "Africa",
+  APAC: "Asia-Pacific (APAC)",
+  MENA: "Middle East & North Africa (MENA)",
+  ROA: "Rest of Africa (RoA)",
+  EUROPE: "Europe",
+  LAC: "Latin America & the Caribbean (LAC)",
+  NA: "North America",
   DEFAULT: "Other Regions",
 };
 
 const isInAsiaPacific = (lat, lng) => {
   // Asia-Pacific region boundaries
-  return (
-    (lat >= -10 && lat <= 60 && lng >= 60 && lng <= 180) || // Main Asia
-    (lat >= -10 && lat <= 30 && lng >= 100 && lng <= 180) // Southeast Asia
-  );
+  return lat >= -10 && lat <= 60 && lng >= 60 && lng <= 180;
 };
 
 const isInAfrica = (lat, lng) => {
@@ -54,13 +59,49 @@ const isInAfrica = (lat, lng) => {
   return lat >= -35 && lat <= 37 && lng >= -20 && lng <= 55;
 };
 
+const isInEurope = (lat, lng) => {
+  // Europe region boundaries
+  return lat >= 35 && lat <= 72 && lng >= -25 && lng <= 65;
+};
+
+const isInMiddleEast = (lat, lng) => {
+  // Middle East region boundaries
+  return lat >= 12 && lat <= 42 && lng >= 30 && lng <= 65;
+};
+
+const isInROA = (lat, lng) => {
+  // Rest of Africa region boundaries
+  return lat >= -35 && lat <= 0 && lng >= -17.5 && lng <= 52;
+};
+
+const isInLAC = (lat, lng) => {
+  // Latin America & Caribbean region boundaries
+  return lat >= -56 && lat <= 32.7 && lng >= -118 && lng <= -34;
+};
+
+const isInNA = (lat, lng) => {
+  // North America region boundaries
+  return lat >= 24 && lat <= 72 && lng >= -168 && lng <= -52;
+};
+
 const getRegionColor = (lat, lng) => {
   if (isInAsiaPacific(lat, lng)) {
-    return REGION_COLORS.ASIA_PACIFIC;
+    return REGION_COLORS.APAC;
   } else if (isInAfrica(lat, lng)) {
-    return REGION_COLORS.AFRICA;
+    return REGION_COLORS.ROA;
+  } else if (isInEurope(lat, lng)) {
+    return REGION_COLORS.EUROPE;
+  } else if (isInMiddleEast(lat, lng)) {
+    return REGION_COLORS.MENA;
+  } else if (isInROA(lat, lng)) {
+    return REGION_COLORS.ROA;
+  } else if (isInLAC(lat, lng)) {
+    return REGION_COLORS.LAC;
+  } else if (isInNA(lat, lng)) {
+    return REGION_COLORS.NA;
+  } else {
+    return REGION_COLORS.DEFAULT;
   }
-  return REGION_COLORS.DEFAULT;
 };
 
 const extractRichTextToString = (richTextArray) => {
@@ -158,7 +199,7 @@ const SolarXGlobalReach = () => {
                 startupLogo: startup.Company_Logo.url || "",
                 startupCountry:
                   getCountryNameFromCode(startup.Country) || "N/A",
-                startupRegions: startup.Regions?.join(", ") || "N/A",
+                startupRegions: startup.Regions || "N/A",
                 startupSectors:
                   startup.Sector_Tags?.map((t) =>
                     typeof t === "string" ? t.split("|").pop().trim() : ""
@@ -205,12 +246,18 @@ const SolarXGlobalReach = () => {
       const counts = {};
       allStartups.forEach((s) => {
         const tags = s[tagArrayField];
-        if (tags && Array.isArray(tags) && tags.length > 0) {
-          tags.forEach((tag) => {
-            const tagName =
-              typeof tag === "string" ? tag.split("|").pop().trim() : "Unknown";
-            counts[tagName] = (counts[tagName] || 0) + 1;
-          });
+        if (tags) {
+          if (!Array.isArray(tags)) {
+            counts[tags] = (counts[tags] || 0) + 1;
+          } else if (Array.isArray(tags)) {
+            tags.forEach((tag) => {
+              const tagName =
+                typeof tag === "string"
+                  ? tag.split("|").pop().trim()
+                  : "Unknown";
+              counts[tagName] = (counts[tagName] || 0) + 1;
+            });
+          }
         }
       });
       return Object.entries(counts)
@@ -479,7 +526,12 @@ const SolarXGlobalReach = () => {
   }, [isThreeJsReady, globeDataPoints]);
 
   // --- UI Event Handlers ---
-  const toggleFullscreen = () => setIsFullscreen(!isFullscreen);
+  const toggleFullscreen = () => {
+    if (isFullscreen) {
+      closeInfoPanel();
+    }
+    setIsFullscreen(!isFullscreen);
+  };
   const closeInfoPanel = () => {
     setIsInfoPanelOpen(false);
     setSelectedMarkerData(null);
@@ -512,7 +564,11 @@ const SolarXGlobalReach = () => {
           </button>
         </div>
         <div>
-          <img src={data.startupLogo} alt={`${data.startupName} Logo`}  className="w-full rounded-sm border-2 my-4 px-6"/>
+          <img
+            src={data.startupLogo}
+            alt={`${data.startupName} Logo`}
+            className="w-full rounded-sm border-2 my-4 px-6"
+          />
         </div>
         <div className="space-y-2.5 text-sm">
           <p>
@@ -532,14 +588,14 @@ const SolarXGlobalReach = () => {
           <p>
             <strong className="text-gray-600">
               <span>Location:</span>
-            </strong>{" "}
-            {data.startupLocationString}
+            </strong>
+            <span>{data.startupLocationString}</span>
           </p>
           {data.startupCountry !== "N/A" && (
             <p>
               <strong className="text-gray-600">
                 <span>Country:</span>
-              </strong>{" "}
+              </strong>
               <span>{data.startupCountry}</span>
             </p>
           )}
@@ -547,7 +603,7 @@ const SolarXGlobalReach = () => {
             <p>
               <strong className="text-gray-600">
                 <span>Region(s):</span>
-              </strong>{" "}
+              </strong>
               <span>{data.startupRegions}</span>
             </p>
           )}
@@ -555,7 +611,7 @@ const SolarXGlobalReach = () => {
             <p>
               <strong className="text-gray-600">
                 <span>Sector(s):</span>
-              </strong>{" "}
+              </strong>
               <span>{data.startupSectors}</span>
             </p>
           )}
@@ -563,7 +619,7 @@ const SolarXGlobalReach = () => {
             <p>
               <strong className="text-gray-600">
                 <span>Technology:</span>
-              </strong>{" "}
+              </strong>
               <span>{data.startupTech}</span>
             </p>
           )}

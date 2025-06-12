@@ -20,13 +20,13 @@ const SolarFlowHero = ({ companyId }) => {
 
         const baseUrl = import.meta.env.VITE_API_URL;
         const response = await fetch(
-          `${baseUrl}/api/startups?filters[id][$eq]=${companyId}&populate=*`
+          `${baseUrl}/api/startups?filters[id][$eq]=${companyId}&populate=*&pagination[pageSize]=100`
         );
         const result = await response.json();
         const company =
           result.data && result.data.length > 0 ? result.data[0] : null;
 
-        console.log("Fetched Company Data:", company);
+        // console.log("Fetched Company Data:", company);
 
         const logoUrl = company.Company_Logo?.url;
         // console.warn("LOGO URL:", logoUrl);
@@ -40,7 +40,7 @@ const SolarFlowHero = ({ companyId }) => {
             LogoUrl: logoUrl,
           };
 
-          console.log("Company Data:", data);
+          // console.log("Company Data:", data);
 
           setCompanyData(data);
         } else {
@@ -55,10 +55,10 @@ const SolarFlowHero = ({ companyId }) => {
       }
     };
 
-    console.log("Fetching company data for ID:", companyId);
+    // console.log("Fetching company data for ID:", companyId);
     getCompanyData();
   }, [companyId]);
-  console.log("Company Data2:", companyData);
+  // console.log("Company Data2:", companyData);
   const FlagIcon =
     companyData &&
     companyData.countryCode &&
@@ -98,6 +98,25 @@ const SolarFlowHero = ({ companyId }) => {
 
   return (
     <div className="relative w-full min-h-[700px] bg-gray-100 flex items-center justify-center p-4 mt-[20px] overflow-hidden">
+      {/* Video Background */}
+      <video
+        autoPlay
+        loop
+        muted
+        playsInline
+        className="absolute inset-0 w-full h-full object-cover filter blur-3xl opacity-70"
+      >
+        {/* 
+          For production, download this video and serve it from your /public folder 
+          for better performance and reliability.
+          Example: <source src="/videos/abstract-motion.mp4" type="video/mp4" />
+        */}
+        <source
+          src="/videos/2.mp4"
+          type="video/mp4"
+        />
+        Your browser does not support the video tag.
+      </video>
       {/* Blurred yellow/orange color patches */}
       <div className="absolute top-0 left-0 w-72 h-72 bg-yellow-300 opacity-30 rounded-full filter blur-3xl mix-blend-multiply pointer-events-none"></div>
       <div className="absolute bottom-10 right-10 w-72 h-72 bg-orange-300 opacity-30 rounded-full filter blur-3xl mix-blend-multiply pointer-events-none"></div>

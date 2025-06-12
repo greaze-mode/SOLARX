@@ -315,3 +315,17 @@ select {
 .metrics-scroller-viewport:hover .continuous-scrolling-track {
   animation-play-state: paused;
 }
+
+body.google-translate-banner-visible header {
+  transition: top 0.3s ease-in-out;
+  /* Add a smooth transition */
+  top: 40px;
+}
+
+/* 
+ * Optional but recommended: 
+ * Push down the rest of your page content as well, not just the header.
+*/
+body.google-translate-banner-visible {
+  padding-top: 20px;
+}

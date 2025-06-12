@@ -12,20 +12,10 @@ import AboutSolarXChallenge from "./components/AboutSolarXChallenge";
 import GlobalImpactSection from "./components/GlobalImpactSection";
 import SolarXGlobalReach from "./components/SolarXGlobalReach";
 import { EventSection } from "./components/EventSection.jsx";
+// import { SimpleGlobe } from "./components/Globe.jsx";
 
 export default function App() {
   const [isMobile, setIsMobile] = useState(false);
-  const [isCookieSet, setIsCookieSet] = useState(false);
-
-  // Check if the 'googtrans' cookie is set
-  useEffect(() => {
-    const cookieValue = document.cookie
-      .split("; ")
-      .find((row) => row.startsWith("googtrans="));
-    if (cookieValue) {
-      setIsCookieSet(true);
-    }
-  }, []);
 
   useEffect(() => {
     const checkMobile = () => {
@@ -56,7 +46,7 @@ export default function App() {
   ];
 
   return (
-    <div className={`relative ${isCookieSet ? "translate-y-0.5" : ""}`}>
+    <div className={`relative`}>
       <SolarXNavbar isMobile={isMobile} />
 
       <div className="relative">
@@ -65,6 +55,7 @@ export default function App() {
         <StatsSection isMobile={isMobile} />
         <FundingInvestorsDashboard isMobile={isMobile} />
         <SolarXGlobalReach isMobile={isMobile} />
+        {/* <SimpleGlobe /> */}
         {/* <SuccessStories isMobile={isMobile} /> */}
         <MediaCoverageSection isMobile={isMobile} />
         <GlobalImpactSection isMobile={isMobile} />

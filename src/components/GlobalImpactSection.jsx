@@ -157,7 +157,9 @@ const GlobalImpactSection = () => {
         setError(null);
 
         // Fetch startup data first
-        const fullRes = await axios.get(`${API_URL}/startups?populate=*`);
+        const fullRes = await axios.get(
+          `${API_URL}/startups?populate=*&pagination[pageSize]=100`
+        );
 
         const sdgCounts = {};
         const allStartups = fullRes?.data?.data || [];

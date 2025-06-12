@@ -24,7 +24,7 @@ const GlobalPresence = ({ companyId }) => {
       }
 
       axios
-        .get(`${API_URL}/startups?filters[id][$eq]=${companyId}`)
+        .get(`${API_URL}/startups?filters[id][$eq]=${companyId}&pagination[pageSize]=100`)
         .then((response) => {
           if (
             response.data &&
@@ -95,7 +95,7 @@ const GlobalPresence = ({ companyId }) => {
         // We expect the response to be an array of global-presence entries.
         // If a startup can only have one global-presence entry, the API design might differ.
         const baseUrl = import.meta.env.VITE_API_URL;
-        const apiUrl = `${baseUrl}/api/global-presences?populate=Presence&filters[startups][id][$eq]=${companyId}`;
+        const apiUrl = `${baseUrl}/api/global-presences?populate=Presence&filters[startups][id][$eq]=${companyId}&pagination[pageSize]=100`;
         const response = await fetch(apiUrl);
 
         if (!response.ok) {

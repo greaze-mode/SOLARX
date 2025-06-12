@@ -93,7 +93,7 @@ export default function PressFeaturesSection({ companyId }) {
       try {
         setLoading(true);
         setError(null);
-        const apiUrl = `${API_URL}/startups?filters[id][$eq]=${companyId}&populate=Media`;
+        const apiUrl = `${API_URL}/startups?filters[id][$eq]=${companyId}&populate=Media&pagination[pageSize]=100`;
         const response = await fetch(apiUrl);
         if (!response.ok) {
           throw new Error(`API request failed: ${response.status}`);

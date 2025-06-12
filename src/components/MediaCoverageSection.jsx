@@ -9,7 +9,7 @@ export default function MediaCoverageSection() {
   useEffect(() => {
     const fetchMedia = async () => {
       axios
-        .get(`${API_URL}/home-page?populate=media_coverage`)
+        .get(`${API_URL}/home-page?populate=media_coverage&pagination[pageSize]=100`)
         .then((response) => {
           const mediaData = response.data.data.media_coverage;
           // console.error("Fetched HOAHSOSHFKSDHJFKSDJHFKJHDSFKJSDH data:", mediaData);

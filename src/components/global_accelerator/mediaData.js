@@ -22,15 +22,6 @@ export const mediaMentionsData = [
     },
     {
         id: 3,
-        headline: "Solar X Africa Startup Accelerator Program Meeting at Axis Fiduciary Ltd",
-        publisher: "AXIS Trusted First",
-        platform: "Press Release",
-        date: 2024,
-        link: "https://www.axis.mu/newsroom/solar-x-africa-startup-accelerator-program-meeting-at-axis-fiduciary-ltd/",
-        quote: "We were thrilled to host the Solar X Africa startup accelerator program participants at Axis Fiduciary Ltd, alongside our partners from BLC Robert & Associates. The program, supported by the International Solar Alliance, brought together entrepreneurs driving solar energy solutions across Africa.",
-    },
-    {
-        id: 4,
         headline: "International Solar Alliance, Business Mauritius host SolarX Accelerator Programme for start-ups",
         publisher: "Economic Times",
         platform: "News (Africa Focus)",
@@ -39,7 +30,7 @@ export const mediaMentionsData = [
         quote: "The two-day programme is aimed at supporting, empowering, and guiding start-ups that are focused on solar energy and renewable technologies.",
     },
     {
-        id: 5,
+        id: 4,
         headline: "International Solar Alliance, Business Mauritius host SolarX Accelerator Programme for start-ups ",
         publisher: "Garima Bora",
         platform: "Press Release",
@@ -48,12 +39,21 @@ export const mediaMentionsData = [
         quote: "MOKA (MAURITIUS): Business Mauritius, in collaboration with the International Solar Alliance (ISA), opened a two-day SolarX Accelerator Programme in Mauritius on Tuesday, aimed at supporting",
     },
     {
-        id: 6,
+        id: 5,
         headline: "Mauritius Hosts SolarX Accelerator to Boost APAC and African Startups in Renewable Sector",
         publisher: "First Solar",
         platform: "Article",
         date: 2025,
         link: "https://solarquarter.com/2025/04/16/mauritius-hosts-solarx-accelerator-to-boost-apac-and-african-startups-in-renewable-sector/",
         quote: "Business Mauritius (BM), in collaboration with the International Solar Alliance (ISA), inaugurated the two-day SolarX Accelerator Programme in Mauritius today, bringing together 35 startups from Asia, India,",
+    },
+    {
+        id: 6,
+        headline: "Solar X Africa Startup Accelerator Program Meeting at Axis Fiduciary Ltd",
+        publisher: "AXIS Trusted First",
+        platform: "Press Release",
+        date: 2024,
+        link: "https://www.axis.mu/newsroom/solar-x-africa-startup-accelerator-program-meeting-at-axis-fiduciary-ltd/",
+        quote: "We were thrilled to host the Solar X Africa startup accelerator program participants at Axis Fiduciary Ltd, alongside our partners from BLC Robert & Associates. The program, supported by the International Solar Alliance, brought together entrepreneurs driving solar energy solutions across Africa.",
     },
 ];

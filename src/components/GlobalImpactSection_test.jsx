@@ -128,7 +128,7 @@ const GlobalImpactSection = () => {
         setLoading(true);
         setError(null);
         const baseUrl = import.meta.env.VITE_API_URL;
-        const fullRes = await axios.get(`${baseUrl}/api/startups?populate=*`);
+        const fullRes = await axios.get(`${baseUrl}/api/startups?populate=*&pagination[pageSize]=100`);
         const allStartups = fullRes?.data?.data || [];
 
         const sdgCounts = {};
