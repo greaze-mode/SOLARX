@@ -24,6 +24,7 @@ const SocialIcon = ({ href, icon, classes }) => {
 const Footer = ({
   centerTop = "SolarX",
   centerBottom = "Startup Challenge",
+  quickLinks = [],
 }) => {
   const [location, setLocation] = useState("hq");
   return (
@@ -114,18 +115,7 @@ const Footer = ({
             <div className="text-center sm:text-left">
               <h4 className="text-sm font-semibold mb-3">Quick Links</h4>
               <ul className="space-y-1 text-xs text-gray-900/90">
-                {[
-                  { label: "Home", href: "/" },
-                  { label: "SolarX Winners", href: "#winners" },
-                  { label: "Funding & Investors", href: "#funding" },
-                  { label: "Media Coverage", href: "#media" },
-                  { label: "Global Impact", href: "#impact" },
-                  { label: "Events", href: "#events" },
-                  {
-                    label: "Global Accelerator Program",
-                    href: "/global-accelerator",
-                  },
-                ].map((link, index) => (
+                {quickLinks.map((link, index) => (
                   <li key={index}>
                     <a
                       href={link.href}

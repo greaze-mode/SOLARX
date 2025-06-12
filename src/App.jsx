@@ -31,6 +31,19 @@ export default function App() {
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
+  const quickLinks = [
+    { label: "Home", href: "/" },
+    { label: "SolarX Winners", href: "#winners" },
+    { label: "Funding & Investors", href: "#funding" },
+    { label: "Media Coverage", href: "#media" },
+    { label: "Global Impact", href: "#impact" },
+    { label: "Events", href: "#events" },
+    {
+      label: "Global Accelerator Program",
+      href: "/global-accelerator",
+    },
+  ];
+
   return (
     <div className="relative">
       <SolarXNavbar isMobile={isMobile} />
@@ -46,7 +59,7 @@ export default function App() {
         <GlobalImpactSection isMobile={isMobile} />
         <EventSection />
         <AboutSolarXChallenge isMobile={isMobile} />
-        <Footer />
+        <Footer quickLinks={quickLinks}/>
       </div>
     </div>
   );

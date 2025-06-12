@@ -9,6 +9,15 @@ import Footer from "../components/Footer";
 import "../styles/timeline.css";
 
 const GlobalAccelerator = () => {
+  const quickLinks = [
+    { label: "Home", href: "/" },
+    { label: "Global Accelerator Program", href: "#gap" },
+    { label: "Events", href: "#events" },
+    { label: "Meet the Mentors", href: "#mentors" },
+    { label: "Media Coverage", href: "#media" },
+    { label: "Impact Metrics", href: "#impact" },
+    { label: "Future Plans", href: "#future" },
+  ];
   return (
     <>
       <SolarXNavbar centerBottom="Global Accelerator" />
@@ -18,7 +27,7 @@ const GlobalAccelerator = () => {
       <MediaHighlightsSection />
       <FutureSection />
       <ProgressBar />
-      <Footer centerBottom="Global Accelerator Program" />
+      <Footer centerBottom="Global Accelerator Program"  quickLinks={quickLinks}/>
     </>
   );
 };
