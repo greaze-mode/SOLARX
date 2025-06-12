@@ -107,7 +107,7 @@ export default function TechnologySection({ companyId }) {
           setTechData([]);
         } else {
           const technologies = startup.Technology;
-          console.log("Fetched and processed technologies:", technologies);
+          // console.log("Fetched and processed technologies:", technologies);
           setTechData(technologies);
           // randomise and limit to 5 items for Technology_Tags
           const randomTags = startup.Technology_Tags.sort(

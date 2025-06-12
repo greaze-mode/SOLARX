@@ -24,17 +24,18 @@ const SocialIcon = ({ href, icon, classes }) => {
 const Footer = ({
   centerTop = "SolarX",
   centerBottom = "Startup Challenge",
+  quickLinks = [],
 }) => {
   const [location, setLocation] = useState("hq");
   return (
     <footer id="footer" className="bg-[#f2f3f5] text-gray-900 py-6">
       <div className="max-w-screen-2xl mx-auto px-4 sm:px-20">
         <div className="flex flex-col items-center space-y-6">
-          <div className="w-full">
+          <div className="lg:w-full">
             <img
               src={logo}
               alt="International Solar Alliance Logo"
-              className="w-36 self-start"
+              className="w-36 self-center lg:self-start"
             />
           </div>
           <hr className="bg-gray-300 h-0.5 w-full rounded-xl" />
@@ -114,18 +115,7 @@ const Footer = ({
             <div className="text-center sm:text-left">
               <h4 className="text-sm font-semibold mb-3">Quick Links</h4>
               <ul className="space-y-1 text-xs text-gray-900/90">
-                {[
-                  { label: "Home", href: "/" },
-                  { label: "SolarX Winners", href: "#winners" },
-                  { label: "Funding & Investors", href: "#funding" },
-                  { label: "Media Coverage", href: "#media" },
-                  { label: "Global Impact", href: "#impact" },
-                  { label: "Events", href: "#events" },
-                  {
-                    label: "Global Accelerator Program",
-                    href: "/global-accelerator",
-                  },
-                ].map((link, index) => (
+                {quickLinks.map((link, index) => (
                   <li key={index}>
                     <a
                       href={link.href}

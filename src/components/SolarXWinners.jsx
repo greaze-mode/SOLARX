@@ -88,13 +88,13 @@ export default function SolarXWinners({ isMobile }) {
             setStartups([]);
           } else {
             const cleanedStartups = rawStartups.map(transformStartupData);
-            console.log("Cleaned startups data:", cleanedStartups);
+            // console.log("Cleaned startups data:", cleanedStartups);
             setStartups(cleanedStartups);
           }
         } else {
-          console.warn(
-            "No data in API response for SolarXWinners, or structure is unexpected."
-          );
+          // console.warn(
+          //   "No data in API response for SolarXWinners, or structure is unexpected."
+          // );
           setStartups([]);
         }
       } catch (err) {
@@ -288,8 +288,8 @@ export default function SolarXWinners({ isMobile }) {
                     className="px-2 sm:px-3 h-full card-container"
                   >
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                      {group.map((item) => (
-                        <CompanyCard {...item} />
+                      {group.map((item, idx) => (
+                        <CompanyCard key={idx} {...item} />
                       ))}
                     </div>
                   </div>

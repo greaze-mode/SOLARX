@@ -26,7 +26,7 @@ const SolarFlowHero = ({ companyId }) => {
           result.data && result.data.length > 0 ? result.data[0] : null;
 
         const logoUrl = company.Company_Logo?.url;
-        console.warn("LOGO URL:", logoUrl);
+        // console.warn("LOGO URL:", logoUrl);
 
         if (company) {
           const data = {
@@ -48,7 +48,7 @@ const SolarFlowHero = ({ companyId }) => {
 
           setCompanyData(data);
         } else {
-          console.warn("No company found with ID:", companyId);
+          // console.warn("No company found with ID:", companyId);
           setCompanyData(null);
         }
       } catch (error) {

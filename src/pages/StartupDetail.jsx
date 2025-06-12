@@ -17,7 +17,20 @@ export default function StartupDetail() {
   const { id } = useParams();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  
+
+  const quickLinks = [
+    { label: "Home", href: "/" },
+    { label: "Founders", href: "#founders" },
+    { label: "Company Details", href: "#details" },
+    { label: "Business Summary", href: "#summary" },
+    { label: "Technologies", href: "#tech" },
+    { label: "Impact Metrics", href: "#impact" },
+    { label: "Funding", href: "#funding" },
+    { label: "Media Coverage", href: "#media" },
+    { label: "Projects", href: "#projects" },
+    { label: "Global Impact", href: "#impact" },
+  ];
+
   useEffect(() => {
     const checkCompany = async () => {
       if (id) {
@@ -90,7 +103,7 @@ export default function StartupDetail() {
       <ProjectGallery companyId={id} />
       <GlobalPresence companyId={id} />
 
-      <Footer />
+      <Footer quickLinks={quickLinks} />
     </div>
   );
 }

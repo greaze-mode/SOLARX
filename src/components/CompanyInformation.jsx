@@ -46,7 +46,7 @@ export default function CompanyInformation({ companyId }) {
             sdgs: companyData.SDG,
           };
 
-          console.log("Company Data:", cleanCompany);
+          // console.log("Company Data:", cleanCompany);
           setCompany(cleanCompany);
         } else {
           setError("Company data not found");
