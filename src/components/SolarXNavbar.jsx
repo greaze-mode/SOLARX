@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import logo from "/logo.svg";
+import LanguageSwitcher from "./LanguageSwitcher";
 
 // TODO: Reuse this component in StartupDetails.jsx
 export default function SolarXNavbar({
@@ -63,12 +64,12 @@ export default function SolarXNavbar({
         {/* Mobile */}
         <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
           <div className="md:hidden flex flex-col items-center justify-center text-xl font-semibold px-2 text-white">
-            <div className="flex items-center space-x-2 text-2xl">
-              <div className="h-1 w-16 bg-white"></div>
+            <div className="flex items-center space-x-2 text-xl">
+              <div className="h-1 w-10 bg-white"></div>
               <span className="">{centerTop}</span>
-              <div className="h-1 w-16 bg-white"></div>
+              <div className="h-1 w-10 bg-white"></div>
             </div>
-            <span className="text-center mb-1">{centerBottom}</span>
+            <span className="text-center mb-1 text-lg">{centerBottom}</span>
             <div className="h-1 w-full bg-white"></div>
           </div>
         </div>
@@ -87,7 +88,7 @@ export default function SolarXNavbar({
         </div>
       </a>
       <nav className="hidden lg:block ">
-        <ul className="flex space-x-6 ">
+        <ul className="flex space-x-6">
           {navItems.map((item) => (
             <li key={item.label} className="relative group">
               <a href={item.href} className="text-stone-50 font-medium text-lg">
@@ -98,6 +99,11 @@ export default function SolarXNavbar({
           ))}
         </ul>
       </nav>
+
+      <div className="mx-4 h-full flex items-center ">
+        {/* <div id="google_translate_element"></div> */}
+        <LanguageSwitcher />
+      </div>
 
       {/* Mobile Menu Button */}
       <button

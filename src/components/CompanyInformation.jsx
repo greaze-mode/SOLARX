@@ -2,6 +2,14 @@ import { useState, useEffect } from "react";
 import { getLocationFromLatLong } from "../utils/strapiHelper";
 import { Calendar, MapPin, Users, Shield, Target, Globe } from "lucide-react";
 import { useParams } from "react-router-dom";
+import * as countryCodes from "country-codes-list";
+
+const getCountryNameFromCode = (code) => {
+  if (!code || typeof code !== "string") return "Unknown Country";
+  const country = countryCodes.findOne("countryCode", code.toUpperCase());
+  return country ? country.countryNameEn : "Unknown Country";
+};
+
 
 export default function CompanyInformation({ companyId }) {
   // If companyId is not passed as prop, try to get it from URL params
@@ -26,8 +34,6 @@ export default function CompanyInformation({ companyId }) {
           (c) => c.id.toString() === id.toString()
         );
 
-
-
         if (companyData) {
           // Create a clean company object
           const cleanCompany = {
@@ -37,6 +43,7 @@ export default function CompanyInformation({ companyId }) {
             Website: companyData.Website_URL || "",
             ContactEmail: companyData.Contact_Email || "",
             FoundingYear: companyData.Founding_Year || "",
+            Location: companyData.HQ_Location_Name || getCountryNameFromCode(companyData.Country) || "Location not specified",
             // Headquarters:
             //   (await getLocationFromLatLong(
             //     companyData.HQ_Location.lat,
@@ -139,7 +146,7 @@ export default function CompanyInformation({ companyId }) {
                     <div>
                       <p className="text-gray-500 text-sm mb-1">Location</p>
                       <p className="text-gray-800 text-xl font-medium">
-                        {company.Headquarters || "Not specified"}
+                        {company.Location || "Not specified"}
                       </p>
                     </div>
                   </div>

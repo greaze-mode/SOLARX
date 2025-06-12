@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import { getLocationFromLatLong } from "../utils/strapiHelper";
+// import { getLocationFromLatLong } from "../utils/strapiHelper";
+import * as countryFlags from "country-flag-icons/react/3x2";
 
 const SolarFlowHero = ({ companyId }) => {
   const [companyData, setCompanyData] = useState(null);
@@ -25,6 +26,8 @@ const SolarFlowHero = ({ companyId }) => {
         const company =
           result.data && result.data.length > 0 ? result.data[0] : null;
 
+        console.log("Fetched Company Data:", company);
+
         const logoUrl = company.Company_Logo?.url;
         // console.warn("LOGO URL:", logoUrl);
 
@@ -33,18 +36,11 @@ const SolarFlowHero = ({ companyId }) => {
             id: company.id,
             name: company.Name,
             description: company.Description[0].children[0].text,
-            // website: company.Website_URL,
-            // contactEmail: company.Contact_Email,
-            // foundingYear: company.Founding_Year,
-            // headquarters:
-            //   (await getLocationFromLatLong(
-            //     company.HQ_Location.lat,
-            //     company.HQ_Location.lng
-            //   )) || "Location not specified",
-            // teamSize: company.Team_Size,
+            countryCode: company.Country || "",
             LogoUrl: logoUrl,
-            // coverImage: company.Cover_Image?.url,
           };
+
+          console.log("Company Data:", data);
 
           setCompanyData(data);
         } else {
@@ -59,8 +55,16 @@ const SolarFlowHero = ({ companyId }) => {
       }
     };
 
+    console.log("Fetching company data for ID:", companyId);
     getCompanyData();
   }, [companyId]);
+  console.log("Company Data2:", companyData);
+  const FlagIcon =
+    companyData &&
+    companyData.countryCode &&
+    countryFlags[companyData.countryCode]
+      ? countryFlags[companyData.countryCode]
+      : null;
 
   if (loading) {
     return (
@@ -118,16 +122,24 @@ const SolarFlowHero = ({ companyId }) => {
           </p>
         </div>
 
-        <div className="w-full lg:w-1/3 relative">
-          {companyData && companyData.LogoUrl ? (
+        <div className="w-full lg:w-1/3 relative flex flex-col justify-center">
+          {companyData && companyData.LogoUrl && (
             <img
               src={companyData.LogoUrl}
               alt={companyData.name || "Cover Image"}
               className="w-full h-full object-contain rounded-lg shadow-2xl border-4 border-white border-solid p-2 ring-2 ring-orange-300"
             />
-          ) : (
-            <div className="flex items-center justify-center h-full w-full">
-              <div className="text-gray-400 text-xl">No logo available</div>
+          )}
+          {FlagIcon && (
+            <div className="w-full flex relative">
+              <FlagIcon
+                className="w-16 h-16 absolute bottom-0 right-0 translate-y-full rounded-md"
+                title={
+                  companyData && companyData.countryCode
+                    ? companyData.countryCode
+                    : "Country Flag"
+                }
+              />
             </div>
           )}
         </div>

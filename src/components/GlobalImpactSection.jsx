@@ -111,12 +111,12 @@ const SdgGoalTile = ({ icon, title, startupCount }) => (
 
       <div className="absolute inset-0 bg-gray-700/60 backdrop-blur-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10 px-2">
         <div className="text-center flex flex-col items-center">
-          <span className="text-white text-8xl font-extrabold drop-shadow-md">
+          <span className="text-white text-7xl font-extrabold drop-shadow-md">
             {startupCount}
           </span>
-          {/* <span className="text-white text-6xl font-meidum drop-shadow-md">
+          <span className="text-white text-4xl font-meidum drop-shadow-md">
             Startup{startupCount == 1 ? "" : "s"}
-          </span> */}
+          </span>
         </div>
       </div>
     </div>

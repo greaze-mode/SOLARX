@@ -134,7 +134,7 @@ export default function TechnologySection({ companyId }) {
           <div className="w-1/5 md:w-16 hidden md:block h-1.5 bg-gradient-to-r from-orange-500 to-red-500 rounded-full"></div>
           <h1 className="text-4xl md:text-5xl font-bold mb-1 ">
             <span className="bg-clip-text text-transparent bg-gradient-to-r from-orange-500 to-red-600  left-[20px]">
-              Technologies
+              Our Offerings
             </span>
           </h1>
           <div className="block md:hidden w-1/3 md:w-16 h-1.5 bg-gradient-to-r from-orange-500 to-red-500 rounded-full"></div>

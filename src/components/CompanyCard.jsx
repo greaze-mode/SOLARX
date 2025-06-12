@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { APP_URL } from "../services/api";
 import { MapPin } from "lucide-react";
+import * as countryFlags from "country-flag-icons/react/3x2";
 
 export default function CompanyCard({
   id,
@@ -8,11 +9,17 @@ export default function CompanyCard({
   name,
   regions,
   location,
+  countryCode,
   country,
   description,
   categories,
+  isWomanLed,
   logo,
 }) {
+  const FlagIcon =
+    countryCode && countryFlags[countryCode] ? countryFlags[countryCode] : null;
+  // console.log("Country Code:", countryCode);
+  // console.log(FlagIcon);
   return (
     <Link
       to={`/startup/${id}`}
@@ -40,18 +47,38 @@ export default function CompanyCard({
             </span>
           ))}
         </div>
+        <div className="absolute bottom-1 right-1.5 flex flex-row space-x-1.5 z-10">
+          {countryCode && countryFlags[countryCode] && (
+            <FlagIcon className="w-6 h-4 sm:w-10 sm:h-10" title={country} />
+          )}
+        </div>
       </div>
 
       <div className="p-4 sm:p-5 flex flex-col flex-grow border-t-2 border-orange-100">
-        <h3
-          className="text-lg sm:text-xl font-bold mb-1 text-gray-800 line-clamp-1"
-          title={name}
-        >
-          {name}
-        </h3>
+        <div className="w-full flex flex-row justify-between">
+          <h3
+            className="text-lg sm:text-xl font-bold mb-1 text-gray-800 line-clamp-1 w-11/12"
+            title={name}
+          >
+            <span className="notranslate">{name}</span>
+          </h3>
+          {isWomanLed && (
+            <div className="relative inline-0">
+              <span className="text-white font-medium group text-lg w-8 h-8 text-center rounded-full pt-0.5 shadow-2xl">
+                ♀️
+                {/* <div className="absolute z-[1000] left-0 top-0 -translate-x-full -translate-y-full mt-2 w-max text-xs text-gray-900 bg-white rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  Woman-Led Startup
+                </div> */}
+              </span>
+            </div>
+          )}
+        </div>
         <div className="flex items-center mb-2">
           <MapPin size={15} className="mr-1 text-orange-600" />
-          <p className="text-base text-gray-500 line-clamp-1" title={location !== "" ? location : country}>
+          <p
+            className="text-base text-gray-500 line-clamp-1"
+            title={location !== "" ? location : country}
+          >
             {location !== "" ? location : country}
           </p>
         </div>

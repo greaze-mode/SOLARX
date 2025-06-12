@@ -7,6 +7,7 @@ import SolarXNavbar from "../components/SolarXNavbar";
 import MediaHighlightsSection from "../components/global_accelerator/MediaHighlightsSection";
 import Footer from "../components/Footer";
 import "../styles/timeline.css";
+import { useState, useEffect } from "react";
 
 const GlobalAccelerator = () => {
   const quickLinks = [
@@ -18,8 +19,20 @@ const GlobalAccelerator = () => {
     { label: "Impact Metrics", href: "#impact" },
     { label: "Future Plans", href: "#future" },
   ];
+
+  const [isCookieSet, setIsCookieSet] = useState(false);
+
+  // Check if the 'googtrans' cookie is set
+  useEffect(() => {
+    const cookieValue = document.cookie
+      .split("; ")
+      .find((row) => row.startsWith("googtrans="));
+    if (cookieValue) {
+      setIsCookieSet(true);
+    }
+  }, []);
   return (
-    <>
+    <div className={`relative ${isCookieSet ? "translate-y-0" : ""}`}>
       <SolarXNavbar centerBottom="Global Accelerator" />
       <HeroSectionGA />
       <TimelineSection />
@@ -27,8 +40,11 @@ const GlobalAccelerator = () => {
       <MediaHighlightsSection />
       <FutureSection />
       <ProgressBar />
-      <Footer centerBottom="Global Accelerator Program"  quickLinks={quickLinks}/>
-    </>
+      <Footer
+        centerBottom="Global Accelerator Program"
+        quickLinks={quickLinks}
+      />
+    </div>
   );
 };
 

@@ -155,6 +155,7 @@ const SolarXGlobalReach = () => {
                 startupId: startup.id,
                 startupName: startup.Name || "N/A",
                 startupLocationString: startup.HQ_Location_Name || "N/A",
+                startupLogo: startup.Company_Logo.url || "",
                 startupCountry:
                   getCountryNameFromCode(startup.Country) || "N/A",
                 startupRegions: startup.Regions?.join(", ") || "N/A",
@@ -501,7 +502,7 @@ const SolarXGlobalReach = () => {
             className="text-lg sm:text-xl font-bold text-gray-800 truncate"
             title={data.startupName}
           >
-            {data.startupName}
+            <span>{data.startupName}</span>
           </h3>
           <button
             onClick={onClose}
@@ -510,9 +511,14 @@ const SolarXGlobalReach = () => {
             <XCircle size={24} />
           </button>
         </div>
+        <div>
+          <img src={data.startupLogo} alt={`${data.startupName} Logo`}  className="w-full rounded-sm border-2 my-4 px-6"/>
+        </div>
         <div className="space-y-2.5 text-sm">
           <p>
-            <strong className="text-gray-600">Status:</strong>{" "}
+            <strong className="text-gray-600">
+              <span>Status:</span>
+            </strong>
             <span
               style={{
                 color: `#${new THREE.Color(data.color).getHexString()}`,
@@ -520,45 +526,55 @@ const SolarXGlobalReach = () => {
               className="font-semibold"
             >
               <MapPin size={14} className="inline-block mr-1 mb-0.5" />
-              {data.type}
+              <span>{data.type}</span>
             </span>
           </p>
           <p>
-            <strong className="text-gray-600">Location:</strong>{" "}
+            <strong className="text-gray-600">
+              <span>Location:</span>
+            </strong>{" "}
             {data.startupLocationString}
           </p>
           {data.startupCountry !== "N/A" && (
             <p>
-              <strong className="text-gray-600">Country:</strong>{" "}
-              {data.startupCountry}
+              <strong className="text-gray-600">
+                <span>Country:</span>
+              </strong>{" "}
+              <span>{data.startupCountry}</span>
             </p>
           )}
           {data.startupRegions !== "N/A" && (
             <p>
-              <strong className="text-gray-600">Region(s):</strong>{" "}
-              {data.startupRegions}
+              <strong className="text-gray-600">
+                <span>Region(s):</span>
+              </strong>{" "}
+              <span>{data.startupRegions}</span>
             </p>
           )}
           {data.startupSectors !== "N/A" && (
             <p>
-              <strong className="text-gray-600">Sector(s):</strong>{" "}
-              {data.startupSectors}
+              <strong className="text-gray-600">
+                <span>Sector(s):</span>
+              </strong>{" "}
+              <span>{data.startupSectors}</span>
             </p>
           )}
           {data.startupTech !== "N/A" && (
             <p>
-              <strong className="text-gray-600">Technology:</strong>{" "}
-              {data.startupTech}
+              <strong className="text-gray-600">
+                <span>Technology:</span>
+              </strong>{" "}
+              <span>{data.startupTech}</span>
             </p>
           )}
           {data.startupDescription &&
             data.startupDescription !== "No description available." && (
               <div className="mt-3 pt-3 border-t border-gray-200">
                 <strong className="text-gray-600 block mb-1">
-                  Description:
+                  <span>Description:</span>
                 </strong>
                 <p className="text-gray-700 text-xs max-h-28 sm:max-h-32 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 hover:scrollbar-thumb-gray-400">
-                  {data.startupDescription}
+                  <span>{data.startupDescription}</span>
                 </p>
               </div>
             )}
@@ -571,7 +587,7 @@ const SolarXGlobalReach = () => {
               target="_blank"
               rel="noopener noreferrer"
             >
-              View Startup Profile
+              <span>View Startup Profile</span>
             </a>
           </div>
         )}
@@ -584,7 +600,7 @@ const SolarXGlobalReach = () => {
       <div className="flex items-center text-orange-600 mb-3">
         {React.cloneElement(icon, { size: 22, className: "mr-2" })}
         <h4 className="text-lg sm:text-xl font-semibold text-gray-700">
-          {title}
+          <span>{title}</span>
         </h4>
       </div>
       {data.length > 0 ? (
@@ -595,10 +611,12 @@ const SolarXGlobalReach = () => {
               className="flex justify-between items-center text-gray-600 py-1"
             >
               <span className="truncate pr-2" title={item.name}>
-                {item.name}
+                <span>{item.name}</span>
               </span>
               <span className="font-semibold text-orange-500 bg-orange-50 px-2 py-0.5 rounded-full">
-                {item.count} ({item.percentage}%)
+                <span>
+                  {item.count} ({item.percentage}%)
+                </span>
               </span>
             </li>
           ))}
@@ -615,7 +633,7 @@ const SolarXGlobalReach = () => {
   const RegionLegend = () => (
     <div className="absolute bottom-4 left-4 bg-white/90 backdrop-blur-sm p-3 rounded-lg shadow-lg z-10">
       <h4 className="text-sm font-semibold text-gray-700 mb-2">
-        Region Colors
+        <span>Region Colors</span>
       </h4>
       <div className="space-y-2">
         {Object.entries(REGION_COLORS).map(([region, color]) => (
@@ -627,7 +645,7 @@ const SolarXGlobalReach = () => {
               }}
             />
             <span className="text-xs text-gray-600">
-              {REGION_NAMES[region]}
+              <span>{REGION_NAMES[region]}</span>
             </span>
           </div>
         ))}
@@ -714,7 +732,7 @@ const SolarXGlobalReach = () => {
                     </div>
                     <div
                       ref={!isFullscreen ? globeContainerRef : null}
-                      className="w-full h-[400px] md:h-[450px] lg:h-[500px] rounded-md sm:rounded-lg overflow-hidden relative cursor-grab bg-gray-800/50"
+                      className="w-full h-[400px] md:h-[450px] lg:h-[500px] rounded-md sm:rounded-lg overflow-hidden relative cursor-grab bg-gray-800/50 notranslate"
                     >
                       {!isThreeJsReady && !isComponentLoading && (
                         <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-4">

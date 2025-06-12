@@ -15,6 +15,17 @@ import { EventSection } from "./components/EventSection.jsx";
 
 export default function App() {
   const [isMobile, setIsMobile] = useState(false);
+  const [isCookieSet, setIsCookieSet] = useState(false);
+
+  // Check if the 'googtrans' cookie is set
+  useEffect(() => {
+    const cookieValue = document.cookie
+      .split("; ")
+      .find((row) => row.startsWith("googtrans="));
+    if (cookieValue) {
+      setIsCookieSet(true);
+    }
+  }, []);
 
   useEffect(() => {
     const checkMobile = () => {
@@ -45,7 +56,7 @@ export default function App() {
   ];
 
   return (
-    <div className="relative">
+    <div className={`relative ${isCookieSet ? "translate-y-0.5" : ""}`}>
       <SolarXNavbar isMobile={isMobile} />
 
       <div className="relative">
@@ -59,7 +70,7 @@ export default function App() {
         <GlobalImpactSection isMobile={isMobile} />
         <EventSection />
         <AboutSolarXChallenge isMobile={isMobile} />
-        <Footer quickLinks={quickLinks}/>
+        <Footer quickLinks={quickLinks} />
       </div>
     </div>
   );

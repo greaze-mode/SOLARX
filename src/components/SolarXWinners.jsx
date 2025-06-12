@@ -48,15 +48,16 @@ const transformStartupData = (rawStartup) => {
     name: rawStartup.Name || "Unnamed Startup",
     regions: rawStartup.Regions || [],
     location: rawStartup.HQ_Location_Name || "",
+    countryCode: rawStartup.Country || "",
     country:
-      getCountryNameFromCode(rawStartup.Country_Code) ||
-      "Location not specified",
+      getCountryNameFromCode(rawStartup.Country) || "Location not specified",
     description:
       rawStartup.Description?.[0]?.children?.[0]?.text ||
       "No description available",
     categories: shuffleArray(rawStartup.Sector_Tags)?.slice(0, 2) || [
       "General",
     ],
+    isWomanLed: rawStartup.Female_Founder || false,
     logo: rawStartup.Company_Logo?.url || "",
     // coverImage: rawStartup.Cover_Image?.formats?.small?.url || "",
   };
