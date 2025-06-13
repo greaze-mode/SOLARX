@@ -177,29 +177,29 @@ const Footer = ({
           {/* Social Icons */}
           <ul className="flex space-x-3 mt-6 justify-center sm:justify-start md:self-start">
             <li>
-              <SocialIcon
-                href="#"
-                icon={<FaFacebookF />}
-                classes={"bg-[#4267B2] text-white"}
-              />
+                <SocialIcon
+                  href="https://www.facebook.com/InternationalSolarAlliance/"
+                  icon={<FaFacebookF />}
+                  classes={"bg-[#4267B2] text-white"}
+                />
             </li>
             <li>
               <SocialIcon
-                href="#"
+                href="https://in.linkedin.com/company/internationalsolaralliance"
                 icon={<FaLinkedinIn />}
                 classes={"bg-[#0a66c2] text-white"}
               />
             </li>
             <li>
               <SocialIcon
-                href="#"
+                href="https://www.youtube.com/@internationalsolaralliance"
                 icon={<FaYoutube />}
                 classes={"bg-[#FF0000] text-white"}
               />
             </li>
             <li>
               <SocialIcon
-                href="#"
+                href="https://x.com/@isolaralliance"
                 icon={<FaXTwitter />}
                 classes={"bg-black text-white"}
               />
