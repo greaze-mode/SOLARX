@@ -36,6 +36,7 @@ export default function App() {
     { label: "Home", href: "/" },
     { label: "SolarX Winners", href: "#winners" },
     { label: "Funding & Investors", href: "#funding" },
+    { label: "Global Reach", href: "#reach" },
     { label: "Media Coverage", href: "#media" },
     { label: "Global Impact", href: "#impact" },
     { label: "Events", href: "#events" },
@@ -45,9 +46,16 @@ export default function App() {
     },
   ];
 
+  const navItems = [
+    { label: "Home", href: "/" },
+    { label: "Global Accelerator", href: "/global-accelerator" },
+    { label: "Events", href: "#events" },
+    { label: "Apply Now", href: "/apply" },
+  ];
+
   return (
     <div className={`relative`}>
-      <SolarXNavbar isMobile={isMobile} />
+      <SolarXNavbar isMobile={isMobile} navItems={navItems} />
 
       <div className="relative">
         <HeroCarousel />

@@ -6,6 +6,7 @@ import LanguageSwitcher from "./LanguageSwitcher";
 export default function SolarXNavbar({
   centerTop = "SolarX",
   centerBottom = "Startup Challenge",
+  navItems
 }) {
   const [bannerVisible, setBannerVisible] = useState(true);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -102,13 +103,6 @@ export default function SolarXNavbar({
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  // TODO: Pass as props
-  const navItems = [
-    { label: "Home", href: "/" },
-    { label: "Global Accelerator", href: "/global-accelerator" },
-    { label: "Events", href: "#events" },
-    { label: "Apply Now", href: "/apply" },
-  ];
 
   return (
     <header className="fixed top-0 left-0 bg-[#f4831f] pr-3 md:pr-6 flex justify-between items-center w-full shadow-sm transition-all duration-300 z-[1000]">

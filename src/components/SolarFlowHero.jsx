@@ -111,10 +111,7 @@ const SolarFlowHero = ({ companyId }) => {
           for better performance and reliability.
           Example: <source src="/videos/abstract-motion.mp4" type="video/mp4" />
         */}
-        <source
-          src="/videos/2.mp4"
-          type="video/mp4"
-        />
+        <source src="/videos/2_small.webm" type="video/mp4" />
         Your browser does not support the video tag.
       </video>
       {/* Blurred yellow/orange color patches */}
@@ -134,7 +131,7 @@ const SolarFlowHero = ({ companyId }) => {
             <div className="w-1/5 h-[5px] bg-gradient-to-r from-orange-500 to-red-500 rounded-full mb-6"></div>
           </div>
 
-          <p className="text-gray-700 text-md md:text-xl mb-4 w-4/5">
+          <p className="text-gray-900 text-md md:text-xl mb-4 w-4/5">
             {companyData && companyData.description && (
               <span>{companyData.description}</span>
             )}
@@ -146,7 +143,7 @@ const SolarFlowHero = ({ companyId }) => {
             <img
               src={companyData.LogoUrl}
               alt={companyData.name || "Cover Image"}
-              className="w-full h-full object-contain rounded-lg shadow-2xl border-4 border-white border-solid p-2 ring-2 ring-orange-300"
+              className="w-full h-full object-contain rounded-lg shadow-2xl border-4 border-white border-solid bg-white p-1 ring-4 ring-orange-300"
             />
           )}
           {FlagIcon && (

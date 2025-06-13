@@ -375,6 +375,7 @@ const GlobalPresence = ({ companyId }) => {
   return (
     mapLocations && (
       <section
+      id="impact"
         className={`py-16 relative transition-colors duration-300 px-[69px] w-full ${
           darkMode ? "bg-gray-900" : "bg-gray-50"
         }`}

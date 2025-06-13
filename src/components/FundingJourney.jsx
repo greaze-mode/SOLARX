@@ -489,7 +489,7 @@ export default function FundingJourney({ companyId }) {
 
   return (
     fundingRounds.length !== 0 && (
-      <section className="py-20 bg-gradient-to-br from-gray-50 to-white relative overflow-hidden">
+      <section id="funding" className="py-20 bg-gradient-to-br from-gray-50 to-white relative overflow-hidden">
         <div className="mx-auto px-4 sm:px-6 relative z-10">
           {/* Header */}
           {<SectionHeader />}

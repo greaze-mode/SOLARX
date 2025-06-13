@@ -30,6 +30,11 @@ export default function StartupDetail() {
     { label: "Projects", href: "#projects" },
     { label: "Global Impact", href: "#impact" },
   ];
+  const navItems = [
+    { label: "Home", href: "/" },
+    { label: "Global Accelerator", href: "/global-accelerator" },
+    { label: "Apply Now", href: "/apply" },
+  ];
 
   useEffect(() => {
     const checkCompany = async () => {
@@ -61,7 +66,7 @@ export default function StartupDetail() {
   if (loading) {
     return (
       <div className={`relative`}>
-        <SolarXNavbar />
+        <SolarXNavbar navItems={navItems} />
         <div className="container mx-auto px-4 pt-20 pb-6 min-h-screen flex items-center justify-center">
           <div className="text-center">
             <h2 className="text-2xl font-bold mb-4">
@@ -77,7 +82,7 @@ export default function StartupDetail() {
   if (error) {
     return (
       <div className="relative">
-        <SolarXNavbar />
+        <SolarXNavbar navItems={navItems} />
         <div className="container mx-auto px-4 pt-20 pb-6 min-h-screen flex items-center justify-center">
           <div className="text-center">
             <h2 className="text-2xl font-bold mb-4">Error</h2>
@@ -90,7 +95,7 @@ export default function StartupDetail() {
 
   return (
     <div className={`relative`}>
-      <SolarXNavbar />
+      <SolarXNavbar navItems={navItems} />
       <div className="max-w-screen-2xl mx-auto px-4 pb-6 mt-[2rem]"></div>
       <SolarFlowHero companyId={id} key={`hero-${id}`} />
       <MentorCarousel companyId={id} />

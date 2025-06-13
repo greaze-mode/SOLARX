@@ -47,7 +47,7 @@ export default function BusinessSummary({ companyId }) {
 
   return (
     businessData && (
-      <div className="w-full bg-gradient-to-r from-orange-200 to-orange-500 py-16 px-[69px] relative">
+      <div id="summary" className="w-full bg-gradient-to-r from-orange-200 to-orange-500 py-16 px-[69px] relative">
         <div className="absolute inset-0 bg-[url('/imgs/bg_impact_metrics.png')] bg-no-repeat bg-center bg-cover opacity-30"></div>
         <div className="relative z-10">
           <div className="flex flex-col md:flex-row items-center justify-between md:justify-start mb-8 space-y-3 md:space-y-0 md:space-x-3 w-full">

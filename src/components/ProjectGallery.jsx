@@ -332,7 +332,7 @@ const ProjectGallery = ({ companyId }) => {
 
   return (
     projects.length !== 0 && (
-      <div className="px-4 sm:px-6 lg:px-[69px] mx-auto py-12 ml-10">
+      <div id="projects" className="px-4 sm:px-6 lg:px-[69px] mx-auto py-12 ml-10">
         <div className="flex flex-col md:flex-row items-start md:items-center justify-start mb-8 space-y-3 md:space-y-0 md:space-x-3 w-full">
           <div className="w-1/5 md:w-16 hidden md:block h-1.5 bg-gradient-to-r from-orange-500 to-red-500 rounded-full"></div>
           <h1 className="text-3xl md:text-5xl font-bold mb-1 text-left">

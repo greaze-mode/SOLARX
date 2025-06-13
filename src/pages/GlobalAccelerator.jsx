@@ -16,8 +16,14 @@ const GlobalAccelerator = () => {
     { label: "Events", href: "#events" },
     { label: "Meet the Mentors", href: "#mentors" },
     { label: "Media Coverage", href: "#media" },
-    { label: "Impact Metrics", href: "#impact" },
     { label: "Future Plans", href: "#future" },
+  ];
+
+  const navItems = [
+    { label: "Home", href: "/" },
+    { label: "Global Accelerator", href: "/global-accelerator" },
+    { label: "Events", href: "#events" },
+    { label: "Apply Now", href: "/apply" },
   ];
 
   const [isCookieSet, setIsCookieSet] = useState(false);
@@ -34,7 +40,7 @@ const GlobalAccelerator = () => {
 
   return (
     <div className={`relative ${isCookieSet ? "translate-y-0" : ""}`}>
-      <SolarXNavbar centerBottom="Global Accelerator" />
+      <SolarXNavbar centerBottom="Global Accelerator" navItems={navItems} />
       <HeroSectionGA />
       <TimelineSection />
       <MentorsSection />

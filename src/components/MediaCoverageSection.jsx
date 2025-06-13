@@ -40,7 +40,7 @@ export default function MediaCoverageSection() {
   }, []);
 
   return (
-    <div className="pb-16 bg-white px-4 pt-16">
+    <div id="media" className="pb-16 bg-white px-4 pt-16">
       <h1 className="text-4xl sm:text-5xl font-extrabold mb-4 text-center">
         <span className="bg-clip-text text-transparent bg-gradient-to-r from-orange-500 to-red-600">
           Media Coverage & Recognition

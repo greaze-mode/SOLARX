@@ -325,6 +325,7 @@ export default function FundingInvestorsDashboard() {
 
   return (
     <section
+      id="funding"
       className={`min-h-screen bg-white p-6 sm:p-16 transition-opacity duration-300 ${
         isVisible ? "opacity-100" : "opacity-0"
       }`}

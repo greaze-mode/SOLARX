@@ -96,6 +96,7 @@ export default function MentorCarousel({ darkMode = false, companyId }) {
 
   return (
     <section
+      id="founders"
       className={`py-16 relative overflow-hidden h-[80%] ${
         darkMode ? "bg-gray-900" : "bg-gray-50"
       }`}

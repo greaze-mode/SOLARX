@@ -229,7 +229,7 @@ const GlobalImpactSection = () => {
 
   if (sdgStartupCounts.length === 0 && impactMetrics.length === 0) {
     return (
-      <section className="py-20 bg-gray-50">
+      <section id="impact" className="py-20 bg-gray-50">
         <div className="max-w-2xl mx-auto text-center p-8 bg-white rounded-xl shadow-lg border border-gray-200">
           <Target className="w-12 h-12 text-gray-400 mx-auto mb-4" />
           <h3 className="text-xl font-semibold text-gray-700 mb-2">
@@ -245,7 +245,7 @@ const GlobalImpactSection = () => {
   }
 
   return (
-    <section
+    <section id="impact"
       className={`pt-20 bg-white relative overflow-hidden transition-opacity duration-200 w-full ${
         isVisible ? "opacity-100" : "opacity-0"
       }`}

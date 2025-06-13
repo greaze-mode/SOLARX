@@ -730,7 +730,7 @@ const SolarXGlobalReach = () => {
       )}
 
       <section
-        id="global-reach"
+        id="reach"
         className={`py-12 sm:py-16 bg-gradient-to-b from-gray-50 via-white to-gray-50 transition-all duration-300 ${
           isFullscreen ? "hidden" : ""
         }`}

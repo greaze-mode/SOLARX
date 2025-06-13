@@ -151,7 +151,7 @@ export default function ImpactMetrics({ companyId }) {
 
   return (
     metrics && (
-      <div className="w-full bg-gradient-to-r from-orange-200 to-orange-500 pt-32 pb-20 relative">
+      <div id="impact" className="w-full bg-gradient-to-r from-orange-200 to-orange-500 pt-32 pb-20 relative">
         <div className="absolute inset-0 bg-[url('/imgs/bg_impact_metrics.png')] bg-no-repeat bg-center bg-cover opacity-20"></div>
         <div className="relative z-10">
           <div className="flex flex-col md:flex-row items-center justify-center md:space-x-3 w-full">

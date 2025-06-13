@@ -250,7 +250,7 @@ const TimelineSection = () => {
   }, [emblaApi, onSelect]);
 
   return (
-    <section className="w-screen h-screen bg-gradient-to-tr from-gray-900 via-orange-900 to-orange-700 text-white">
+    <section id="events" className="w-screen h-screen bg-gradient-to-tr from-gray-900 via-orange-900 to-orange-700 text-white">
       <div className="embla" ref={emblaRef}>
         <div className="embla__container">
           {transformedTimelineEvents.map((event) => (

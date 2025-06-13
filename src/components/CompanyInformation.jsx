@@ -70,7 +70,7 @@ export default function CompanyInformation({ companyId }) {
     }
   }, [id]);
   return (
-    <div className="relative h-full">
+    <div id="details" className="relative h-full">
       {/* <div
         className="absolute inset-0 z-0"
         style={{

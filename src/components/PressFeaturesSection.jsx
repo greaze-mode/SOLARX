@@ -201,7 +201,7 @@ export default function PressFeaturesSection({ companyId }) {
 
   return (
     allItems.length > 0 && (
-      <div className="w-full bg-gray-50/70 px-4 py-16 sm:px-6 lg:px-[69px]">
+      <div id="media" className="w-full bg-gray-50/70 px-4 py-16 sm:px-6 lg:px-[69px]">
         <div className="mx-auto px-4">
           <h1 className="text-4xl sm:text-5xl font-extrabold mb-4 text-center">
             <span className="bg-clip-text text-transparent bg-gradient-to-r from-orange-500 to-red-600">
