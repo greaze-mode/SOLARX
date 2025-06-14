@@ -398,67 +398,6 @@ export default function FundingJourney({ companyId }) {
   );
 
   /**
-   * Funding Overview Component
-   */
-  const FundingOverview = ({ fundingRounds, totalRaised, isVisible }) => (
-    <>
-      <h3 className="text-xl sm:text-2xl font-bold text-gray-800 mb-5 sm:mb-6 flex items-center">
-        <div className="w-1 h-6 sm:h-7 bg-orange-500 rounded-full mr-3"></div>
-        Funding Overview
-      </h3>
-      <div className="bg-white p-4 sm:p-5 rounded-xl shadow-lg border border-gray-100">
-        <div className="mb-4 sm:mb-5">
-          <h4 className="text-lg font-semibold text-gray-800 mb-2 sm:mb-3">
-            Funding Rounds Summary
-          </h4>
-          <div className="space-y-3">
-            {fundingRounds.map((round, index) => (
-              <div key={`round-summary-${index}`} className="flex items-start">
-                <div
-                  className={`w-3 h-3 ${
-                    round.isGrant
-                      ? "bg-blue-500"
-                      : round.isLoan
-                      ? "bg-green-500"
-                      : "bg-orange-500"
-                  } rounded-full mr-3 mt-1.5 flex-shrink-0`}
-                ></div>
-                <div>
-                  <p className="text-gray-800 font-medium">{round.type}</p>
-                  <p className="text-gray-600 text-sm">
-                    {round.amount} {round.date ? `- ${round.date}` : ""}
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-        <div className="pt-6 border-t border-gray-100">
-          <h4 className="text-lg font-semibold text-gray-800 mb-3">
-            Key Milestones
-          </h4>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="bg-orange-50 p-4 rounded-lg text-center sm:text-left">
-              <div className="text-orange-600 font-bold text-xl">
-                {fundingRounds.length}
-              </div>
-              <div className="text-gray-600 text-sm">
-                Funding Event{fundingRounds.length === 1 ? "" : "s"}
-              </div>
-            </div>
-            <div className="bg-orange-50 p-4 rounded-lg text-center sm:text-left">
-              <div className="text-orange-600 font-bold text-xl">
-                {totalRaised}
-              </div>
-              <div className="text-gray-600 text-sm">Total Raised</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </>
-  );
-
-  /**
    * Investors List Component
    */
   const InvestorsList = ({
@@ -509,7 +448,7 @@ export default function FundingJourney({ companyId }) {
 
           {/* Content when data is available */}
           {!loading && !error && fundingRounds.length > 0 && (
-            <div className="grid lg:grid-cols-2 gap-8 md:gap-12 w-full px-[69px] mx-auto">
+            <div className={`grid ${investors.length > 0 ? "lg:grid-cols-2": ""} gap-8 md:gap-12 w-full px-[69px] mx-auto`}>
               {/* Left Side - Funding Received */}
               <div
                 className={`transform transition-all duration-1000 delay-200 bg-white p-8 rounded-3xl shadow-xl border-amber-100 border-2 ${
@@ -550,28 +489,22 @@ export default function FundingJourney({ companyId }) {
               </div>
 
               {/* Right Side - Funding Impact or Investors */}
-              <div
-                className={`transform transition-all duration-1000 delay-400 bg-white p-8 rounded-3xl shadow-xl border-amber-100 border-2 h-fit ${
-                  isVisible
-                    ? "translate-x-0 opacity-100"
-                    : "translate-x-10 opacity-0"
-                }`}
-              >
-                {investors.length === 0 ? (
-                  <FundingOverview
-                    fundingRounds={fundingRounds}
-                    totalRaised={totalRaised}
-                    isVisible={isVisible}
-                  />
-                ) : (
+              {investors.length > 0 && (
+                <div
+                  className={`transform transition-all duration-1000 delay-400 bg-white p-8 rounded-3xl shadow-xl border-amber-100 border-2 h-fit ${
+                    isVisible
+                      ? "translate-x-0 opacity-100"
+                      : "translate-x-10 opacity-0"
+                  }`}
+                >
                   <InvestorsList
                     investors={investors}
                     hoveredInvestor={hoveredInvestor}
                     setHoveredInvestor={setHoveredInvestor}
                     isVisible={isVisible}
                   />
-                )}
-              </div>
+                </div>
+              )}
             </div>
           )}
         </div>
