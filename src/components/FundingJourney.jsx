@@ -221,6 +221,7 @@ export default function FundingJourney({ companyId }) {
       // Update state with processed data
       setFundingRounds(extractedRounds);
       setTotalRaised(formatCurrency(currentTotalAmount));
+      console.log("Investors Map:", Array.from(uniqueInvestorsMap.values()));
       setInvestors(Array.from(uniqueInvestorsMap.values()));
     } catch (err) {
       setError("Error processing funding data");
@@ -380,7 +381,7 @@ export default function FundingJourney({ companyId }) {
         <div
           className={`w-10 h-10 bg-orange-500 rounded-full flex items-center justify-center text-white font-bold text-lg mr-3 shadow-md transition-all duration-300 group-hover:scale-110 flex-shrink-0`}
         >
-          {investor.letter}
+          {investor.name[0]}
         </div>
         <div className="flex-1 min-w-0">
           <h5 className="font-semibold text-gray-800 group-hover:text-orange-600 transition-colors duration-300 break-words">
@@ -489,7 +490,10 @@ export default function FundingJourney({ companyId }) {
 
   return (
     fundingRounds.length !== 0 && (
-      <section id="funding" className="py-20 bg-gradient-to-br from-gray-50 to-white relative overflow-hidden">
+      <section
+        id="funding"
+        className="py-20 bg-gradient-to-br from-gray-50 to-white relative overflow-hidden"
+      >
         <div className="mx-auto px-4 sm:px-6 relative z-10">
           {/* Header */}
           {<SectionHeader />}

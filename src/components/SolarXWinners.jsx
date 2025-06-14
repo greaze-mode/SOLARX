@@ -56,7 +56,7 @@ const transformStartupData = (rawStartup) => {
     description:
       rawStartup.Description?.[0]?.children?.[0]?.text ||
       "No description available",
-    categories: shuffleArray(rawStartup.Sector_Tags)?.slice(0, 2) || [
+    categories: rawStartup.Card_Preview_Tags?.slice(0, 2) || [
       "General",
     ],
     isWomanLed: rawStartup.Female_Founder || false,
