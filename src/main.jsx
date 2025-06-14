@@ -11,7 +11,7 @@ createRoot(document.getElementById("root")).render(
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<App />} />
-        <Route path="/startup/:id" element={<StartupDetail />} />
+        <Route path="/startup/:documentId" element={<StartupDetail />} />
         <Route path="/global-accelerator" element={<GlobalAccelerator />} />
       </Routes>
     </BrowserRouter>

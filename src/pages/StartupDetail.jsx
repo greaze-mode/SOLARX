@@ -12,9 +12,12 @@ import PressFeaturesSection from "../components/PressFeaturesSection";
 import ProjectGallery from "../components/ProjectGallery";
 import GlobalPresence from "../components/GlobalPresence";
 import Footer from "../components/Footer";
+import { API_URL } from "../services/api";
+import axios from "axios";
 
 export default function StartupDetail() {
-  const { id } = useParams();
+  const { documentId } = useParams();
+  const [id, setId] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -38,30 +41,27 @@ export default function StartupDetail() {
 
   useEffect(() => {
     const checkCompany = async () => {
-      if (id) {
-        try {
-          setLoading(true);
+      if (documentId) {
+        setLoading(true);
 
-          const baseUrl = import.meta.env.VITE_API_URL;
-          const response = await fetch(
-            `${baseUrl}/api/startups?filters[id][$eq]=${id}&populate=*&pagination[pageSize]=100`
-          );
-          const data = await response.json();
-
-          if (!(data && data.data && data.data.length > 0)) {
-            setError("Company not found");
-          }
-        } catch (err) {
-          console.error("Error checking company:", err);
-          setError("Error loading company data");
-        } finally {
-          setLoading(false);
-        }
+        axios
+          .get(`${API_URL}/startups/${documentId}`)
+          .then((response) => {
+            // console.log("Company data:", response.data.data);
+            setId(response.data.data.id);
+          })
+          .catch((err) => {
+            console.error("Error checking company:", err);
+            setError("Error loading company data");
+          })
+          .finally(() => {
+            setLoading(false);
+          });
       }
     };
 
     checkCompany();
-  }, [id]);
+  }, [documentId]);
 
   if (loading) {
     return (

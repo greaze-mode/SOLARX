@@ -194,6 +194,7 @@ const SolarXGlobalReach = () => {
                 color: getRegionColor(hqLocation.lat, hqLocation.lng),
                 type: "Headquarters",
                 startupId: startup.id,
+                startupDocumentId: startup.documentId	|| "N/A",
                 startupName: startup.Name || "N/A",
                 startupLocationString: startup.HQ_Location_Name || "N/A",
                 startupLogo: startup.Company_Logo.url || "",
@@ -624,7 +625,7 @@ const SolarXGlobalReach = () => {
         {data.startupId !== "N/A" && (
           <div className="mt-5 sm:mt-6 text-center">
             <a
-              href={`/startup/${data.startupId}`}
+              href={`/startup/${data.startupDocumentId}`}
               className="inline-block bg-orange-500 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-orange-600 transition-colors shadow-md hover:shadow-lg"
               target="_blank"
               rel="noopener noreferrer"

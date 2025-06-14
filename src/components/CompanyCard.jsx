@@ -23,7 +23,7 @@ export default function CompanyCard({
   // console.log(regions)
   return (
     <Link
-      to={`/startup/${id}`}
+      to={`/startup/${documentId}`}
       className="flex flex-col h-full bg-white rounded-xl max-w-xl sm:rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 ease-in-out group"
     >
       <div className="relative h-40 sm:h-48 bg-red-900">
