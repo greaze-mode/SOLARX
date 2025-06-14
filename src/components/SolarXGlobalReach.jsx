@@ -551,14 +551,14 @@ const SolarXGlobalReach = () => {
       >
         <div className="flex justify-between items-center mb-4">
           <h3
-            className="text-lg sm:text-xl font-bold text-gray-800 truncate"
+            className="text-lg sm:text-xl font-bold text-gray-900 truncate"
             title={data.startupName}
           >
             <span>{data.startupName}</span>
           </h3>
           <button
             onClick={onClose}
-            className="text-gray-500 hover:text-red-600 p-1 rounded-full hover:bg-gray-100 transition-colors"
+            className="text-gray-900 hover:text-red-600 p-1 rounded-full hover:bg-gray-100 transition-colors"
           >
             <XCircle size={24} />
           </button>
@@ -567,69 +567,55 @@ const SolarXGlobalReach = () => {
           <img
             src={data.startupLogo}
             alt={`${data.startupName} Logo`}
-            className="w-full rounded-sm border-2 my-4 px-6"
+            className="w-full shadow-xl my-4"
           />
         </div>
         <div className="space-y-2.5 text-sm">
           <p>
-            <strong className="text-gray-600">
-              <span>Status:</span>
-            </strong>
-            <span
-              style={{
-                color: `#${new THREE.Color(data.color).getHexString()}`,
-              }}
-              className="font-semibold"
-            >
-              <MapPin size={14} className="inline-block mr-1 mb-0.5" />
-              <span>{data.type}</span>
-            </span>
-          </p>
-          <p>
-            <strong className="text-gray-600">
-              <span>Location:</span>
+            <strong className="text-gray-800">
+              <span>Location: </span>
             </strong>
             <span>{data.startupLocationString}</span>
           </p>
-          {data.startupCountry !== "N/A" && (
+          {/* {data.startupCountry !== "N/A" && (
             <p>
-              <strong className="text-gray-600">
-                <span>Country:</span>
+              <strong className="text-gray-800">
+                <span>Country: </span>
               </strong>
               <span>{data.startupCountry}</span>
             </p>
-          )}
+          )} */}
           {data.startupRegions !== "N/A" && (
             <p>
-              <strong className="text-gray-600">
-                <span>Region(s):</span>
+              <strong className="text-gray-800">
+                <span>Region: </span>
               </strong>
               <span>{data.startupRegions}</span>
             </p>
           )}
           {data.startupSectors !== "N/A" && (
             <p>
-              <strong className="text-gray-600">
-                <span>Sector(s):</span>
+              <strong className="text-gray-800">
+                <span>Sector(s): </span>
               </strong>
               <span>{data.startupSectors}</span>
             </p>
           )}
           {data.startupTech !== "N/A" && (
             <p>
-              <strong className="text-gray-600">
-                <span>Technology:</span>
+              <strong className="text-gray-800">
+                <span>Technology: </span>
               </strong>
               <span>{data.startupTech}</span>
             </p>
           )}
           {data.startupDescription &&
             data.startupDescription !== "No description available." && (
-              <div className="mt-3 pt-3 border-t border-gray-200">
-                <strong className="text-gray-600 block mb-1">
+              <div className="mt-3 pt-3 border-t border-gray-300">
+                <strong className="text-gray-800 block mb-1">
                   <span>Description:</span>
                 </strong>
-                <p className="text-gray-700 text-xs max-h-28 sm:max-h-32 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 hover:scrollbar-thumb-gray-400">
+                <p className="text-gray-800 max-h-28 sm:max-h-32 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 hover:scrollbar-thumb-gray-400">
                   <span>{data.startupDescription}</span>
                 </p>
               </div>

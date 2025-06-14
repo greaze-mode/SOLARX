@@ -46,7 +46,7 @@ const MentorsSection = () => {
       id="mentors"
       className="investor-profiles-section bg-gradient-to-tl from-orange-700 via-orange-900 to-gray-900 text-white py-16 md:py-20"
     >
-      <div className="max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto px-4 sm:px-6 lg:px-[69px]">
         <h2
           className="text-4xl md:text-6xl font-bold mb-12 md:mb-4 text-center text-white"
           style={{ textShadow: "0 2px 5px rgba(0,0,0,0.6)" }}

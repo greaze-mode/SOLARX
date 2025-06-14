@@ -10,7 +10,7 @@ import {
 const AboutSolarXChallenge = () => {
   return (
     <section className="py-16 bg-gray-50">
-      <div className="w-full mx-auto px-36">
+      <div className="w-full mx-auto px-4 lg:px-36">
         {/* Header */}
         <h2 className="text-4xl md:text-5xl font-extrabold mb-5 text-center">
           <span className="bg-clip-text text-transparent bg-gradient-to-r from-orange-600 to-red-600 ">

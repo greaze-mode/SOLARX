@@ -200,7 +200,7 @@ export const EventSection = () => {
   };
 
   return (
-    <div className="w-full px-[69px] py-12" id="events">
+    <div className="w-full px-6 lg:px-[69px] py-12" id="events">
       <h1 className="text-4xl md:text-5xl font-bold mb-4 text-center">
         <span className="bg-clip-text text-transparent bg-gradient-to-r from-orange-500 to-red-600">
           Event Gallery

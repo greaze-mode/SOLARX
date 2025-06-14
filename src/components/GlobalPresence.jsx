@@ -24,7 +24,9 @@ const GlobalPresence = ({ companyId }) => {
       }
 
       axios
-        .get(`${API_URL}/startups?filters[id][$eq]=${companyId}&pagination[pageSize]=100`)
+        .get(
+          `${API_URL}/startups?filters[id][$eq]=${companyId}&pagination[pageSize]=100`
+        )
         .then((response) => {
           if (
             response.data &&
@@ -375,8 +377,8 @@ const GlobalPresence = ({ companyId }) => {
   return (
     mapLocations && (
       <section
-      id="impact"
-        className={`py-16 relative transition-colors duration-300 px-[69px] w-full ${
+        id="impact"
+        className={`py-16 relative transition-colors duration-300 px-4 md:px-[69px] w-full ${
           darkMode ? "bg-gray-900" : "bg-gray-50"
         }`}
       >

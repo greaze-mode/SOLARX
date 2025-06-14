@@ -36,7 +36,7 @@ const renderRichText = (richTextArray) => {
             className="text-lg leading-relaxed text-gray-300 mb-5"
           >
             {children.map((child, i) => {
-              console.log("Child:", child);
+              // console.log("Child:", child);
               if (child.bold === true) {
                 return <span className="font-bold">{child.text}</span>;
               } else if (child.italic === true) {
@@ -124,9 +124,9 @@ const FutureSection = () => {
     futureData.title && (
       <section
         id="future"
-        className="writeup bg-gradient-to-br from-gray-900 via-orange-900 to-orange-700 text-white py-20 md:py-24"
+        className="bg-gradient-to-br from-gray-900 via-orange-900 to-orange-700 text-white py-20 md:py-24"
       >
-        <div className="max-w-7xl mx-auto">
+        <div className="max-w-7xl mx-auto px-4">
           <h1
             className="text-4xl md:text-5xl lg:text-6xl font-bold mb-10 md:mb-4 text-center text-white"
             style={{ textShadow: "0 2px 5px rgba(0,0,0,0.6)" }}

@@ -72,7 +72,7 @@ const MentorCard = ({ imgSrc, name, title, bio, id }) => {
   return (
     <div
       id={`${id}`}
-      className="bg-white flex flex-col rounded-xl shadow-xl hover:shadow-2xl overflow-hidden w-full max-w-[20rem] h-[39rem] flex-shrink-0 transition-all duration-300 ease-in-out transform hover:-translate-y-2 border border-gray-200 hover:border-orange-500 focus:border-orange-500"
+      className="bg-white flex flex-col rounded-xl shadow-xl hover:shadow-2xl overflow-hidden w-full md:max-w-[20rem] h-[39rem] flex-shrink-0 transition-all duration-300 ease-in-out transform hover:-translate-y-2 border border-gray-200 hover:border-orange-500 focus:border-orange-500"
     >
       <div className="bg-gradient-to-b from-gray-50 to-white rounded-t-xl overflow-hidden">
         <div className="relative h-[17.5rem]">

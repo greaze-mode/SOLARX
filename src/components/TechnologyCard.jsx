@@ -1,5 +1,4 @@
 import { Zap, Clock, Sun, CheckCircle, Settings, Package } from "lucide-react"; // Example icons
-import { parseRichText } from "../utils/strapiHelper";
 import useEmblaCarousel from "embla-carousel-react";
 import { ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
 import { useState, useEffect, useCallback } from "react";
@@ -40,6 +39,76 @@ const getHighlightIcon = (title) => {
     return <Package size={18} className="text-orange-600 mr-2" />;
   // Add more specific icons as needed
   return <CheckCircle size={18} className="text-orange-600 mr-2" />;
+};
+
+const renderRichText = (richTextArray) => {
+  if (!Array.isArray(richTextArray) || richTextArray.length === 0) {
+    return <p className="text-gray-600">No content available.</p>;
+  }
+
+  return richTextArray.map((block, blockIndex) => {
+    const { type, level, children, format } = block;
+
+    // Handle different block types
+    switch (type) {
+      case "heading":
+        const HeadingTag = `h${level}`;
+        return (
+          <HeadingTag
+            key={blockIndex}
+            className={`font-bold text-gray-800 mb-3 mt-4 ${
+              level === 1 ? "text-2xl" : "text-xl"
+            }`}
+          >
+            {children.map((child, i) => child.text)}
+          </HeadingTag>
+        );
+
+      case "paragraph":
+        return (
+          <p
+            key={blockIndex}
+            className="mb-5"
+          >
+            {children.map((child, i) => {
+              // console.log("Child:", child);
+              if (child.bold === true) {
+                return <span className="font-bold">{child.text}</span>;
+              } else if (child.italic === true) {
+                return <span className="italic">{child.text}</span>;
+              } else if (child.underline === true) {
+                return <span className="underline">{child.text}</span>;
+              }
+              return child.text;
+            })}
+          </p>
+        );
+
+      case "list":
+        const ListTag = format === "ordered" ? "ol" : "ul";
+        const listClass =
+          format === "ordered"
+            ? "list-decimal pl-5 mb-4"
+            : "list-disc pl-5 mb-4";
+
+        return (
+          <ListTag key={blockIndex} className={listClass}>
+            {children.map((item, itemIndex) => (
+              <li key={itemIndex} className="mb-1">
+                {item.children.map((child, i) => child.text)}
+              </li>
+            ))}
+          </ListTag>
+        );
+
+      default:
+        return (
+          <p key={blockIndex} className="text-gray-600 mb-4">
+            {children?.map((child, i) => child.text) || ""}
+          </p>
+        );
+    }
+  });
 };
 
 const TechnologyCard = ({ technology, techTags }) => {
@@ -88,18 +157,22 @@ const TechnologyCard = ({ technology, techTags }) => {
     <div className="rounded-xl shadow-md border border-orange-200 p-8 md:py-10 md:px-20 w-full overflow-hidden h-full">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center">
         {/* Left Side */}
-        <div className={`flex flex-col ${demonstrationImages.length > 0 ? "h-full" : "h-auto col-span-2"}`}>
+        <div
+          className={`flex flex-col ${
+            demonstrationImages.length > 0 ? "h-full" : "h-auto col-span-2"
+          }`}
+        >
           <div className="flex items-center mb-3">
-            <div className="p-2 bg-orange-100 rounded-full mr-3">
+            {/* <div className="p-2 bg-orange-100 rounded-full mr-3">
               <Sun size={24} className="text-orange-600" />{" "}
-            </div>
+            </div> */}
             <h2 className="text-3xl sm:text-4xl font-bold text-orange-600">
               {technology.Name || "No Name Provided"}
             </h2>
           </div>
 
           <p className="text-gray-700 mb-6 leading-relaxed text-sm sm:text-base">
-            {parseRichText(technology.Description)}
+            {renderRichText(technology.Description)}
           </p>
 
           {techTags && techTags.length > 0 && (
@@ -157,7 +230,7 @@ const TechnologyCard = ({ technology, techTags }) => {
                         <img
                           src={`${image.url}`}
                           alt={`${technology.Name} demonstration ${index + 1}`}
-                          className="relative object-cover w-full h-[300px] md:h-[450px]"
+                          className="relative object-contain w-full h-[300px] md:h-[450px]"
                         />
                       </div>
                     ))}

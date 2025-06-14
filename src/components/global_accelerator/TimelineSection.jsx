@@ -2,6 +2,8 @@ import React, { useState, useEffect, useRef, useCallback } from "react";
 import useEmblaCarousel from "embla-carousel-react";
 import { mentorsData } from "./mentorData"; // Ensure this path is correct
 import "../../styles/timeline.css";
+import axios from "axios";
+import { API_URL } from "../../services/api";
 
 const PrevButton = ({ enabled, onClick }) => (
   <button
@@ -188,28 +190,15 @@ const transformedTimelineEvents = webinarSeriesData.sessions.map(
   }
 );
 
-// const allEventsRaw = [...transformedTimelineEvents];
-const sortedTimelineEventsData = [...transformedTimelineEvents];
-// console.log("Sorted Timeline Events Data:", sortedTimelineEventsData);
+const checkUpcomingEvents = (dates) => {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
 
-// const sortedTimelineEventsData = allEventsRaw.sort((a, b) => {
-//   const dateA = getMonthDay(
-//     a.date.replace("Upcoming: ", "").replace("Phase: ", "")
-//   );
-//   const dateB = getMonthDay(
-//     b.date.replace("Upcoming: ", "").replace("Phase: ", "")
-//   );
-
-//   // Handle cases where parsing might fail or for non-date specific titles
-//   if (!dateA && !dateB) return 0; // Keep original order if both unparsable
-//   if (!dateA) return 1; // Put unparsable ones (like "Future Plan") at the end
-//   if (!dateB) return -1; // Put unparsable ones at the end
-
-//   if (dateA.monthIndex !== dateB.monthIndex) {
-//     return dateA.monthIndex - dateB.monthIndex;
-//   }
-//   return dateA.day - dateB.day;
-// });
+  return dates.some((dateStr) => {
+    const date = new Date(dateStr);
+    return date > today;
+  });
+};
 
 // --- TimelineSection Component ---
 const TimelineSection = () => {
@@ -218,6 +207,43 @@ const TimelineSection = () => {
   const [nextBtnEnabled, setNextBtnEnabled] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [scrollSnaps, setScrollSnaps] = useState([]);
+  const [events, setEvents] = useState([]);
+
+  useEffect(() => {
+    const fetchEvents = async () => {
+      axios
+        .get(
+          `${API_URL}/global-accelerator?populate[0]=events&populate[1]=events.Image&populate[2]=events.mentor&populate[3]=events.mentor.Profile_Picture&populate[4]=events.mentor.mentor_designation`
+        )
+        .then((response) => {
+          const eventsData = response.data.data.events;
+          // console.log("Fetched events data:", eventsData);
+
+          if (eventsData && eventsData.length > 0) {
+            const formattedEvents = eventsData.map((event) => ({
+              id: event.id,
+              img: event.Image.url || null,
+              title: event.Topic || null,
+              mentorDetails:
+                `${event.mentor.Name} (${event.mentor.mentor_designation[0].Company})` ||
+                null,
+              isUpcoming: checkUpcomingEvents(event.Dates),
+              dates: event.Dates || [],
+              mentorImg: event.mentor.Profile_Picture?.url || null,
+            }));
+
+            // console.log("Fetched slides:", formattedSlides);
+
+            setEvents(formattedEvents);
+          }
+        })
+        .catch((error) => {
+          console.error("Error fetching Workshops:", error);
+        });
+    };
+
+    fetchEvents();
+  }, []);
 
   const scrollPrev = useCallback(
     () => emblaApi && emblaApi.scrollPrev(),
@@ -250,78 +276,87 @@ const TimelineSection = () => {
   }, [emblaApi, onSelect]);
 
   return (
-    <section id="events" className="w-screen h-screen bg-gradient-to-tr from-gray-900 via-orange-900 to-orange-700 text-white">
-      <div className="embla" ref={emblaRef}>
-        <div className="embla__container">
-          {transformedTimelineEvents.map((event) => (
-            <div className="embla__slide" key={event.key}>
-              {/* --- THIS IS THE RESPONSIVE VERSION OF YOUR ORIGINAL LAYOUT --- */}
-              <div className="flex flex-col md:flex-row justify-center items-center w-full h-full box-border p-6 md:p-12 lg:px-24">
-                {/* Image Section */}
-                <div className="relative flex-shrink-0 w-full max-w-xs md:max-w-none md:w-auto mb-6 md:mb-0 md:mr-8 lg:mr-12">
-                  {event.isUpcoming && (
-                    <div className="absolute top-4 right-4 md:top-5 md:right-36 md:transform md:-translate-x-1/2 bg-gradient-to-r from-red-600 to-orange-500 text-white text-xs font-bold py-2 px-4 md:px-6 rounded-full z-10 animate-pulse">
-                      UPCOMING
-                    </div>
-                  )}
-                  <img
-                    src={event.img}
-                    alt={event.title}
-                    className="w-full md:w-[650px] md:max-w-[40vw] h-auto max-h-[40vh] md:max-h-[80vh] object-cover md:object-contain shadow-2xl rounded-2xl border-2 border-white/10"
-                  />
-                </div>
-
-                {/* Content Section */}
-                <div className="w-full md:w-1/2 flex flex-col justify-center items-center md:items-start text-center md:text-left">
-                  <h2 className="text-3xl md:text-5xl font-bold pb-2.5 mb-2 text-white">
-                    {event.title}
-                    <div className="w-1/3 h-1.5 mt-4 mx-auto md:mx-0 bg-gradient-to-r from-orange-500 to-red-500 rounded-full"></div>
-                  </h2>
-
-                  <div className="mt-4 w-full">
-                    <div className="flex flex-col items-center md:items-start space-y-4">
-                      <div className="flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-4">
-                        <img
-                          src={event.imgSrc}
-                          alt={`${event.id}'s image`}
-                          className="w-24 h-24 md:w-28 md:h-28 rounded-full object-cover border-4 border-white/20 flex-shrink-0"
-                        />
-                        <h3 className="text-lg md:text-xl font-semibold text-white">
-                          <span
-                            dangerouslySetInnerHTML={{
-                              __html: event.description,
-                            }}
-                          />
-                        </h3>
+    events && (
+      <section
+        id="events"
+        className="w-screen h-screen bg-gradient-to-tr from-gray-900 via-orange-900 to-orange-700 text-white"
+      >
+        <div className="embla" ref={emblaRef}>
+          <div className="embla__container">
+            {events.map((event) => (
+              <div className="embla__slide" key={event.id}>
+                {/* --- THIS IS THE RESPONSIVE VERSION OF YOUR ORIGINAL LAYOUT --- */}
+                <div className="flex flex-col md:flex-row justify-center items-center w-full h-full box-border p-6 md:p-12 lg:px-24">
+                  <div className="relative flex-shrink-0 w-full max-w-xs md:max-w-none md:w-auto mb-6 md:mb-0 md:mr-8 lg:mr-12">
+                    {event.isUpcoming && (
+                      <div className="absolute top-4 right-4 md:top-5 md:right-5 md:transform bg-gradient-to-r from-red-600 to-orange-500 text-white text-base font-bold py-2 px-4 md:px-6 rounded-full z-10 animate-pulse">
+                        UPCOMING
                       </div>
-                      <div className="text-xl md:text-3xl text-white/80 font-medium pt-4">
-                        {event.date}
+                    )}
+                    <img
+                      src={event.img}
+                      alt={event.title}
+                      className="w-full md:w-[650px] md:max-w-[40vw] h-auto max-h-[40vh] md:max-h-[80vh] object-cover md:object-contain shadow-2xl rounded-2xl border-2 border-white/10"
+                    />
+                  </div>
+
+                  {/* Content Section */}
+                  <div className="w-full md:w-1/2 flex flex-col justify-center items-center md:items-start text-center md:text-left">
+                    <h2 className="text-3xl md:text-5xl font-bold pb-2.5 mb-2 text-white">
+                      {event.title}
+                      <div className="w-1/3 h-1.5 mt-4 mx-auto md:mx-0 bg-gradient-to-r from-orange-500 to-red-500 rounded-full"></div>
+                    </h2>
+
+                    <div className="mt-4 w-full">
+                      <div className="flex flex-col items-center md:items-start space-y-4">
+                        <div className="flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-4">
+                          <img
+                            src={event.mentorImg}
+                            alt={`${event.mentorDetails}'s image`}
+                            className="w-24 h-24 md:w-28 md:h-28 rounded-full object-cover border-4 border-white/20 flex-shrink-0"
+                          />
+                          <h3 className="text-lg md:text-xl font-semibold text-white">
+                            <span>Speaker: {event.mentorDetails}</span>
+                          </h3>
+                        </div>
+                        <div className="text-xl md:text-3xl text-white/80 font-medium pt-4">
+                          {event.dates.map((date, idx) => {
+                            const d = new Date(date);
+                            return d
+                              .toLocaleDateString("en-US", {
+                                year: "numeric",
+                                month: "long",
+                                day: "numeric",
+                              })
+                              ;
+                          }).join(" & ")}
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
 
-        <PrevButton onClick={scrollPrev} enabled={prevBtnEnabled} />
-        <NextButton onClick={scrollNext} enabled={nextBtnEnabled} />
+          <PrevButton onClick={scrollPrev} enabled={prevBtnEnabled} />
+          <NextButton onClick={scrollNext} enabled={nextBtnEnabled} />
 
-        <div className="embla__dots">
-          {scrollSnaps.map((_, index) => (
-            <button
-              key={index}
-              className={`embla__dot ${
-                index === selectedIndex ? "embla__dot--selected" : ""
-              }`}
-              onClick={() => scrollTo(index)}
-              aria-label={`Go to slide ${index + 1}`}
-            />
-          ))}
+          <div className="embla__dots">
+            {scrollSnaps.map((_, index) => (
+              <button
+                key={index}
+                className={`embla__dot ${
+                  index === selectedIndex ? "embla__dot--selected" : ""
+                }`}
+                onClick={() => scrollTo(index)}
+                aria-label={`Go to slide ${index + 1}`}
+              />
+            ))}
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
+    )
   );
 };
 

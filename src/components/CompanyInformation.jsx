@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { getLocationFromLatLong } from "../utils/strapiHelper";
 import { Calendar, MapPin, Users, Shield, Target, Globe } from "lucide-react";
 import { useParams } from "react-router-dom";
 import * as countryCodes from "country-codes-list";
@@ -45,11 +44,6 @@ export default function CompanyInformation({ companyId }) {
               companyData.HQ_Location_Name ||
               getCountryNameFromCode(companyData.Country) ||
               "Location not specified",
-            // Headquarters:
-            //   (await getLocationFromLatLong(
-            //     companyData.HQ_Location.lat,
-            //     companyData.HQ_Location.lng
-            //   )) || "Location not specified",
             TeamSize: companyData.Team_Size || "",
             sdgs: companyData.SDG,
           };
@@ -81,7 +75,7 @@ export default function CompanyInformation({ companyId }) {
         }}
       /> */}
       <div className="relative z-20 py-16">
-        <div className="px-[69px] w-full font-sans">
+        <div className="px-4 lg:px-[69px] w-full font-sans">
           {loading && (
             <div className="flex justify-center items-center py-20">
               <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-orange-500"></div>
@@ -115,7 +109,7 @@ export default function CompanyInformation({ companyId }) {
                     </div>
                     <div>
                       <p className="text-gray-500 text-sm mb-1">Founded</p>
-                      <p className="text-gray-800 text-xl font-medium">
+                      <p className="text-gray-800 text-lg lg:text-xl font-medium">
                         {company.FoundingYear || "Not specified"}
                       </p>
                     </div>
@@ -130,7 +124,7 @@ export default function CompanyInformation({ companyId }) {
                       <p className="text-gray-500 text-sm mb-1">
                         SDG Alignment
                       </p>
-                      <p className="text-gray-800 text-xl font-medium">
+                      <p className="text-gray-800 text-lg lg:text-xl font-medium">
                         {company.sdgs && company.sdgs.length > 0
                           ? company.sdgs.map((sdg) => sdg).join(", ")
                           : "Not specified"}
@@ -145,7 +139,7 @@ export default function CompanyInformation({ companyId }) {
                     </div>
                     <div>
                       <p className="text-gray-500 text-sm mb-1">Location</p>
-                      <p className="text-gray-800 text-xl font-medium">
+                      <p className="text-gray-800 text-lg lg:text-xl font-medium">
                         {company.Location || "Not specified"}
                       </p>
                     </div>
@@ -158,7 +152,7 @@ export default function CompanyInformation({ companyId }) {
                     </div>
                     <div>
                       <p className="text-gray-500 text-sm mb-1">Team Size</p>
-                      <p className="text-gray-800 text-xl font-medium">
+                      <p className="text-gray-800 text-lg lg:text-xl font-medium">
                         {company.TeamSize
                           ? company.TeamSize == 1
                             ? `${company.TeamSize} employee`
@@ -175,13 +169,13 @@ export default function CompanyInformation({ companyId }) {
                     </div>
                     <div>
                       <p className="text-gray-500 text-sm mb-1">Website</p>
-                      <p className="text-gray-800 text-xl font-medium">
+                      <p className="text-gray-800 text-lg lg:text-xl font-medium">
                         {company.Website ? (
                           <a
                             href={company.Website}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-orange-600 hover:text-orange-700 hover:underline"
+                            className="text-orange-600 hover:text-orange-700 hover:underline truncate"
                           >
                             {company.Website}
                           </a>
@@ -199,7 +193,7 @@ export default function CompanyInformation({ companyId }) {
                     </div>
                     <div>
                       <p className="text-gray-500 text-sm mb-1">Contact</p>
-                      <p className="text-gray-800 text-xl font-medium">
+                      <p className="text-gray-800 text-lg lg:text-xl truncate font-medium">
                         {company.ContactEmail ? (
                           <a
                             href={`mailto:${company.ContactEmail}`}

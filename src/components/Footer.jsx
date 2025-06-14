@@ -177,11 +177,11 @@ const Footer = ({
           {/* Social Icons */}
           <ul className="flex space-x-3 mt-6 justify-center sm:justify-start md:self-start">
             <li>
-                <SocialIcon
-                  href="https://www.facebook.com/InternationalSolarAlliance/"
-                  icon={<FaFacebookF />}
-                  classes={"bg-[#4267B2] text-white"}
-                />
+              <SocialIcon
+                href="https://www.facebook.com/InternationalSolarAlliance/"
+                icon={<FaFacebookF />}
+                classes={"bg-[#4267B2] text-white"}
+              />
             </li>
             <li>
               <SocialIcon
