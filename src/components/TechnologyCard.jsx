@@ -202,7 +202,7 @@ const TechnologyCard = ({ technology, techTags }) => {
                     </h4>
                   </div>
                   <p className="text-gray-600 text-sm sm:text-base pl-8">
-                    {parseRichText(highlight.Description) ||
+                    {renderRichText(highlight.Description) ||
                       "No description provided."}
                   </p>
                 </div>
