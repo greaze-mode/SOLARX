@@ -896,7 +896,7 @@ export const fetchCompanyTeam = async (id) => {
 export const fetchMentors = async (id) => {
   try {
     // Using the founders endpoint which contains the mentor data
-    const response = await axios.get(`${API_URL}/founders?populate=*&filters[startup][id][$eq]=${id}&pagination[pageSize]=100`);
+    const response = await axios.get(`${API_URL}/startups?filters[id][$eq]=${id}&populate[0]=founders&populate[1]=founders.Profile_Picture`);
 
     // Log the response to help with debugging
     // console.log('Mentors API response (from founders):', response.data);

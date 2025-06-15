@@ -24,18 +24,26 @@ const AboutSolarXChallenge = () => {
           <div className="space-y-8 col-span-1">
             {/* Description */}
             <div className="space-y-6">
-              <p className="text-gray-700 text-lg leading-relaxed">
-                The SolarX Startup Challenge is a flagship program by the
-                International Solar Alliance (ISA) designed to identify,
-                nurture, and accelerate solar startups across Africa,
-                Asia-Pacific, Latin America & Caribbean, and the Middle East &
-                North Africa.
+              <p className="text-gray-900 text-lg leading-relaxed">
+                The SolarX Startup Challenge is an initiative by the
+                International Solar Alliance (ISA) to foster entrepreneurship
+                and develop scalable solar solutions across ISA
+                member countries.
               </p>
 
-              <p className="text-gray-700 text-lg leading-relaxed">
-                Our mission is to mobilize over USD 1 trillion in investments
-                for solar projects by 2030 and enable energy access in
-                underserved regions through innovative entrepreneurship.
+              <p className="text-gray-900 text-lg leading-relaxed">
+                It aims to bridge the gap between solar potential and deployment
+                by empowering local innovators and advancing clean energy
+                transitions. The challenge involves crowdsourcing cost-effective
+                solutions, accelerating the shift to renewable energy, and
+                building capacity across the solar value chain.
+              </p>
+              <p className="text-gray-900 text-lg leading-relaxed">
+                The challenge has expanded from an Africa-focused edition in
+                2023 to include Asia-Pacific (including India) and Latin America
+                and the Caribbean (LAC) regions. Each edition focuses on a
+                specific region, seeking innovative and scalable solutions to
+                address local challenges within the solar energy sector.
               </p>
             </div>
           </div>

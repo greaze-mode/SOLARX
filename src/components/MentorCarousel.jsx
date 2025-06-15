@@ -11,9 +11,12 @@ export default function MentorCarousel({ darkMode = false, companyId }) {
       try {
         setLoading(true);
         const response = await fetchMentors(companyId);
+        const founders = response.data[0].founders || [];
+
+        console.log(founders)
 
         if (response && response.data) {
-          const processedMentors = response.data.map((founder) => {
+          const processedMentors = founders.map((founder) => {
             const mentorData = {
               id: founder.id,
               name: founder.Name || "",

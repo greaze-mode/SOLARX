@@ -79,7 +79,7 @@ const MentorCard = ({ imgSrc, name, title, bio, id }) => {
           <img
             src={imgSrc}
             alt={name}
-            className="w-full h-full object-cover object-top"
+            className="w-full h-full object-cover object-center rounded-t-xl"
           />
         </div>
       </div>

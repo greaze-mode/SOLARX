@@ -301,7 +301,7 @@ export default function FundingJourney({ companyId }) {
       >
         <div className="w-2.5 h-2.5 bg-white rounded-full"></div>
       </div>
-      <div className="bg-white p-4 sm:p-5 rounded-xl transition-all duration-500">
+      <div className="bg-white rounded-xl transition-all duration-500">
         <div className="flex items-center justify-between mb-3">
           <h4 className="text-xl font-bold text-gray-800">{round.type}</h4>
           <div className="flex-shrink-0 ml-2">

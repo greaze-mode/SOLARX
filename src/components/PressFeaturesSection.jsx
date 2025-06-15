@@ -12,31 +12,26 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
 const FeatureCard = ({ type, source, title, link }) => {
-  const Icon = type === "award" ? Trophy : Newspaper;
-  const linkText = type === "award" ? "View Award" : "Read Article";
+  const Icon = Newspaper;
+  const linkText = "Visit Link";
 
   return (
-    <div className="flex h-full flex-col bg-white border border-gray-200/80 rounded-xl shadow-md hover:shadow-2xl transition-all duration-300 ease-in-out transform hover:-translate-y-2 ">
-      <div className="p-6 flex-grow flex flex-col">
-        <div className="flex items-center text-orange-600 mb-4">
-          <Icon className="w-5 h-5 mr-2 flex-shrink-0" />
-          <span className="text-sm font-semibold uppercase tracking-wider truncate">
-            {source}
-          </span>
+    <a href={link} target="_blank" rel="noopener noreferrer">
+      <div className="flex h-full flex-col bg-white border border-gray-200/80 rounded-xl shadow-md hover:shadow-2xl transition-all duration-300 ease-in-out transform hover:-translate-y-2 ">
+        <div className="p-6 flex-grow flex flex-col">
+          <div className="flex items-center text-orange-600 mb-4">
+            <Icon className="w-5 h-5 mr-2 flex-shrink-0" />
+            <span className="text-sm font-semibold uppercase tracking-wider truncate">
+              {source}
+            </span>
+          </div>
+          <h3 className="text-lg font-bold text-gray-800 mb-3 flex-grow">
+            {title}
+          </h3>
         </div>
-        <h3 className="text-lg font-bold text-gray-800 mb-3 flex-grow">
-          {title}
-        </h3>
-      </div>
-      {link && (
-        <div className="bg-gray-50 p-4 rounded-b-xl border-t border-gray-200/80">
-          <a
-            href={link}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-orange-600 hover:text-orange-700 font-semibold group inline-flex items-center w-full"
-          >
-            {linkText}
+        {link && (
+          <div className="bg-gray-50 text-orange-600 p-4 rounded-b-xl border-t border-gray-200/80 inline-flex items-center w-full">
+            <span className="font-semibold">{linkText}</span>
             <svg
               className="ml-2 w-4 h-4 transition-transform duration-300 group-hover:translate-x-1"
               fill="none"
@@ -50,10 +45,10 @@ const FeatureCard = ({ type, source, title, link }) => {
                 d="M17 8l4 4m0 0l-4 4m4-4H3"
               />
             </svg>
-          </a>
-        </div>
-      )}
-    </div>
+          </div>
+        )}
+      </div>
+    </a>
   );
 };
 
@@ -170,6 +165,7 @@ export default function PressFeaturesSection({ companyId }) {
     return {
       dots: true,
       speed: 500,
+      arrows: false,
       initialSlide: 0,
       autoplay: desktopResponsiveConfig.infinite,
       autoplaySpeed: 5000,
@@ -201,7 +197,10 @@ export default function PressFeaturesSection({ companyId }) {
 
   return (
     allItems.length > 0 && (
-      <div id="media" className="w-full bg-gray-50/70 px-4 py-16 sm:px-6 lg:px-[69px]">
+      <div
+        id="media"
+        className="w-full bg-gray-50/70 px-4 py-16 sm:px-6 lg:px-[69px]"
+      >
         <div className="mx-auto px-4">
           <h1 className="text-4xl sm:text-5xl font-extrabold mb-4 text-center">
             <span className="bg-clip-text text-transparent bg-gradient-to-r from-orange-500 to-red-600">
@@ -231,28 +230,9 @@ export default function PressFeaturesSection({ companyId }) {
             </div>
           )}
 
-          {showSliderNavButtons && !loading && (
-            <>
-              <button
-                onClick={() => sliderRef.current?.slickPrev()}
-                className="absolute left-4 md:left-6 top-1/2 transform -translate-y-1/2 z-30 w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-full bg-white text-orange-600 hover:bg-orange-100 shadow-md hover:shadow-lg transition-all border border-gray-200"
-                aria-label="Previous slide"
-              >
-                <ChevronLeftIcon className="h-5 w-5 sm:h-6 sm:w-6" />
-              </button>
-              <button
-                onClick={() => sliderRef.current?.slickNext()}
-                className="absolute right-4 md:right-6 top-1/2 transform -translate-y-1/2 z-30 w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-full bg-white text-orange-600 hover:bg-orange-100 shadow-md hover:shadow-lg transition-all border border-gray-200"
-                aria-label="Next slide"
-              >
-                <ChevronRightIcon className="h-5 w-5 sm:h-6 sm:w-6" />
-              </button>
-            </>
-          )}
-
           {/* --- Carousel Implementation --- */}
           {!loading && !error && allItems.length > 0 && (
-            <div className="press-features-carousel-wrapper">
+            <div className="press-features-carousel-wrapper relative">
               <Slider ref={sliderRef} {...sliderSettings}>
                 {chunkedItems.map((group, index) => (
                   <div key={index} className="px-6 py-4">
@@ -264,6 +244,24 @@ export default function PressFeaturesSection({ companyId }) {
                   </div>
                 ))}
               </Slider>
+              {showSliderNavButtons && !loading && (
+                <>
+                  <button
+                    onClick={() => sliderRef.current?.slickPrev()}
+                    className="absolute -left-4 md:-left-8 top-1/2 transform -translate-y-1/2 z-30 w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-full bg-white text-orange-600 hover:bg-orange-100 shadow-md hover:shadow-lg transition-all border border-gray-200"
+                    aria-label="Previous slide"
+                  >
+                    <ChevronLeftIcon className="h-5 w-5 sm:h-6 sm:w-6" />
+                  </button>
+                  <button
+                    onClick={() => sliderRef.current?.slickNext()}
+                    className="absolute -right-4 md:-right-8 top-1/2 transform -translate-y-1/2 z-30 w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-full bg-white text-orange-600 hover:bg-orange-100 shadow-md hover:shadow-lg transition-all border border-gray-200"
+                    aria-label="Next slide"
+                  >
+                    <ChevronRightIcon className="h-5 w-5 sm:h-6 sm:w-6" />
+                  </button>
+                </>
+              )}
             </div>
           )}
         </div>
@@ -314,11 +312,6 @@ export default function PressFeaturesSection({ companyId }) {
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
             z-index: 10;
             transition: all 0.3s ease;
-          }
-
-          .press-features-carousel-wrapper .slick-arrow:hover {
-            background-color: #fef3c7; /* orange-100 */
-            transform: scale(1.1);
           }
 
           .press-features-carousel-wrapper .slick-prev {

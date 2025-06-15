@@ -10,7 +10,6 @@ import {
   Cpu,
   XCircle,
   Loader2,
-  MapPin,
 } from "lucide-react";
 import * as countryCodes from "country-codes-list";
 
@@ -24,14 +23,13 @@ const STARTUPS_API_URL = `${
   import.meta.env.VITE_API_URL
 }/api/startups?populate=*&pagination[pageSize]=100`;
 
-const HQ_MARKER_COLOR_HEX = 0xff5722; // Orange color for HQ markers
 const GLOBE_RADIUS = 1;
 
 // Add region color constants
 const REGION_COLORS = {
-  APAC: 0x00bcd4, // Cyan
+  APAC: 0x05bcf4, // Cyan
   MENA: 0xff9800, // Orange
-  ROA: 0x4caf50, // Green
+  ROA: 0x4cef50, // Green
   EUROPE: 0x2196f3, // Blue
   LAC: 0x9c27b0, // Purple
   NA: 0xf44336, // Red
@@ -49,59 +47,34 @@ const REGION_NAMES = {
   DEFAULT: "Other Regions",
 };
 
-const isInAsiaPacific = (lat, lng) => {
-  // Asia-Pacific region boundaries
-  return lat >= -10 && lat <= 60 && lng >= 60 && lng <= 180;
-};
+const getRegionColor = (region) => {
+  let color;
 
-const isInAfrica = (lat, lng) => {
-  // Africa region boundaries
-  return lat >= -35 && lat <= 37 && lng >= -20 && lng <= 55;
-};
-
-const isInEurope = (lat, lng) => {
-  // Europe region boundaries
-  return lat >= 35 && lat <= 72 && lng >= -25 && lng <= 65;
-};
-
-const isInMiddleEast = (lat, lng) => {
-  // Middle East region boundaries
-  return lat >= 12 && lat <= 42 && lng >= 30 && lng <= 65;
-};
-
-const isInROA = (lat, lng) => {
-  // Rest of Africa region boundaries
-  return lat >= -35 && lat <= 0 && lng >= -17.5 && lng <= 52;
-};
-
-const isInLAC = (lat, lng) => {
-  // Latin America & Caribbean region boundaries
-  return lat >= -56 && lat <= 32.7 && lng >= -118 && lng <= -34;
-};
-
-const isInNA = (lat, lng) => {
-  // North America region boundaries
-  return lat >= 24 && lat <= 72 && lng >= -168 && lng <= -52;
-};
-
-const getRegionColor = (lat, lng) => {
-  if (isInAsiaPacific(lat, lng)) {
-    return REGION_COLORS.APAC;
-  } else if (isInAfrica(lat, lng)) {
-    return REGION_COLORS.ROA;
-  } else if (isInEurope(lat, lng)) {
-    return REGION_COLORS.EUROPE;
-  } else if (isInMiddleEast(lat, lng)) {
-    return REGION_COLORS.MENA;
-  } else if (isInROA(lat, lng)) {
-    return REGION_COLORS.ROA;
-  } else if (isInLAC(lat, lng)) {
-    return REGION_COLORS.LAC;
-  } else if (isInNA(lat, lng)) {
-    return REGION_COLORS.NA;
-  } else {
-    return REGION_COLORS.DEFAULT;
+  switch (region) {
+    case REGION_NAMES.APAC:
+      color = REGION_COLORS.APAC;
+      break;
+    case REGION_NAMES.MENA:
+      color = REGION_COLORS.MENA;
+      break;
+    case REGION_NAMES.ROA:
+      color = REGION_COLORS.ROA;
+      break;
+    case REGION_NAMES.EUROPE:
+      color = REGION_COLORS.EUROPE;
+      break;
+    case REGION_NAMES.LAC:
+      color = REGION_COLORS.LAC;
+      break;
+    case REGION_NAMES.NA:
+      color = REGION_COLORS.NA;
+      break;
+    default:
+      color = REGION_COLORS.DEFAULT;
+      break;
   }
+
+  return color;
 };
 
 const extractRichTextToString = (richTextArray) => {
@@ -178,6 +151,9 @@ const SolarXGlobalReach = () => {
         if (fetchedStartups.length > 0) {
           fetchedStartups.forEach((startup) => {
             const hqLocation = startup.HQ_Location;
+            // if (startup.Regions === REGION_NAMES.ROA) {
+            //   console.log(startup)
+            // }
 
             if (
               hqLocation &&
@@ -191,10 +167,9 @@ const SolarXGlobalReach = () => {
                 id: `startup-hq-${startup.id}`,
                 lat: hqLocation.lat,
                 lng: hqLocation.lng,
-                color: getRegionColor(hqLocation.lat, hqLocation.lng),
-                type: "Headquarters",
+                color: getRegionColor(startup.Regions || "DEFAULT"),
                 startupId: startup.id,
-                startupDocumentId: startup.documentId	|| "N/A",
+                startupDocumentId: startup.documentId || "N/A",
                 startupName: startup.Name || "N/A",
                 startupLocationString: startup.HQ_Location_Name || "N/A",
                 startupLogo: startup.Company_Logo.url || "",
@@ -460,11 +435,15 @@ const SolarXGlobalReach = () => {
       currentRendererEl.removeEventListener("click", onMarkerClick); // Use captured element
 
       controlsRef.current?.dispose(); // Optional chaining
+
       rendererRef.current?.dispose(); // Optional chaining
 
       sceneRef.current?.traverse((object) => {
-        // Optional chaining
-        if (object.geometry) object.geometry.dispose();
+        if (object.geometry) {
+          object.geometry.dispose();
+        }
+        // This is the crucial part: check for material and dispose it.
+        // This handles both single materials and arrays of materials.
         if (object.material) {
           if (Array.isArray(object.material)) {
             object.material.forEach((material) => material.dispose());
@@ -473,6 +452,7 @@ const SolarXGlobalReach = () => {
           }
         }
       });
+
       if (
         container &&
         rendererRef.current?.domElement &&
@@ -511,6 +491,7 @@ const SolarXGlobalReach = () => {
       );
       const markerRadius = 0.025; // Slightly smaller for potentially more markers
       const markerGeometry = new THREE.SphereGeometry(markerRadius, 16, 16);
+
       const markerMaterial = new THREE.MeshPhongMaterial({
         color: point.color,
         emissive: point.color,
@@ -520,7 +501,7 @@ const SolarXGlobalReach = () => {
       const marker = new THREE.Mesh(markerGeometry, markerMaterial);
       marker.position.copy(position);
       marker.lookAt(globeMeshRef.current.position); // Ensures consistent orientation
-      marker.userData = { ...point, isPulsing: true, baseScale: 1 };
+      marker.userData = { ...point, isPulsing: false, baseScale: 1 };
       markersGroupRef.current.add(marker);
       individualMarkersRef.current.push(marker);
     });
@@ -639,15 +620,15 @@ const SolarXGlobalReach = () => {
   };
 
   const SummaryCard = ({ title, data, icon }) => (
-    <div className="bg-white p-5 sm:p-6 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 border border-gray-100">
-      <div className="flex items-center text-orange-600 mb-3">
+    <div className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 border border-gray-100">
+      <div className="flex items-center text-orange-600 mb-3 bg-gray-100 p-4 rounded-t-xl">
         {React.cloneElement(icon, { size: 22, className: "mr-2" })}
         <h4 className="text-lg sm:text-xl font-semibold text-gray-700">
           <span>{title}</span>
         </h4>
       </div>
       {data.length > 0 ? (
-        <ul className="space-y-1.5 text-sm">
+        <ul className="space-y-1.5 text-sm p-5 sm:p-6 ">
           {data.map((item) => (
             <li
               key={item.name}

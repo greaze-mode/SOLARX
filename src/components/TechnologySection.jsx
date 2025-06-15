@@ -129,8 +129,11 @@ export default function TechnologySection({ companyId }) {
 
   return (
     techData.length !== 0 && (
-      <div id="tech" className="w-full px-4 md:px-[69px] mt-12 md:mt-20 pb-16">
-        <div className="flex flex-col md:flex-row items-center justify-between md:justify-start mb-8 space-y-3 md:space-y-0 md:space-x-3 w-full">
+      <div
+        id="tech"
+        className="w-full px-4 md:px-[69px] mt-12 md:mt-20 pb-16 h-full"
+      >
+        <div className="flex flex-col md:flex-row items-center justify-between md:justify-start mb-8 space-y-3 md:space-y-0 md:space-x-3 w-full h-full">
           <div className="w-1/5 md:w-16 hidden md:block h-1.5 bg-gradient-to-r from-orange-500 to-red-500 rounded-full"></div>
           <h1 className="text-4xl md:text-5xl font-bold mb-1 ">
             <span className="bg-clip-text text-transparent bg-gradient-to-r from-orange-500 to-red-600  left-[20px]">
@@ -158,13 +161,16 @@ export default function TechnologySection({ companyId }) {
           </div>
         )}
         {!loading && !error && techData.length > 0 && (
-          <div className="relative">
-            <div className="embla overflow-hidden rounded-xl" ref={emblaRef}>
-              <div className="embla__container flex my-8">
+          <div className="relative h-full">
+            <div
+              className="embla overflow-hidden rounded-xl h-full"
+              ref={emblaRef}
+            >
+              <div className="embla__container flex my-8 h-full">
                 {techData.map((techItem, index) => (
                   <div
                     className="embla__slide min-w-0 p-1 sm:p-2 h-full" // min-w-0 important for flex items
-                    style={{ flex: "0 0 100%" }} // Each slide takes full viewport width
+                    style={{ flex: "0 0 auto", width: "100%", height: "100%" }}
                     key={techItem.id || index}
                   >
                     <div className="h-full">
@@ -181,7 +187,7 @@ export default function TechnologySection({ companyId }) {
               <>
                 <PrevButton onClick={scrollPrev} enabled={prevBtnEnabled} />
                 <NextButton onClick={scrollNext} enabled={nextBtnEnabled} />
-                <div className="embla__dots absolute bottom-[-30px] sm:bottom-[-35px] left-1/2 -translate-x-1/2 flex gap-2 mt-4">
+                <div className="embla__dots absolute bottom-[-30px] sm:bottom-[-35px] left-1/2 -translate-x-1/2 flex gap-2 mt-8">
                   {scrollSnaps.map((_, index) => (
                     <button
                       key={index}

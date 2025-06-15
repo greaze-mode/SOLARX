@@ -158,8 +158,8 @@ const TechnologyCard = ({ technology, techTags }) => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center">
         {/* Left Side */}
         <div
-          className={`flex flex-col ${
-            demonstrationImages.length > 0 ? "h-full" : "h-auto col-span-2"
+          className={`flex flex-col h-full ${
+            demonstrationImages.length > 0 ? "" : "col-span-2"
           }`}
         >
           <div className="flex items-center mb-3">
