@@ -95,10 +95,10 @@ export default function HeroCarousel() {
               description: slide.subtitle,
               layout: slide.layout || "center",
               imgUrl: slide.image.url || "",
-              button1Text: slide.button1_text || "Explore Startups",
-              button2Text: slide.button2_text || "Apply Now",
-              button1Url: slide.button1_url || "#startups",
-              button2Url: slide.button2_url || "/apply",
+              button1Text: slide.button1_text || null,
+              button2Text: slide.button2_text || null,
+              button1Url: slide.button1_url || null,
+              button2Url: slide.button2_url || null,
             }));
 
             // console.log("Fetched slides:", formattedSlides);
@@ -211,6 +211,31 @@ export default function HeroCarousel() {
     return `${baseTransition} opacity-100 translate-x-0 translate-y-0 scale-100 delay-300`;
   };
 
+  const getContentPlacementClasses = (layout = "center") => {
+    switch (layout) {
+      case "top-left":
+        return "justify-start items-start";
+      case "top-center":
+        return "justify-center items-start";
+      case "top-right":
+        return "justify-end items-start";
+      case "center-left":
+        return "justify-start items-center";
+      case "center":
+        return "justify-center items-center";
+      case "center-right":
+        return "justify-end items-center";
+      case "bottom-left":
+        return "justify-start items-end";
+      case "bottom-center":
+        return "justify-center items-end";
+      case "bottom-right":
+        return "justify-end items-end";
+      default:
+        return "justify-center items-center text-center";
+    }
+  };
+
   // Render component
   return (
     <section
@@ -238,7 +263,7 @@ export default function HeroCarousel() {
               key={slide.id}
             >
               <div className="absolute inset-0 z-0">
-                <div className="absolute inset-0 bg-black/60 z-10"></div>
+                <div className="absolute inset-0 bg-black/50 z-10"></div>
                 <img
                   src={slide.imgUrl}
                   alt={`${slide.title}`}
@@ -248,7 +273,11 @@ export default function HeroCarousel() {
               </div>
 
               {/* Slide Content */}
-              <div className="relative z-20 h-full flex p-6 md:p-10 lg:p-12 items-center justify-center text-center">
+              <div
+                className={`relative z-20 h-full flex p-6 md:p-10 lg:p-12 text-center ${getContentPlacementClasses(
+                  slide.layout
+                )}`}
+              >
                 <div
                   className={`w-full max-w-3xl text-white just0fy-center items-center text-center ${getContentTransitionClasses(
                     "center",
@@ -262,19 +291,23 @@ export default function HeroCarousel() {
                     {slide.description}
                   </p>
                   <div className="flex flex-col sm:flex-row gap-4 justify-center ">
-                    <a
-                      href={slide.button1Url}
-                      className="bg-white text-lg hover:bg-opacity-90 font-semibold py-3 px-7 rounded-full shadow-xl hover:scale-105 transition-all duration-300 ease-in-out md:text-lg text-orange-600"
-                    >
-                      {slide.button1Text}
-                    </a>
-                    <a
-                      href={slide.button2Url}
-                      className="border-2 border-white text-white hover:bg-white/10 font-semibold py-3 px-7 
+                    {slide.button1Text && (
+                      <a
+                        href={slide.button1Url}
+                        className="bg-white text-lg hover:bg-opacity-90 font-semibold py-3 px-7 rounded-full shadow-xl hover:scale-105 transition-all duration-300 ease-in-out md:text-lg text-orange-600"
+                      >
+                        {slide.button1Text}
+                      </a>
+                    )}
+                    {slide.button2Text && slide.button2Url && (
+                      <a
+                        href={slide.button2Url}
+                        className="border-2 border-white text-white hover:bg-white/10 font-semibold py-3 px-7 
                         rounded-full shadow-lg hover:scale-105 transition-all duration-300 ease-in-out text-base md:text-lg"
-                    >
-                      {slide.button2Text}
-                    </a>
+                      >
+                        {slide.button2Text}
+                      </a>
+                    )}
                   </div>
                 </div>
               </div>

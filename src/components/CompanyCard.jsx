@@ -91,7 +91,7 @@ export default function CompanyCard({
             {description}
           </p>
         </div>
-        <div className="mt-auto flex flex-col justify-between items-center pt-4 gap-6 border-t border-gray-200 bg-gray-100 p-4">
+        <div className="mt-auto flex flex-col justify-between items-center pt-4 gap-6 border-t border-gray-200 p-4 bg-gray-50">
           <div className="relative flex flex-row space-x-1">
             {categories.map((category, idx) => (
               <span

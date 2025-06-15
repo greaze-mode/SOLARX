@@ -151,9 +151,9 @@ const SolarXGlobalReach = () => {
         if (fetchedStartups.length > 0) {
           fetchedStartups.forEach((startup) => {
             const hqLocation = startup.HQ_Location;
-            // if (startup.Regions === REGION_NAMES.ROA) {
-            //   console.log(startup)
-            // }
+            if (startup.Regions === REGION_NAMES.ROA) {
+              console.log(startup, getRegionColor(startup.Regions));
+            }
 
             if (
               hqLocation &&
@@ -489,7 +489,7 @@ const SolarXGlobalReach = () => {
         point.lng,
         GLOBE_RADIUS + 0.01
       );
-      const markerRadius = 0.025; // Slightly smaller for potentially more markers
+      const markerRadius = 0.015; // Slightly smaller for potentially more markers
       const markerGeometry = new THREE.SphereGeometry(markerRadius, 16, 16);
 
       const markerMaterial = new THREE.MeshPhongMaterial({
