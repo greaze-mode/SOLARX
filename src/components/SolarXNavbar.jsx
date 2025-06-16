@@ -149,7 +149,7 @@ export default function SolarXNavbar({
             return item.label === "Apply Now" ? (
               <li
                 key={item.label}
-                className="relative group hover:scale-105 transition-all duration-300 shadow-md hover:shadow-[0px_0px_30px_4px_rgba(248,54,54,1)]"
+                className="relative group hover:scale-105 transition-all duration-300 shadow-md hover:shadow-[0px_0px_30px_4px_rgba(220,220,220,0.8)]"
               >
                 <a
                   href={item.href}
