@@ -10,6 +10,9 @@ import {
   Cpu,
   XCircle,
   Loader2,
+  Users,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 import * as countryCodes from "country-codes-list";
 
@@ -29,10 +32,11 @@ const GLOBE_RADIUS = 1;
 const REGION_COLORS = {
   APAC: 0x05bcf4, // Cyan
   MENA: 0xff9800, // Orange
-  ROA: 0x4cef50, // Green
+  ROA: 0x4caf50, // Green (corrected hex)
   EUROPE: 0x2196f3, // Blue
   LAC: 0x9c27b0, // Purple
   NA: 0xf44336, // Red
+  // GROUP: 0xffeb3b, // Yellow for grouped markers
   DEFAULT: 0x9e9e9e, // Grey for other regions
 };
 
@@ -44,6 +48,7 @@ const REGION_NAMES = {
   EUROPE: "Europe",
   LAC: "Latin America & the Caribbean (LAC)",
   NA: "North America",
+  // GROUP: "Multiple Startups",
   DEFAULT: "Other Regions",
 };
 
@@ -147,27 +152,21 @@ const SolarXGlobalReach = () => {
         const fetchedStartups = startupsResult.data || [];
         setAllStartups(fetchedStartups);
 
-        const points = [];
+        const coordinateGroups = new Map();
         if (fetchedStartups.length > 0) {
           fetchedStartups.forEach((startup) => {
             const hqLocation = startup.HQ_Location;
-            if (startup.Regions === REGION_NAMES.ROA) {
-              console.log(startup, getRegionColor(startup.Regions));
-            }
 
             if (
               hqLocation &&
               typeof hqLocation.lat === "number" &&
               typeof hqLocation.lng === "number"
             ) {
-              // console.log(
-              //   `Processing startup: ${startup.Name} (ID: ${startup.id}) (country code: ${startup.Country})`
-              // );
-              points.push({
+              const coordKey = `${hqLocation.lat.toFixed(
+                5
+              )},${hqLocation.lng.toFixed(5)}`;
+              const pointData = {
                 id: `startup-hq-${startup.id}`,
-                lat: hqLocation.lat,
-                lng: hqLocation.lng,
-                color: getRegionColor(startup.Regions || "DEFAULT"),
                 startupId: startup.id,
                 startupDocumentId: startup.documentId || "N/A",
                 startupName: startup.Name || "N/A",
@@ -191,15 +190,54 @@ const SolarXGlobalReach = () => {
                 startupDescription:
                   extractRichTextToString(startup.Description) ||
                   "No description available.",
-              });
-            } else {
-              // console.warn(
-              //   `Startup ID ${startup.id} (${startup.Name}) missing or invalid HQ_Location data.`
-              // );
+              };
+              if (!coordinateGroups.has(coordKey)) {
+                coordinateGroups.set(coordKey, {
+                  lat: hqLocation.lat,
+                  lng: hqLocation.lng,
+                  startups: [pointData],
+                });
+              } else {
+                coordinateGroups.get(coordKey).startups.push(pointData);
+              }
+
+              //   points.push({
+              //     id: `startup-hq-${startup.id}`,
+              //     lat: hqLocation.lat,
+              //     lng: hqLocation.lng,
+              //     color: getRegionColor(startup.Regions || "DEFAULT"),
+              //     startupId: startup.id,
+              //     startupDocumentId: startup.documentId || "N/A",
+              //     startupName: startup.Name || "N/A",
+              //     startupLocationString: startup.HQ_Location_Name || "N/A",
+              //     startupLogo: startup.Company_Logo.url || "",
+              //     startupCountry:
+              //       getCountryNameFromCode(startup.Country) || "N/A",
+              //     startupRegions: startup.Regions || "N/A",
+              //     startupSectors:
+              //       startup.Sector_Tags?.map((t) =>
+              //         typeof t === "string" ? t.split("|").pop().trim() : ""
+              //       )
+              //         .filter(Boolean)
+              //         .join(", ") || "N/A",
+              //     startupTech:
+              //       startup.Technology_Tags?.map((t) =>
+              //         typeof t === "string" ? t.split("|").pop().trim() : ""
+              //       )
+              //         .filter(Boolean)
+              //         .join(", ") || "N/A",
+              //     startupDescription:
+              //       extractRichTextToString(startup.Description) ||
+              //       "No description available.",
+              //   });
+              // } else {
+              //   // console.warn(
+              //   //   `Startup ID ${startup.id} (${startup.Name}) missing or invalid HQ_Location data.`
+              //   // );
             }
           });
         }
-        setGlobeDataPoints(points);
+        setGlobeDataPoints(Array.from(coordinateGroups.values()));
       } catch (error) {
         console.error("Error fetching data:", error);
         setApiError(error.message || "Failed to fetch startup data.");
@@ -484,24 +522,33 @@ const SolarXGlobalReach = () => {
     individualMarkersRef.current = [];
 
     globeDataPoints.forEach((point) => {
+      const isGroup = point.startups.length > 1;
       const position = latLngToVector3(
         point.lat,
         point.lng,
         GLOBE_RADIUS + 0.01
       );
-      const markerRadius = 0.015; // Slightly smaller for potentially more markers
+      const markerRadius = isGroup ? 0.02 : 0.015;
       const markerGeometry = new THREE.SphereGeometry(markerRadius, 16, 16);
 
+      const markerColor = getRegionColor(point.startups[0].startupRegions);
+
       const markerMaterial = new THREE.MeshPhongMaterial({
-        color: point.color,
-        emissive: point.color,
+        color: markerColor,
+        emissive: markerColor,
         emissiveIntensity: 0.5, // Brighter emissive
         shininess: 20,
       });
       const marker = new THREE.Mesh(markerGeometry, markerMaterial);
       marker.position.copy(position);
       marker.lookAt(globeMeshRef.current.position); // Ensures consistent orientation
-      marker.userData = { ...point, isPulsing: false, baseScale: 1 };
+      marker.userData = {
+        ...point,
+        isGroup: isGroup,
+        id: `group-${point.lat}-${point.lng}`,
+        isPulsing: false,
+        baseScale: 1,
+      };
       markersGroupRef.current.add(marker);
       individualMarkersRef.current.push(marker);
     });
@@ -522,6 +569,36 @@ const SolarXGlobalReach = () => {
 
   // --- Render Helper Components ---
   const InfoPanel = ({ data, onClose }) => {
+    const [currentIndex, setCurrentIndex] = useState(0);
+
+    useEffect(() => {
+      // Reset to first slide when data changes
+      setCurrentIndex(0);
+    }, [data]);
+
+    useEffect(() => {
+      if (data?.isGroup) {
+        const timer = setTimeout(() => {
+          setCurrentIndex(
+            (prevIndex) => (prevIndex + 1) % data.startups.length
+          );
+        }, 4000); // Change slide every 4 seconds
+        return () => clearTimeout(timer);
+      }
+    }, [currentIndex, data]);
+
+    if (!data || !data.startups || data.startups.length === 0) return null;
+
+    const currentStartup = data.startups[currentIndex];
+    if (!currentStartup) return null; // Safety check
+
+    const handleNext = () =>
+      setCurrentIndex((prev) => (prev + 1) % data.startups.length);
+    const handlePrev = () =>
+      setCurrentIndex(
+        (prev) => (prev - 1 + data.startups.length) % data.startups.length
+      );
+
     if (!data) return null;
     return (
       <div
@@ -532,89 +609,106 @@ const SolarXGlobalReach = () => {
         }`}
       >
         <div className="flex justify-between items-center mb-4">
-          <h3
-            className="text-lg sm:text-xl font-bold text-gray-900 truncate"
-            title={data.startupName}
-          >
-            <span>{data.startupName}</span>
-          </h3>
+          <div className="flex-1 min-w-0">
+            {data.isGroup ? (
+              <h3 className="text-base sm:text-lg font-bold text-gray-900 flex items-center">
+                <Users size={20} className="mr-2 text-orange-500" />
+                Multiple Startups ({currentIndex + 1}/{data.startups.length})
+              </h3>
+            ) : (
+              <h3
+                className="text-lg sm:text-xl font-bold text-gray-900 truncate"
+                title={currentStartup.startupName}
+              >
+                <span>{currentStartup.startupName}</span>
+              </h3>
+            )}
+          </div>
           <button
             onClick={onClose}
-            className="text-gray-900 hover:text-red-600 p-1 rounded-full hover:bg-gray-100 transition-colors"
+            className="text-gray-900 hover:text-red-600 p-1 rounded-full hover:bg-gray-100 transition-colors ml-2"
           >
             <XCircle size={24} />
           </button>
         </div>
-        <div>
-          <img
-            src={data.startupLogo}
-            alt={`${data.startupName} Logo`}
-            className="w-full shadow-xl my-4"
-          />
-        </div>
-        <div className="space-y-2.5 text-sm">
-          <p>
-            <strong className="text-gray-800">
-              <span>Location: </span>
-            </strong>
-            <span>{data.startupLocationString}</span>
-          </p>
-          {/* {data.startupCountry !== "N/A" && (
-            <p>
-              <strong className="text-gray-800">
-                <span>Country: </span>
-              </strong>
-              <span>{data.startupCountry}</span>
-            </p>
-          )} */}
-          {data.startupRegions !== "N/A" && (
-            <p>
-              <strong className="text-gray-800">
-                <span>Region: </span>
-              </strong>
-              <span>{data.startupRegions}</span>
-            </p>
+
+        {/* Carousel Body */}
+        <div className="relative">
+          {data.isGroup && (
+            <>
+              <button
+                onClick={handlePrev}
+                className="absolute left-1 top-1/2 -translate-y-1/2 z-10 bg-white/50 hover:bg-white/80 p-1 rounded-full text-gray-800"
+              >
+                <ChevronLeft size={20} />
+              </button>
+              <button
+                onClick={handleNext}
+                className="absolute right-1 top-1/2 -translate-y-1/2 z-10 bg-white/50 hover:bg-white/80 p-1 rounded-full text-gray-800"
+              >
+                <ChevronRight size={20} />
+              </button>
+            </>
           )}
-          {data.startupSectors !== "N/A" && (
-            <p>
-              <strong className="text-gray-800">
-                <span>Sector(s): </span>
-              </strong>
-              <span>{data.startupSectors}</span>
-            </p>
-          )}
-          {data.startupTech !== "N/A" && (
-            <p>
-              <strong className="text-gray-800">
-                <span>Technology: </span>
-              </strong>
-              <span>{data.startupTech}</span>
-            </p>
-          )}
-          {data.startupDescription &&
-            data.startupDescription !== "No description available." && (
-              <div className="mt-3 pt-3 border-t border-gray-300">
-                <strong className="text-gray-800 block mb-1">
-                  <span>Description:</span>
-                </strong>
-                <p className="text-gray-800 max-h-28 sm:max-h-32 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 hover:scrollbar-thumb-gray-400">
-                  <span>{data.startupDescription}</span>
-                </p>
+
+          <div key={currentStartup.startupId} className="animate-fade-in">
+            {" "}
+            {/* Add a subtle fade-in animation */}
+            <div>
+              <img
+                src={currentStartup.startupLogo}
+                alt={`${currentStartup.startupName} Logo`}
+                className="w-full shadow-xl my-4"
+              />
+            </div>
+            <div className="space-y-2.5 text-sm">
+              {data.isGroup && (
+                <h4 className="text-lg font-semibold text-center mb-2">
+                  {currentStartup.startupName}
+                </h4>
+              )}
+              <p>
+                <strong className="text-gray-800">Location: </strong>
+                <span>{currentStartup.startupLocationString}</span>
+              </p>
+              <p>
+                <strong className="text-gray-800">Region: </strong>
+                <span>{currentStartup.startupRegions}</span>
+              </p>
+              <p>
+                <strong className="text-gray-800">Sector(s): </strong>
+                <span>{currentStartup.startupSectors}</span>
+              </p>
+              <p>
+                <strong className="text-gray-800">Technology: </strong>
+                <span>{currentStartup.startupTech}</span>
+              </p>
+              {currentStartup.startupDescription !==
+                "No description available." && (
+                <div className="mt-3 pt-3 border-t border-gray-300">
+                  <strong className="text-gray-800 block mb-1">
+                    Description:
+                  </strong>
+                  <p className="text-gray-800 max-h-28 sm:max-h-32 overflow-y-auto scrollbar-thin">
+                    {currentStartup.startupDescription}
+                  </p>
+                </div>
+              )}
+            </div>
+            {currentStartup.startupId !== "N/A" && (
+              <div className="mt-5 sm:mt-6 text-center">
+                <a
+                  href={`/startup/${currentStartup.startupDocumentId}`}
+                  className="inline-block bg-orange-500 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-orange-600"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <span>View Profile</span>
+                </a>
               </div>
             )}
-        </div>
-        {data.startupId !== "N/A" && (
-          <div className="mt-5 sm:mt-6 text-center">
-            <a
-              href={`/startup/${data.startupDocumentId}`}
-              className="inline-block bg-orange-500 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-orange-600 transition-colors shadow-md hover:shadow-lg"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <span>View Startup Profile</span>
-            </a>
           </div>
-        )}
+        </div>
       </div>
     );
   };
@@ -657,7 +751,7 @@ const SolarXGlobalReach = () => {
   const RegionLegend = () => (
     <div className="absolute bottom-4 left-4 bg-white/90 backdrop-blur-sm p-3 rounded-lg shadow-lg z-10">
       <h4 className="text-sm font-semibold text-gray-700 mb-2">
-        <span>Region Colors</span>
+        Region Colors
       </h4>
       <div className="space-y-2">
         {Object.entries(REGION_COLORS).map(([region, color]) => (
@@ -669,7 +763,7 @@ const SolarXGlobalReach = () => {
               }}
             />
             <span className="text-xs text-gray-600">
-              <span>{REGION_NAMES[region]}</span>
+              {REGION_NAMES[region]}
             </span>
           </div>
         ))}
@@ -686,6 +780,7 @@ const SolarXGlobalReach = () => {
           ref={isFullscreen ? globeContainerRef : null} // Three.js canvas will re-target here
         >
           {/* This div will either be empty initially or contain the re-rendered canvas */}
+          <RegionLegend />
           <button
             onClick={toggleFullscreen}
             title="Exit Fullscreen"
@@ -756,7 +851,7 @@ const SolarXGlobalReach = () => {
                     </div>
                     <div
                       ref={!isFullscreen ? globeContainerRef : null}
-                      className="w-full h-[400px] md:h-[450px] lg:h-[500px] rounded-md sm:rounded-lg overflow-hidden relative cursor-grab bg-gray-800/50 notranslate"
+                      className="w-full h-[400px] md:h-[450px] lg:h-[850px] rounded-md sm:rounded-lg overflow-hidden relative cursor-grab bg-gray-800/50 notranslate"
                     >
                       {!isThreeJsReady && !isComponentLoading && (
                         <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-4">

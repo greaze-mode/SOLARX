@@ -55,7 +55,7 @@ const DotButton = ({ selected, onClick, index }) => (
 );
 
 export default function HeroCarousel() {
-  const NAVBAR_HEIGHT = "4rem";
+  const NAVBAR_HEIGHT = "3.5rem";
   const AUTOPLAY_DELAY = 7000;
   const AUTOPLAY_RESUME_DELAY = 5000;
 
@@ -240,13 +240,13 @@ export default function HeroCarousel() {
   return (
     <section
       id="home"
-      className="relative w-full overflow-hidden group/carousel"
-      style={{
-        height: `calc(100vh - ${NAVBAR_HEIGHT})`,
-        paddingTop: NAVBAR_HEIGHT,
-        minHeight: "650px",
-        maxHeight: `calc(90vh - ${NAVBAR_HEIGHT})`,
-      }}
+      className="relative w-full overflow-hidden group/carousel top-16"
+      // style={{
+      //   height: `calc(100vh - ${NAVBAR_HEIGHT})`,
+      //   // paddingTop: NAVBAR_HEIGHT,
+      //   minHeight: "650px",
+      //   maxHeight: `calc(90vh - ${NAVBAR_HEIGHT})`,
+      // }}
       aria-roledescription="carousel"
       aria-label="Hero Highlights"
       onMouseEnter={() => emblaApi?.plugins?.()?.autoplay?.stop()}
@@ -255,15 +255,23 @@ export default function HeroCarousel() {
       {/* Carousel Viewport */}
       <div className="embla h-full overflow-hidden" ref={emblaRef}>
         {/* Carousel Container */}
-        <div className="embla__container flex h-full">
+        <div
+          className="embla__container flex h-full"
+          style={{
+            height: `calc(100vh - ${NAVBAR_HEIGHT})`,
+            // paddingTop: NAVBAR_HEIGHT,
+            minHeight: "650px",
+            maxHeight: `calc(90vh - ${NAVBAR_HEIGHT})`,
+          }}
+        >
           {slides.map((slide, index) => (
             <div
-              className="embla__slide relative h-full min-w-0"
+              className="embla__slide relative h-full min-w-0 p-10"
               style={{ flex: "0 0 100%" }}
               key={slide.id}
             >
               <div className="absolute inset-0 z-0">
-                <div className="absolute inset-0 bg-black/50 z-10"></div>
+                <div className="absolute inset-0 bg-black/20 z-10"></div>
                 <img
                   src={slide.imgUrl}
                   alt={`${slide.title}`}

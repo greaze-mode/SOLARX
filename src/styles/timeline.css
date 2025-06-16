@@ -232,25 +232,24 @@ section.writeup {
     /* Define a fixed height for the carousel viewport */
 }
 
-.embla {
+.workshops-embla {
     position: relative;
     width: 100%;
-    height: 100%;
     overflow: hidden;
 }
 
-.embla__container {
+.workshops-embla__container {
     display: flex;
     height: 100%;
 }
 
-.embla__slide {
+.workshops-embla__slide {
     position: relative;
     flex: 0 0 100%;
     min-width: 0;
 }
 
-.embla__button {
+.workshops-embla__button {
     position: absolute;
     z-index: 10;
     top: 50%;
@@ -269,27 +268,27 @@ section.writeup {
     transition: background-color 0.2s ease;
 }
 
-.embla__button:hover {
+.workshops-embla__button:hover {
     background-color: rgba(255, 255, 255, 0.3);
 }
 
-.embla__button:disabled {
+.workshops-embla__button:disabled {
     opacity: 0.4;
     cursor: not-allowed;
 }
 
-.embla__button--prev {
+.workshops-embla__button--prev {
     left: 1.5rem;
 }
 
-.embla__button--next {
+.workshops-embla__button--next {
     right: 1.5rem;
 }
 
-.embla__dots {
+.workshops-embla__dots {
     position: absolute;
     z-index: 10;
-    bottom: 1.5rem;
+    bottom: 0.5rem;
     left: 50%;
     transform: translateX(-50%);
     display: flex;
@@ -297,7 +296,7 @@ section.writeup {
     gap: 0.75rem;
 }
 
-.embla__dot {
+.workshops-embla__dot {
     width: 0.75rem;
     height: 0.75rem;
     border-radius: 9999px;
@@ -306,7 +305,7 @@ section.writeup {
     transition: all 0.2s ease;
 }
 
-.embla__dot--selected {
+.workshops-embla__dot--selected {
     background-color: white;
     width: 2rem;
 }

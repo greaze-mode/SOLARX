@@ -7,7 +7,7 @@ import { API_URL } from "../../services/api";
 
 const PrevButton = ({ enabled, onClick }) => (
   <button
-    className="embla__button embla__button--prev"
+    className="workshops-embla__button workshops-embla__button--prev"
     onClick={onClick}
     disabled={!enabled}
     aria-label="Previous slide"
@@ -20,7 +20,7 @@ const PrevButton = ({ enabled, onClick }) => (
 
 const NextButton = ({ enabled, onClick }) => (
   <button
-    className="embla__button embla__button--next"
+    className="workshops-embla__button workshops-embla__button--next"
     onClick={onClick}
     disabled={!enabled}
     aria-label="Next slide"
@@ -279,14 +279,23 @@ const TimelineSection = () => {
     events && (
       <section
         id="events"
-        className="w-screen h-screen bg-gradient-to-tr from-gray-900 via-orange-900 to-orange-700 text-white"
+        className="w-screen bg-gradient-to-tr from-gray-900 via-orange-900 to-orange-700 text-white py-20"
       >
-        <div className="embla" ref={emblaRef}>
-          <div className="embla__container">
+        <div className="max-w-7xl mx-auto pt-16 pb-8">
+          <h1
+            className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 text-center text-white"
+            style={{ textShadow: "0 2px 5px rgba(0,0,0,0.6)" }}
+          >
+            Online Workshops
+          </h1>
+          <div className="w-1/4 h-1 mx-auto bg-white rounded-full"></div>
+        </div>
+        <div className="workshops-embla" ref={emblaRef}>
+          <div className="workshops-embla__container">
             {events.map((event) => (
-              <div className="embla__slide" key={event.id}>
+              <div className="workshops-embla__slide" key={event.id}>
                 {/* --- THIS IS THE RESPONSIVE VERSION OF YOUR ORIGINAL LAYOUT --- */}
-                <div className="flex flex-col md:flex-row justify-center items-center w-full h-full box-border p-6 md:p-12 lg:px-24">
+                <div className="flex flex-col md:flex-row justify-center items-center w-full box-border p-6 md:p-12 lg:px-24">
                   <div className="relative flex-shrink-0 w-full max-w-xs md:max-w-none md:w-auto mb-6 md:mb-0 md:mr-8 lg:mr-12">
                     {event.isUpcoming && (
                       <div className="absolute top-4 right-4 md:top-5 md:right-5 md:transform bg-gradient-to-r from-red-600 to-orange-500 text-white text-base font-bold py-2 px-4 md:px-6 rounded-full z-10 animate-pulse">
@@ -320,16 +329,16 @@ const TimelineSection = () => {
                           </h3>
                         </div>
                         <div className="text-xl md:text-3xl text-white/80 font-medium pt-4">
-                          {event.dates.map((date, idx) => {
-                            const d = new Date(date);
-                            return d
-                              .toLocaleDateString("en-US", {
+                          {event.dates
+                            .map((date, idx) => {
+                              const d = new Date(date);
+                              return d.toLocaleDateString("en-US", {
                                 year: "numeric",
                                 month: "long",
                                 day: "numeric",
-                              })
-                              ;
-                          }).join(" & ")}
+                              });
+                            })
+                            .join(" & ")}
                         </div>
                       </div>
                     </div>
@@ -342,12 +351,12 @@ const TimelineSection = () => {
           <PrevButton onClick={scrollPrev} enabled={prevBtnEnabled} />
           <NextButton onClick={scrollNext} enabled={nextBtnEnabled} />
 
-          <div className="embla__dots">
+          <div className="workshops-embla__dots">
             {scrollSnaps.map((_, index) => (
               <button
                 key={index}
-                className={`embla__dot ${
-                  index === selectedIndex ? "embla__dot--selected" : ""
+                className={`workshops-embla__dot ${
+                  index === selectedIndex ? "workshops-embla__dot--selected" : ""
                 }`}
                 onClick={() => scrollTo(index)}
                 aria-label={`Go to slide ${index + 1}`}

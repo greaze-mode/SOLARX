@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { API_URL } from "../../services/api";
 import MentorCard from "./MentorCard";
-import { mentorsData } from "./mentorData";
+// import { mentorsData } from "./mentorData";
 
 const MentorsSection = () => {
   const [mentors, setMentors] = useState([]);
@@ -44,7 +44,7 @@ const MentorsSection = () => {
   return (
     <section
       id="mentors"
-      className="investor-profiles-section bg-gradient-to-tl from-orange-700 via-orange-900 to-gray-900 text-white py-16 md:py-20"
+      className="investor-profiles-section bg-gradient-to-tl from-orange-700 via-orange-900 to-gray-900 text-white py-24 md:py-32"
     >
       <div className="mx-auto px-4 sm:px-6 lg:px-[69px]">
         <h2
@@ -56,7 +56,7 @@ const MentorsSection = () => {
         <div className="w-1/4 h-1 mx-auto bg-white rounded-full mb-10 md:mb-16"></div>
         <div className="relative">
           <div className="investor-carousel-wrapper w-full overflow-x-auto pb-8 scrollbar-hide">
-            <div className="flex space-x-4 lg:space-x-6 py-2 min-w-max">
+            <div className="flex space-x-4 lg:space-x-6 py-2">
               {mentors.map((mentor, index) => (
                 <MentorCard key={index} {...mentor} />
               ))}

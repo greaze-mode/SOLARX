@@ -126,7 +126,7 @@ const HeroSectionGA = () => {
     heroData.title && (
       <section
         id="gap"
-        className="bg-gradient-to-br from-gray-900 via-orange-900 to-orange-700 text-white py-20 md:py-24"
+        className="bg-gradient-to-br from-gray-900 via-orange-900 to-orange-700 text-white py-16 md:py-12"
         style={{ paddingTop: `calc(${navbarHeight})` }} // Adding navbar height + some extra padding
       >
         <div className="max-w-7xl mx-auto pt-16">
