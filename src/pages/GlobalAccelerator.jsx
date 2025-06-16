@@ -23,7 +23,7 @@ const GlobalAccelerator = () => {
     { label: "Home", href: "/" },
     { label: "Global Accelerator", href: "/global-accelerator" },
     { label: "Events", href: "#events" },
-    { label: "Apply Now", href: "/apply" },
+    { label: "Apply Now", href: "solar.isa.int/registration_lac" },
   ];
 
   const [isCookieSet, setIsCookieSet] = useState(false);
