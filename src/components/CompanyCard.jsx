@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { APP_URL } from "../services/api";
-import { MapPin } from "lucide-react";
+import { MapPin, Venus } from "lucide-react";
 import * as countryFlags from "country-flag-icons/react/3x2";
 
 export default function CompanyCard({
@@ -64,13 +64,8 @@ export default function CompanyCard({
               <span className="notranslate">{name}</span>
             </h3>
             {isWomanLed && (
-              <div className="relative inline-0">
-                <span className="text-white font-medium group text-lg w-8 h-8 text-center rounded-full pt-0.5 shadow-2xl">
-                  ♀️
-                  {/* <div className="absolute z-[1000] left-0 top-0 -translate-x-full -translate-y-full mt-2 w-max text-xs text-gray-900 bg-white rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  Woman-Led Startup
-                </div> */}
-                </span>
+              <div className="bg-pink-600 flex items-center justify-center px-2 rounded-full shadow-md">
+                <Venus className="text-white" size={16}/>
               </div>
             )}
           </div>
