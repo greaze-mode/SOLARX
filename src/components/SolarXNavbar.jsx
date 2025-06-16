@@ -6,7 +6,7 @@ import LanguageSwitcher from "./LanguageSwitcher";
 export default function SolarXNavbar({
   centerTop = "SolarX",
   centerBottom = "Startup Challenge",
-  navItems
+  navItems,
 }) {
   const [bannerVisible, setBannerVisible] = useState(true);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -103,7 +103,6 @@ export default function SolarXNavbar({
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-
   return (
     <header className="fixed top-0 left-0 bg-[#f4831f] pr-3 md:pr-6 flex justify-between items-center w-full shadow-sm transition-all duration-300 z-[1000]">
       <a
@@ -145,15 +144,32 @@ export default function SolarXNavbar({
         </div>
       </a>
       <nav className="hidden lg:block">
-        <ul className="flex space-x-6 flex-grow">
-          {navItems.map((item) => (
-            <li key={item.label} className="relative group">
-              <a href={item.href} className="text-stone-50 font-medium text-md">
-                {item.label}
-                <span className="absolute left-0 -bottom-0.5 h-0.5 w-0 rounded-md bg-white transition-all duration-300 group-hover:w-full"></span>
-              </a>
-            </li>
-          ))}
+        <ul className="flex space-x-6 flex-grow items-center">
+          {navItems.map((item) => {
+            return item.label === "Apply Now" ? (
+              <li
+                key={item.label}
+                className="relative group hover:scale-105 transition-all duration-300 shadow-md hover:shadow-[0px_0px_30px_4px_rgba(248,54,54,1)]"
+              >
+                <a
+                  href={item.href}
+                  className="text-orange-600 font-semibold text-md bg-white rounded-xl px-3 py-2"
+                >
+                  {item.label}
+                </a>
+              </li>
+            ) : (
+              <li key={item.label} className="relative group">
+                <a
+                  href={item.href}
+                  className="text-stone-50 font-medium text-md"
+                >
+                  {item.label}
+                  <span className="absolute left-0 -bottom-0.5 h-0.5 w-0 rounded-md bg-white transition-all duration-300 group-hover:w-full"></span>
+                </a>
+              </li>
+            );
+          })}
         </ul>
       </nav>
 
