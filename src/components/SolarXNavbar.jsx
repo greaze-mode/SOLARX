@@ -154,6 +154,8 @@ export default function SolarXNavbar({
                 <a
                   href={item.href}
                   className="text-orange-600 font-semibold text-md bg-white rounded-xl px-3 py-2"
+                  target="_blank"
+                  rel="noopener noreferrer"
                 >
                   {item.label}
                 </a>

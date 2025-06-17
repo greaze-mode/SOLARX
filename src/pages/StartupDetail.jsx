@@ -36,7 +36,7 @@ export default function StartupDetail() {
   const navItems = [
     { label: "Home", href: "/" },
     { label: "Global Accelerator", href: "/global-accelerator" },
-    { label: "Apply Now", href: "solar.isa.int/registration_lac" },
+   { label: "Apply Now", href: "https://solarx.isa.int/registration_lac" },
   ];
 
   useEffect(() => {

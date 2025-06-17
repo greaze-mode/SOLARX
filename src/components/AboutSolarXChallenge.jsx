@@ -109,7 +109,7 @@ const AboutSolarXChallenge = () => {
               </div>
             </div>
             <button className="bg-orange-100 hover:bg-orange-50 text-orange-500 text-md border border-orange-400 font-semibold rounded-xl px-6 py-3 shadow-md hover:-translate-y-0.5 transition-all mt-6">
-              <a href="https://solarx.isa.int/registration_lac">
+              <a href="https://solarx.isa.int/registration_lac" target="_blank" rel="noopener noreferrer">
                 Apply for SolarX Startup Challenge - Latin America and the
                 Caribbean
               </a>
