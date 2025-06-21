@@ -278,7 +278,7 @@ const TimelineSection = () => {
   return (
     events && (
       <section
-        id="events"
+        id="workshops"
         className="w-screen bg-gradient-to-tr from-gray-900 via-orange-900 to-orange-700 text-white py-20"
       >
         <div className="max-w-7xl mx-auto pt-16 pb-8">

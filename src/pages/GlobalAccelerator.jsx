@@ -22,7 +22,7 @@ const GlobalAccelerator = () => {
   const navItems = [
     { label: "Home", href: "/" },
     { label: "Global Accelerator", href: "/global-accelerator" },
-    { label: "Workshops", href: "#events" },
+    { label: "Workshops", href: "#workshops" },
     { label: "Apply Now", href: "https://solarx.isa.int/registration_lac" },
   ];
 
