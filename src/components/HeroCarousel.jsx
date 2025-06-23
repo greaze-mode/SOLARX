@@ -240,13 +240,9 @@ export default function HeroCarousel() {
   return (
     <section
       id="home"
-      className="relative w-full overflow-hidden group/carousel top-16"
-      // style={{
-      //   height: `calc(100vh - ${NAVBAR_HEIGHT})`,
-      //   // paddingTop: NAVBAR_HEIGHT,
-      //   minHeight: "650px",
-      //   maxHeight: `calc(90vh - ${NAVBAR_HEIGHT})`,
-      // }}
+      className="relative w-full overflow-hidden group/carousel 
+                 aspect-[16/9] md:aspect-video 
+                 max-h-[80vh] mt-16"
       aria-roledescription="carousel"
       aria-label="Hero Highlights"
       onMouseEnter={() => emblaApi?.plugins?.()?.autoplay?.stop()}
@@ -255,18 +251,10 @@ export default function HeroCarousel() {
       {/* Carousel Viewport */}
       <div className="embla h-full overflow-hidden" ref={emblaRef}>
         {/* Carousel Container */}
-        <div
-          className="embla__container flex h-full"
-          style={{
-            height: `calc(100vh - ${NAVBAR_HEIGHT})`,
-            // paddingTop: NAVBAR_HEIGHT,
-            minHeight: "650px",
-            maxHeight: `calc(90vh - ${NAVBAR_HEIGHT})`,
-          }}
-        >
+        <div className="embla__container flex h-full">
           {slides.map((slide, index) => (
             <div
-              className="embla__slide relative h-full min-w-0 p-10"
+              className="embla__slide relative h-full min-w-0"
               style={{ flex: "0 0 100%" }}
               key={slide.id}
             >
