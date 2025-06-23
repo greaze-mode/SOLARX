@@ -135,6 +135,9 @@ const SolarXGlobalReach = () => {
   const [isInfoPanelOpen, setIsInfoPanelOpen] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
 
+  const isFullscreenRef = useRef(isFullscreen);
+  isFullscreenRef.current = isFullscreen;
+
   useEffect(() => {
     const fetchData = async () => {
       setIsComponentLoading(true);
@@ -399,9 +402,13 @@ const SolarXGlobalReach = () => {
       if (
         !rendererRef.current ||
         !cameraRef.current ||
-        individualMarkersRef.current.length === 0
-      )
+        individualMarkersRef.current.length === 0 ||
+        !isFullscreenRef.current
+      ) {
+        console.log("Marker click event ignored: not ready or not fullscreen");
         return;
+      }
+      console.log("Marker click event detected");
       const rect = rendererRef.current.domElement.getBoundingClientRect();
       mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
       mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
@@ -869,18 +876,6 @@ const SolarXGlobalReach = () => {
 
                 {/* Info and Summaries */}
                 <div className="col-span-1 lg:col-span-2 space-y-6 md:space-y-8">
-                  {isInfoPanelOpen && selectedMarkerData && !isFullscreen && (
-                    // InfoPanel is rendered conditionally in its original position when not fullscreen
-                    // It is absolutely positioned relative to the screen in fullscreen mode
-                    <div className="bg-white rounded-xl shadow-xl border-t-4 border-orange-500">
-                      {/* Re-render InfoPanel here for non-fullscreen to keep it in layout flow */}
-                      <InfoPanel
-                        data={selectedMarkerData}
-                        onClose={closeInfoPanel}
-                        isFullScreen={isFullscreen}
-                      />
-                    </div>
-                  )}
                   <SummaryCard
                     title="Regional Focus"
                     data={regionSummary}
