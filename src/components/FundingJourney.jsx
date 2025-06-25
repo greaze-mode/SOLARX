@@ -125,13 +125,13 @@ export default function FundingJourney({ companyId }) {
           resetState();
           if (result?.data?.length === 0) {
             setError(
-              `Startup with ID ${companyId} not found or has no funding information.`
+              `Startup with ID ${companyId} not found or has no funding information.`,
             );
           }
         }
       } catch (err) {
         setError(
-          err.message || "An unknown error occurred while fetching data."
+          err.message || "An unknown error occurred while fetching data.",
         );
         resetState();
       } finally {
@@ -295,8 +295,8 @@ export default function FundingJourney({ companyId }) {
           round.isGrant
             ? "bg-blue-500"
             : round.isLoan
-            ? "bg-green-500"
-            : "bg-orange-500"
+              ? "bg-green-500"
+              : "bg-orange-500"
         }`}
       >
         <div className="w-2.5 h-2.5 bg-white rounded-full"></div>
@@ -448,7 +448,9 @@ export default function FundingJourney({ companyId }) {
 
           {/* Content when data is available */}
           {!loading && !error && fundingRounds.length > 0 && (
-            <div className={`grid ${investors.length > 0 ? "lg:grid-cols-2": ""} gap-8 md:gap-12 w-full px-[69px] mx-auto`}>
+            <div
+              className={`grid ${investors.length > 0 ? "lg:grid-cols-2" : ""} gap-8 md:gap-12 w-full px-[69px] mx-auto`}
+            >
               {/* Left Side - Funding Received */}
               <div
                 className={`transform transition-all duration-1000 delay-200 bg-white p-8 rounded-3xl shadow-xl border-amber-100 border-2 ${

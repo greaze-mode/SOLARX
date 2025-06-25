@@ -886,11 +886,11 @@ const SolarXGlobalReach = () => {
                     data={sectorSummary}
                     icon={<CheckCircle />}
                   />
-                  {/* <SummaryCard
+                  <SummaryCard
                     title="Key Technologies"
                     data={technologySummary}
                     icon={<Cpu />}
-                  /> */}
+                  />
                 </div>
               </div>
             )}

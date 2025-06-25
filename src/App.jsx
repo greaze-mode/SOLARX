@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { API_URL } from "./services/api.js";
 import "./App.css";
 import SolarXNavbar from "./components/SolarXNavbar";
 import SolarXWinners from "./components/SolarXWinners";
@@ -12,10 +13,12 @@ import AboutSolarXChallenge from "./components/AboutSolarXChallenge";
 import GlobalImpactSection from "./components/GlobalImpactSection";
 import SolarXGlobalReach from "./components/SolarXGlobalReach";
 import { EventSection } from "./components/EventSection.jsx";
+import MeetTheTeam from "./components/MeetTheTeam.jsx";
 // import { SimpleGlobe } from "./components/Globe.jsx";
 
 export default function App() {
   const [isMobile, setIsMobile] = useState(false);
+  const [navItems, setNavItems] = useState([]); // State to hold nav links from CMS
 
   useEffect(() => {
     const checkMobile = () => {
@@ -46,13 +49,44 @@ export default function App() {
     },
   ];
 
-  // @TODO: Get nav links from CMS
-  const navItems = [
-    { label: "Global Accelerator 2025", href: "/global-accelerator" },
-    { label: "Collateral", href: "#" },
-    { label: "Media Coverage & Events", href: "#events" },
-    { label: "Apply Now", href: "https://solarx.isa.int/registration_lac" },
-  ];
+  useEffect(() => {
+    const fetchNavLinks = async () => {
+      try {
+        const response = await fetch(
+          `${API_URL}/home-page?populate[0]=nav_links&populate[1]=nav_links.dropdown_files&populate[2]=nav_links.dropdown_files.pdf_file`,
+        );
+        const apiData = await response.json();
+
+        // Transform the data to match the expected format { label, href, dropdown? }
+        const transformedNavLinks = apiData.data.nav_links.map((link) => ({
+          label: link.Label,
+          // Use URL if available, otherwise '#' as a fallback for dropdown triggers
+          href: link.URL || "#",
+          // Map dropdown files to a simpler structure
+          dropdown: (link.dropdown_files || []).map((file) => ({
+            label: file.Label,
+            href: file.pdf_file.url,
+          })),
+        }));
+
+        setNavItems(transformedNavLinks);
+      } catch (error) {
+        console.error("Failed to fetch navigation links:", error);
+        // Fallback to hardcoded links in case of an API error
+        setNavItems([
+          { label: "Global Accelerator", href: "/global-accelerator" },
+          { label: "Collateral", href: "#" },
+          { label: "Media Coverage & Events", href: "#events" },
+          {
+            label: "Apply Now",
+            href: "https://solarx.isa.int/registration_lac",
+          },
+        ]);
+      }
+    };
+
+    fetchNavLinks();
+  }, []); // Empty dependency array ensures this runs only once
 
   return (
     <div className="relative">
@@ -62,10 +96,11 @@ export default function App() {
         <HeroCarousel />
         <EventSection />
         <AboutSolarXChallenge isMobile={isMobile} />
-        <SolarXGlobalReach isMobile={isMobile} />
+        <MeetTheTeam />
         <SolarXWinners isMobile={isMobile} />
         <StatsSection isMobile={isMobile} />
         <FundingInvestorsDashboard isMobile={isMobile} />
+        <SolarXGlobalReach isMobile={isMobile} />
         {/* <SimpleGlobe /> */}
         {/* <SuccessStories isMobile={isMobile} /> */}
         <MediaCoverageSection isMobile={isMobile} />

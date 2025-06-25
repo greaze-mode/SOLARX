@@ -398,7 +398,7 @@ export default function FundingInvestorsDashboard() {
             >
               <div className="flex items-center space-x-3 mb-3">
                 <h3 className="text-lg sm:text-xl font-bold text-gray-800">
-                  Total Funding Facilitated
+                  Total Funding Facilitated & Leveraged
                 </h3>
               </div>
               <p className="text-3xl sm:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-green-500 to-emerald-600">

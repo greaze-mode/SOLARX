@@ -1,5 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import axios from "axios";
+import * as countryFlags from "country-flag-icons/react/3x2";
 import { Target, AlertTriangle, Loader2, X } from "lucide-react";
 import KeyImpactMetricsScroller from "../components/KeyImpactMetricsScroller";
 import { API_URL } from "../services/api";
@@ -94,11 +95,26 @@ const allSdgs = [
 
 const shuffleArray = (arr) => [...arr].sort(() => 0.5 - Math.random());
 
-/**
- * NEW: Popup component to display startups for a specific SDG
- */
 const SdgStartupsPopup = ({ isOpen, onClose, sdg, startups, loading }) => {
   // Use an effect to prevent body scroll when the popup is open
+  // console.log(startups);
+  const transformedStartups = useMemo(() => {
+    return startups.map((startup) => {
+      const FlagIcon =
+        startup.country && countryFlags[startup.country]
+          ? countryFlags[startup.country]
+          : null;
+      return {
+        name: startup.name || "Unnamed Startup",
+        country: startup.country || "Unknown",
+        documentId: startup.documentId,
+        FlagIcon,
+      };
+    });
+  }, [startups]);
+
+  // console.log(transformedStartups);
+
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = "hidden";
@@ -121,7 +137,7 @@ const SdgStartupsPopup = ({ isOpen, onClose, sdg, startups, loading }) => {
       {/* Popup container */}
       <div
         onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside
-        className="bg-white rounded-2xl shadow-2xl min-w-2xl max-w-2xl max-h-[70vh] flex flex-col transform transition-all duration-300 animate-scaleUp"
+        className="bg-white rounded-2xl shadow-2xl w-full max-w-xl max-h-[70vh] flex flex-col transform transition-all duration-300 animate-scaleUp"
       >
         {/* Header */}
         {sdg && (
@@ -163,20 +179,21 @@ const SdgStartupsPopup = ({ isOpen, onClose, sdg, startups, loading }) => {
               <Loader2 className="w-8 h-8 text-orange-500 animate-spin" />
               <p className="mt-3 text-gray-500">Finding matching startups...</p>
             </div>
-          ) : startups.length > 0 ? (
+          ) : transformedStartups.length > 0 ? (
             <ul className="space-y-3">
-              {startups.map((startup, index) => (
-                <li
-                  key={index}
-                  className="flex items-center justify-between p-3 bg-white rounded-lg border border-orange-200/80 hover:bg-orange-50 hover:border-orange-200 transition-all"
-                >
-                  <a href={`/startup/${startup.documentId}`}>
-                    <span className="font-semibold text-gray-800 mr-4">
+              {transformedStartups.map((startup, index) => (
+                <li key={index}>
+                  <a
+                    href={`/startup/${startup.documentId}`}
+                    className="flex items-center justify-between p-3 bg-white rounded-lg border border-orange-200/80 hover:bg-orange-50 hover:border-orange-200 transition-all"
+                  >
+                    <span className="font-semibold text-gray-800 mr-4 flex flex-row">
                       {startup.name}
                     </span>
-                    <span className="text-sm text-gray-600 bg-white px-2.5 py-1 rounded-full border">
-                      {startup.country}
-                    </span>
+                    <startup.FlagIcon
+                      className="w-6 h-4 shadow-2xl md:w-10 md:h-10"
+                      title={startup.country}
+                    />
                   </a>
                 </li>
               ))}

@@ -31,16 +31,6 @@ const REGIONS_OPTIONS = [
   "North America",
 ];
 
-const shuffleArray = (array) => {
-  if (!Array.isArray(array) || array.length === 0) return array;
-
-  for (let i = array.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [array[i], array[j]] = [array[j], array[i]];
-  }
-  return array;
-};
-
 const transformStartupData = (rawStartup) => {
   // console.log("Transforming startup data:", rawStartup.id, rawStartup);
 
@@ -56,9 +46,7 @@ const transformStartupData = (rawStartup) => {
     description:
       rawStartup.Description?.[0]?.children?.[0]?.text ||
       "No description available",
-    categories: rawStartup.Card_Preview_Tags?.slice(0, 2) || [
-      "General",
-    ],
+    categories: rawStartup.Card_Preview_Tags?.slice(0, 2) || ["General"],
     isWomanLed: rawStartup.Female_Founder || false,
     logo: rawStartup.Company_Logo?.url || "",
     // coverImage: rawStartup.Cover_Image?.formats?.small?.url || "",
@@ -80,7 +68,7 @@ export default function SolarXWinners({ isMobile }) {
 
       try {
         const response = await axios.get(
-          `${API_URL}/startups?populate=Company_Logo&pagination[pageSize]=100`
+          `${API_URL}/startups?populate=Company_Logo&pagination[pageSize]=100`,
         );
 
         if (response && response.data && response.data.data) {
@@ -90,10 +78,13 @@ export default function SolarXWinners({ isMobile }) {
           if (rawStartups.length === 0) {
             setStartups([]);
           } else {
-            const cleanedStartups = rawStartups.map(transformStartupData);
+            const cleanedStartups = rawStartups
+              .map(transformStartupData)
+              .sort((a, b) => a.name.localeCompare(b.name));
+
             // console.log("Cleaned startups data:", cleanedStartups);
             setStartups(cleanedStartups);
-            console.log("Transformed SolarX Winners data:", cleanedStartups);
+            // console.log("Transformed SolarX Winners data:", cleanedStartups);
           }
         } else {
           // console.warn(
@@ -119,7 +110,7 @@ export default function SolarXWinners({ isMobile }) {
       return startups;
     }
     return startups.filter(
-      (company) => company.regions && company.regions === selectedRegion
+      (company) => company.regions && company.regions === selectedRegion,
     );
   }, [startups, selectedRegion]);
 
