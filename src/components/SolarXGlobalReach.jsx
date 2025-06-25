@@ -147,7 +147,7 @@ const SolarXGlobalReach = () => {
 
         if (!startupsResponse.ok) {
           throw new Error(
-            `Startups API Error: ${startupsResponse.status} ${startupsResponse.statusText}`
+            `Startups API Error: ${startupsResponse.status} ${startupsResponse.statusText}`,
           );
         }
 
@@ -166,7 +166,7 @@ const SolarXGlobalReach = () => {
               typeof hqLocation.lng === "number"
             ) {
               const coordKey = `${hqLocation.lat.toFixed(
-                5
+                5,
               )},${hqLocation.lng.toFixed(5)}`;
               const pointData = {
                 id: `startup-hq-${startup.id}`,
@@ -180,13 +180,13 @@ const SolarXGlobalReach = () => {
                 startupRegions: startup.Regions || "N/A",
                 startupSectors:
                   startup.Sector_Tags?.map((t) =>
-                    typeof t === "string" ? t.split("|").pop().trim() : ""
+                    typeof t === "string" ? t.split("|").pop().trim() : "",
                   )
                     .filter(Boolean)
                     .join(", ") || "N/A",
                 startupTech:
                   startup.Technology_Tags?.map((t) =>
-                    typeof t === "string" ? t.split("|").pop().trim() : ""
+                    typeof t === "string" ? t.split("|").pop().trim() : "",
                   )
                     .filter(Boolean)
                     .join(", ") || "N/A",
@@ -372,7 +372,7 @@ const SolarXGlobalReach = () => {
         });
         const atmosphere = new THREE.Mesh(
           new THREE.SphereGeometry(GLOBE_RADIUS * 1.04, 64, 64),
-          atmosphereMaterial
+          atmosphereMaterial,
         );
         scene.add(atmosphere);
         // atmosphereMeshRef.current = atmosphere; // Not strictly needed to store if not manipulating later
@@ -389,7 +389,7 @@ const SolarXGlobalReach = () => {
         scene.add(globe);
         globeMeshRef.current = globe;
         setIsThreeJsReady(true);
-      }
+      },
     );
 
     markersGroupRef.current = new THREE.Group();
@@ -415,7 +415,7 @@ const SolarXGlobalReach = () => {
       raycaster.setFromCamera(mouse, cameraRef.current);
       const intersects = raycaster.intersectObjects(
         individualMarkersRef.current,
-        false
+        false,
       );
       if (intersects.length > 0) {
         const clickedObject = intersects[0].object;
@@ -438,7 +438,7 @@ const SolarXGlobalReach = () => {
           const baseScale = marker.userData.baseScale || 1;
           marker.scale.setScalar(
             baseScale *
-              (1 + 0.25 * Math.sin(time + (marker.userData.id.length % 10)))
+              (1 + 0.25 * Math.sin(time + (marker.userData.id.length % 10))),
           ); // Modulo for variety
         }
       });
@@ -533,7 +533,7 @@ const SolarXGlobalReach = () => {
       const position = latLngToVector3(
         point.lat,
         point.lng,
-        GLOBE_RADIUS + 0.01
+        GLOBE_RADIUS + 0.01,
       );
       const markerRadius = isGroup ? 0.02 : 0.015;
       const markerGeometry = new THREE.SphereGeometry(markerRadius, 16, 16);
@@ -587,7 +587,7 @@ const SolarXGlobalReach = () => {
       if (data?.isGroup) {
         const timer = setTimeout(() => {
           setCurrentIndex(
-            (prevIndex) => (prevIndex + 1) % data.startups.length
+            (prevIndex) => (prevIndex + 1) % data.startups.length,
           );
         }, 4000); // Change slide every 4 seconds
         return () => clearTimeout(timer);
@@ -603,7 +603,7 @@ const SolarXGlobalReach = () => {
       setCurrentIndex((prev) => (prev + 1) % data.startups.length);
     const handlePrev = () =>
       setCurrentIndex(
-        (prev) => (prev - 1 + data.startups.length) % data.startups.length
+        (prev) => (prev - 1 + data.startups.length) % data.startups.length,
       );
 
     if (!data) return null;
@@ -886,11 +886,11 @@ const SolarXGlobalReach = () => {
                     data={sectorSummary}
                     icon={<CheckCircle />}
                   />
-                  <SummaryCard
+                  {/* <SummaryCard
                     title="Key Technologies"
                     data={technologySummary}
                     icon={<Cpu />}
-                  />
+                  /> */}
                 </div>
               </div>
             )}

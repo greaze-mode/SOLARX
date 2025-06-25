@@ -46,28 +46,31 @@ export default function App() {
     },
   ];
 
+  // @TODO: Get nav links from CMS
   const navItems = [
-    { label: "Home", href: "/" },
-    { label: "Global Accelerator", href: "/global-accelerator" },
-    { label: "Events", href: "#events" },
+    { label: "Global Accelerator 2025", href: "/global-accelerator" },
+    { label: "Collateral", href: "#" },
+    { label: "Media Coverage & Events", href: "#events" },
     { label: "Apply Now", href: "https://solarx.isa.int/registration_lac" },
   ];
 
   return (
-    <div className={`relative`}>
+    <div className="relative">
       <SolarXNavbar isMobile={isMobile} navItems={navItems} />
 
-      <div className="relative">
+      <div className="relative mt-16">
         <HeroCarousel />
+        <EventSection />
+        <AboutSolarXChallenge isMobile={isMobile} />
+        <SolarXGlobalReach isMobile={isMobile} />
         <SolarXWinners isMobile={isMobile} />
         <StatsSection isMobile={isMobile} />
         <FundingInvestorsDashboard isMobile={isMobile} />
-        <SolarXGlobalReach isMobile={isMobile} />
         {/* <SimpleGlobe /> */}
         {/* <SuccessStories isMobile={isMobile} /> */}
         <MediaCoverageSection isMobile={isMobile} />
         <GlobalImpactSection isMobile={isMobile} />
-        <EventSection />
+        {/* <HeroCarousel /> */}
         <AboutSolarXChallenge isMobile={isMobile} />
         <Footer quickLinks={quickLinks} />
       </div>

@@ -7,9 +7,9 @@ import { BsChevronLeft, BsChevronRight } from "react-icons/bs";
 
 const PrevButton = ({ enabled, onClick }) => (
   <button
-    className="absolute left-4 md:left-6 top-1/2 transform -translate-y-1/2 z-30 
-               text-white/70 hover:text-white focus:outline-none transition-all duration-300 
-               opacity-0 group-hover/carousel:opacity-100 md:block 
+    className="absolute left-4 md:left-6 top-1/2 transform -translate-y-1/2 z-30
+               text-white/70 hover:text-white focus:outline-none transition-all duration-300
+               opacity-0 group-hover/carousel:opacity-100 md:block
                disabled:opacity-30 disabled:cursor-not-allowed"
     onClick={onClick}
     disabled={!enabled}
@@ -24,9 +24,9 @@ const PrevButton = ({ enabled, onClick }) => (
 
 const NextButton = ({ enabled, onClick }) => (
   <button
-    className="absolute right-4 md:right-6 top-1/2 transform -translate-y-1/2 z-30 
-               text-white/70 hover:text-white focus:outline-none transition-all duration-300 
-               opacity-0 group-hover/carousel:opacity-100 md:block 
+    className="absolute right-4 md:right-6 top-1/2 transform -translate-y-1/2 z-30
+               text-white/70 hover:text-white focus:outline-none transition-all duration-300
+               opacity-0 group-hover/carousel:opacity-100 md:block
                disabled:opacity-30 disabled:cursor-not-allowed"
     onClick={onClick}
     disabled={!enabled}
@@ -69,7 +69,7 @@ export default function HeroCarousel() {
   // State hooks
   const [emblaRef, emblaApi] = useEmblaCarousel(
     { loop: true, align: "start" },
-    [Autoplay(autoplayOptions)]
+    [Autoplay(autoplayOptions)],
   );
   const [slides, setSlides] = useState([]);
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -82,7 +82,7 @@ export default function HeroCarousel() {
     const fetchSlides = async () => {
       axios
         .get(
-          `${API_URL}/home-page?populate[0]=carousel&populate=carousel.image&pagination[pageSize]=100`
+          `${API_URL}/home-page?populate[0]=carousel&populate=carousel.image&pagination[pageSize]=100`,
         )
         .then((response) => {
           const carouselData = response.data.data.carousel;
@@ -118,17 +118,17 @@ export default function HeroCarousel() {
   // Navigation callbacks
   const scrollPrev = useCallback(
     () => emblaApi && emblaApi.scrollPrev(),
-    [emblaApi]
+    [emblaApi],
   );
 
   const scrollNext = useCallback(
     () => emblaApi && emblaApi.scrollNext(),
-    [emblaApi]
+    [emblaApi],
   );
 
   const scrollTo = useCallback(
     (index) => emblaApi && emblaApi.scrollTo(index),
-    [emblaApi]
+    [emblaApi],
   );
 
   // Event handlers
@@ -240,9 +240,9 @@ export default function HeroCarousel() {
   return (
     <section
       id="home"
-      className="relative w-full overflow-hidden group/carousel 
-                 aspect-[16/9] md:aspect-video 
-                 max-h-[80vh] mt-16"
+      className="relative w-full overflow-hidden group/carousel
+                 aspect-[16/9] md:aspect-video
+                 max-h-[80vh]"
       aria-roledescription="carousel"
       aria-label="Hero Highlights"
       onMouseEnter={() => emblaApi?.plugins?.()?.autoplay?.stop()}
@@ -271,13 +271,13 @@ export default function HeroCarousel() {
               {/* Slide Content */}
               <div
                 className={`relative z-20 h-full flex p-6 md:p-10 lg:p-12 text-center ${getContentPlacementClasses(
-                  slide.layout
+                  slide.layout,
                 )}`}
               >
                 <div
                   className={`w-full max-w-3xl text-white just0fy-center items-center text-center ${getContentTransitionClasses(
                     "center",
-                    index === selectedIndex
+                    index === selectedIndex,
                   )}`}
                 >
                   <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-4 md:mb-6 text-shadow">
@@ -298,7 +298,7 @@ export default function HeroCarousel() {
                     {slide.button2Text && slide.button2Url && (
                       <a
                         href={slide.button2Url}
-                        className="border-2 border-white text-white hover:bg-white/10 font-semibold py-3 px-7 
+                        className="border-2 border-white text-white hover:bg-white/10 font-semibold py-3 px-7
                         rounded-full shadow-lg hover:scale-105 transition-all duration-300 ease-in-out text-base md:text-lg"
                       >
                         {slide.button2Text}

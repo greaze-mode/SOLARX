@@ -107,7 +107,7 @@ export default function FundingInvestorsDashboard() {
 
     const reasonText = (Reason || [])
       .map((paragraph) =>
-        (paragraph.children || []).map((child) => child.text || "").join("")
+        (paragraph.children || []).map((child) => child.text || "").join(""),
       )
       .join(" ")
       .trim();
@@ -135,11 +135,11 @@ export default function FundingInvestorsDashboard() {
       setError(null);
       try {
         const response = await fetch(
-          `${API_URL}/startups?populate[0]=funding&populate[1]=funding.investors&pagination[pageSize]=100`
+          `${API_URL}/startups?populate[0]=funding&populate[1]=funding.investors&pagination[pageSize]=100`,
         );
         if (!response.ok) {
           throw new Error(
-            `API Error: ${response.status} ${response.statusText}`
+            `API Error: ${response.status} ${response.statusText}`,
           );
         }
         const result = await response.json();
@@ -158,7 +158,7 @@ export default function FundingInvestorsDashboard() {
               totalAmount += round.amount;
               if (round.sourceInvestors && round.sourceInvestors.length > 0) {
                 round.sourceInvestors.forEach((name) =>
-                  allInvestorsSet.add(name)
+                  allInvestorsSet.add(name),
                 );
               }
             });
@@ -211,7 +211,7 @@ export default function FundingInvestorsDashboard() {
           // Sort investors by frequency (descending order)
           const sortedInvestors = Array.from(allInvestorsSet).sort(
             (a, b) =>
-              (investorFrequencyMap[b] || 0) - (investorFrequencyMap[a] || 0)
+              (investorFrequencyMap[b] || 0) - (investorFrequencyMap[a] || 0),
           );
 
           const investorsArray = sortedInvestors
@@ -383,6 +383,9 @@ export default function FundingInvestorsDashboard() {
                   </p>
                 )}
               </div>
+              <span className="text-xs text-gray-600">
+                Updated as of: 15 Jun 2025
+              </span>
             </div>
 
             {/* Total Funding */}

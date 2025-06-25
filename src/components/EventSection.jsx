@@ -100,7 +100,7 @@ export const EventSection = () => {
     const fetchEvents = async () => {
       axios
         .get(
-          `${API_URL}/home-page?populate[0]=events_gallery&populate[1]=events_gallery.carousel&pagination[pageSize]=100`
+          `${API_URL}/home-page?populate[0]=events_gallery&populate[1]=events_gallery.carousel&pagination[pageSize]=100`,
         )
         .then((response) => {
           const eventsData = response.data.data.events_gallery;
@@ -137,7 +137,7 @@ export const EventSection = () => {
   };
 
   const [effectiveItemsPerView, setEffectiveItemsPerView] = useState(
-    getResponsiveItemsPerView()
+    getResponsiveItemsPerView(),
   );
 
   useEffect(() => {
@@ -156,7 +156,7 @@ export const EventSection = () => {
     if (selectedProject?.imgSrc?.length > 1) {
       interval = setInterval(() => {
         setCurrentImageIndex((prev) =>
-          prev === selectedProject.imgSrc.length - 1 ? 0 : prev + 1
+          prev === selectedProject.imgSrc.length - 1 ? 0 : prev + 1,
         );
       }, 3000);
     }
@@ -180,13 +180,13 @@ export const EventSection = () => {
 
   const visibleProjects = events.slice(
     currentIndex,
-    currentIndex + effectiveItemsPerView
+    currentIndex + effectiveItemsPerView,
   );
 
   const goToNextImage = () => {
     if (selectedProject?.imgSrc) {
       setCurrentImageIndex((prev) =>
-        prev === selectedProject.imgSrc.length - 1 ? 0 : prev + 1
+        prev === selectedProject.imgSrc.length - 1 ? 0 : prev + 1,
       );
     }
   };
@@ -194,7 +194,7 @@ export const EventSection = () => {
   const goToPreviousImage = () => {
     if (selectedProject?.imgSrc) {
       setCurrentImageIndex((prev) =>
-        prev === 0 ? selectedProject.imgSrc.length - 1 : prev - 1
+        prev === 0 ? selectedProject.imgSrc.length - 1 : prev - 1,
       );
     }
   };
@@ -203,7 +203,7 @@ export const EventSection = () => {
     <div className="w-full px-6 lg:px-[69px] py-12" id="events">
       <h1 className="text-4xl md:text-5xl font-bold mb-4 text-center">
         <span className="bg-clip-text text-transparent bg-gradient-to-r from-orange-500 to-red-600">
-          Event Gallery
+          Events Gallery
         </span>
       </h1>
       <div className="w-28 h-1.5 mx-auto bg-gradient-to-r from-orange-500 to-red-500 rounded-full mb-10 md:mb-16"></div>

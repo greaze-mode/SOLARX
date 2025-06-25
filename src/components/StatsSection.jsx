@@ -16,7 +16,9 @@ export default function StatsSection() {
 
     const getStats = async () => {
       try {
-        const res = await axios.get(`${API_URL}/startups?populate[0]=funding&pagination[pageSize]=100`);
+        const res = await axios.get(
+          `${API_URL}/startups?populate[0]=funding&pagination[pageSize]=100`,
+        );
 
         // console.log("Response from API:", res.data);
 
@@ -68,7 +70,9 @@ export default function StatsSection() {
   const stats = [
     {
       id: 1,
-      value: `${stats2.startupsCount}` || "0",
+      // value: `${stats2.startupsCount}` || "0",
+      value: "50",
+      href: "#winners",
       label: "Innovative Startups",
       icon: (
         <svg
@@ -90,6 +94,7 @@ export default function StatsSection() {
     {
       id: 2,
       value: stats2.regionsCount || "0",
+      href: "#reach",
       label: "Global Regions",
       icon: (
         <svg
@@ -111,7 +116,8 @@ export default function StatsSection() {
     {
       id: 3,
       value: `${stats2.funding || "USD 0"}`,
-      label: "Funding Facilitated",
+      href: "#funding",
+      label: "Funding Facilitated & Leveraged",
       icon: (
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -132,6 +138,7 @@ export default function StatsSection() {
     {
       id: 4,
       value: "500K+",
+      href: "#impact",
       label: "Lives Impacted",
       icon: (
         <svg
@@ -146,6 +153,28 @@ export default function StatsSection() {
             strokeLinejoin="round"
             strokeWidth="2"
             d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+          />
+        </svg>
+      ),
+    },
+    {
+      id: 5,
+      value: "USD 750K",
+      href: "funding",
+      label: "Grants Given by ISA",
+      icon: (
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="h-8 w-8 text-white"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
           />
         </svg>
       ),
@@ -179,10 +208,11 @@ export default function StatsSection() {
         </div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4 md:gap-6">
           {stats.map((stat) => (
-            <div
+            <a
               key={stat.id}
+              href={stat.href}
               className="bg-white rounded-lg sm:rounded-xl p-3 sm:p-4 md:p-5 shadow-md sm:shadow-lg hover:scale-105 transition-all text-center border border-orange-100 hover:border-orange-300"
             >
               <div className="w-10 h-10 sm:w-11 sm:h-11 md:w-12 md:h-12 orange-gradient rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4 shadow-md">
@@ -196,7 +226,7 @@ export default function StatsSection() {
               <p className="text-xs sm:text-sm text-gray-700 font-medium">
                 {stat.label}
               </p>
-            </div>
+            </a>
           ))}
         </div>
       </div>

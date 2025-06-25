@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { Target, AlertTriangle, Loader2 } from "lucide-react";
+import { Target, AlertTriangle, Loader2, X } from "lucide-react";
 import KeyImpactMetricsScroller from "../components/KeyImpactMetricsScroller";
 import { API_URL } from "../services/api";
 import sdgIcon1 from "../assets/imgs/sdgs/SDG_01.jpg";
@@ -95,35 +95,157 @@ const allSdgs = [
 const shuffleArray = (arr) => [...arr].sort(() => 0.5 - Math.random());
 
 /**
+ * NEW: Popup component to display startups for a specific SDG
+ */
+const SdgStartupsPopup = ({ isOpen, onClose, sdg, startups, loading }) => {
+  // Use an effect to prevent body scroll when the popup is open
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, [isOpen]);
+
+  if (!isOpen) return null;
+
+  return (
+    // Backdrop
+    <div
+      onClick={onClose}
+      className="fixed inset-0 bg-black/60 backdrop-blur-sm flex justify-center items-center z-50 p-4 transition-opacity duration-300 animate-fadeIn"
+    >
+      {/* Popup container */}
+      <div
+        onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside
+        className="bg-white rounded-2xl shadow-2xl min-w-2xl max-w-2xl max-h-[70vh] flex flex-col transform transition-all duration-300 animate-scaleUp"
+      >
+        {/* Header */}
+        {sdg && (
+          <div
+            className="p-4 sm:p-5 border-b border-gray-200 flex items-center space-x-4 relative"
+            style={{
+              backgroundColor: `${sdg.color}20` /* Use SDG color with transparency */,
+            }}
+          >
+            <img
+              src={sdg.icon}
+              alt={sdg.title}
+              className="w-16 h-16 rounded-md shadow-md flex-shrink-0"
+            />
+            <div className="flex-1">
+              <p
+                className="text-xs font-bold uppercase"
+                style={{ color: sdg.color }}
+              >
+                SDG {sdg.number}
+              </p>
+              <h3 className="text-lg font-bold text-gray-800 leading-tight">
+                {sdg.title}
+              </h3>
+            </div>
+            <button
+              onClick={onClose}
+              className="absolute top-3 right-3 text-gray-500 hover:text-gray-900 transition-colors p-1 rounded-full hover:bg-black/10"
+            >
+              <X size={24} />
+            </button>
+          </div>
+        )}
+
+        {/* Body */}
+        <div className="p-5 sm:p-6 overflow-y-auto">
+          {loading ? (
+            <div className="flex flex-col items-center justify-center h-48">
+              <Loader2 className="w-8 h-8 text-orange-500 animate-spin" />
+              <p className="mt-3 text-gray-500">Finding matching startups...</p>
+            </div>
+          ) : startups.length > 0 ? (
+            <ul className="space-y-3">
+              {startups.map((startup, index) => (
+                <li
+                  key={index}
+                  className="flex items-center justify-between p-3 bg-white rounded-lg border border-orange-200/80 hover:bg-orange-50 hover:border-orange-200 transition-all"
+                >
+                  <a href={`/startup/${startup.documentId}`}>
+                    <span className="font-semibold text-gray-800 mr-4">
+                      {startup.name}
+                    </span>
+                    <span className="text-sm text-gray-600 bg-white px-2.5 py-1 rounded-full border">
+                      {startup.country}
+                    </span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <div className="flex flex-col items-center justify-center h-48 text-center">
+              <Target className="w-10 h-10 text-gray-400 mb-3" />
+              <h4 className="font-semibold text-gray-700">No Startups Found</h4>
+              <p className="text-sm text-gray-500 mt-1">
+                There are currently no startups listed for this SDG.
+              </p>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+/**
  * Component to display an SDG Goal tile in the grid
  */
-const SdgGoalTile = ({ icon, title, startupCount }) => (
-  <div className="relative group aspect-square">
-    <div className="w-full h-full rounded-md overflow-hidden shadow-lg group-hover:shadow-2xl transform group-hover:-translate-y-1 transition-all duration-300">
+const SdgGoalTile = ({ icon, title, startupCount, onClick }) => (
+  <div
+    className={`relative group aspect-square ${startupCount > 0 ? "cursor-pointer" : "cursor-default"}`}
+    onClick={startupCount > 0 ? onClick : undefined}
+    role={startupCount > 0 ? "button" : undefined}
+    tabIndex={startupCount > 0 ? 0 : -1}
+    onKeyDown={(e) => {
+      if ((e.key === "Enter" || e.key === " ") && startupCount > 0) onClick();
+    }}
+  >
+    <div
+      className={`w-full h-full rounded-md overflow-hidden shadow-lg transition-all duration-300 ${startupCount > 0 ? "group-hover:shadow-2xl transform group-hover:-translate-y-1" : "opacity-80"}`}
+    >
       {/* Background Image */}
       <img
         src={icon}
         alt={title}
-        className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+        className={`w-full h-full object-cover transition-transform duration-300 ${startupCount > 0 ? "group-hover:scale-105" : ""}`}
       />
 
-      {/* Full-card overlay that appears on hover, making the card lighter */}
+      {/* Full-card overlay for clickable tiles */}
+      {startupCount > 0 && (
+        <div className="absolute inset-0 bg-gray-700/60 backdrop-blur-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10 px-2">
+          <div className="text-center flex flex-col items-center">
+            <span className="text-white text-7xl font-extrabold drop-shadow-md">
+              {startupCount}
+            </span>
+            <span className="text-white text-4xl font-medium drop-shadow-md">
+              Startup{startupCount === 1 ? "" : "s"}
+            </span>
+          </div>
+        </div>
+      )}
 
-      <div className="absolute inset-0 bg-gray-700/60 backdrop-blur-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10 px-2">
-        <div className="text-center flex flex-col items-center">
+      {/* Static overlay for non-clickable tiles */}
+      {startupCount === 0 && (
+        <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
           <span className="text-white text-7xl font-extrabold drop-shadow-md">
-            {startupCount}
-          </span>
-          <span className="text-white text-4xl font-meidum drop-shadow-md">
-            Startup{startupCount == 1 ? "" : "s"}
+            0
           </span>
         </div>
-      </div>
+      )}
     </div>
 
-    {/* Small count badge in corner (hides on hover) */}
+    {/* Small count badge in corner (hides on hover for clickable tiles) */}
     {startupCount > 0 && (
-      <div className="absolute -top-2 -right-2 w-8 h-8 bg-white text-orange-500 rounded-full flex items-center justify-center text-lg font-bold ring-2 ring-orange-600 z-50 transition-all duration-300 group-hover:opacity-0 group-hover:scale-0">
+      <div className="absolute -top-2 -right-2 w-8 h-8 bg-white text-orange-500 rounded-full flex items-center justify-center text-lg font-bold ring-2 ring-orange-600 z-20 transition-all duration-300 group-hover:opacity-0 group-hover:scale-0">
         {startupCount}
       </div>
     )}
@@ -140,6 +262,13 @@ const GlobalImpactSection = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isVisible, setIsVisible] = useState(false);
+
+  // --- NEW STATE FOR POPUP ---
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [selectedSdg, setSelectedSdg] = useState(null);
+  const [startupsForSdg, setStartupsForSdg] = useState([]);
+  const [popupLoading, setPopupLoading] = useState(false);
+  const [allStartupsData, setAllStartupsData] = useState([]);
 
   // Animation effect for component visibility
   useEffect(() => {
@@ -158,13 +287,19 @@ const GlobalImpactSection = () => {
 
         // Fetch startup data first
         const fullRes = await axios.get(
-          `${API_URL}/startups?populate=*&pagination[pageSize]=100`
+          `${API_URL}/startups?populate=*&pagination[pageSize]=100`,
         );
 
-        const sdgCounts = {};
         const allStartups = fullRes?.data?.data || [];
+        // Store all startup data for later filtering
+        setAllStartupsData(allStartups);
+
+        const sdgCounts = {};
         allStartups.forEach((startup) => {
+          // NOTE: Assumes SDG data is in startup.attributes.SDG
+          // If your data structure is different (e.g., startup.SDG), adjust here.
           const startupSdgs = startup.SDG || [];
+          // console.log(startupSdgs);
           startupSdgs.forEach((sdgNumber) => {
             sdgCounts[sdgNumber] = (sdgCounts[sdgNumber] || 0) + 1;
           });
@@ -199,6 +334,33 @@ const GlobalImpactSection = () => {
     };
     fetchData();
   }, []);
+
+  const handleSdgClick = (sdg) => {
+    if ((sdgStartupCounts[sdg.number] || 0) === 0) return;
+
+    setPopupLoading(true);
+    setSelectedSdg(sdg);
+    setIsPopupOpen(true);
+
+    const filteredStartups = allStartupsData
+      .filter((startup) => startup.SDG?.includes(sdg.number.toString()))
+      .map((startup) => ({
+        name: startup.Name || "Unnamed Startup",
+        country: startup.Country || "Unknown",
+        documentId: startup.documentId,
+      }));
+
+    // console.log("Filtered Startups: ", filteredStartups);
+
+    setTimeout(() => {
+      setStartupsForSdg(filteredStartups);
+      setPopupLoading(false);
+    }, 300);
+  };
+
+  const handleClosePopup = () => {
+    setIsPopupOpen(false);
+  };
 
   if (loading) {
     return (
@@ -245,7 +407,8 @@ const GlobalImpactSection = () => {
   }
 
   return (
-    <section id="impact"
+    <section
+      id="impact"
       className={`pt-20 bg-white relative overflow-hidden transition-opacity duration-200 w-full ${
         isVisible ? "opacity-100" : "opacity-0"
       }`}
@@ -299,6 +462,7 @@ const GlobalImpactSection = () => {
                       key={sdg.number}
                       icon={sdg.icon}
                       startupCount={sdgStartupCounts[sdg.number] || 0}
+                      onClick={() => handleSdgClick(sdg)}
                     />
                   ))}
                   {/* Final 'Goals' tile */}
@@ -327,6 +491,13 @@ const GlobalImpactSection = () => {
           </div>
         )}
       </div>
+      <SdgStartupsPopup
+        isOpen={isPopupOpen}
+        onClose={handleClosePopup}
+        sdg={selectedSdg}
+        startups={startupsForSdg}
+        loading={popupLoading}
+      />
     </section>
   );
 };
