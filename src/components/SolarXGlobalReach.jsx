@@ -251,6 +251,32 @@ const SolarXGlobalReach = () => {
     fetchData();
   }, []);
 
+  // disable scroll when fullscreen
+  useEffect(() => {
+    // Function to handle the Escape key press
+    const handleEsc = (event) => {
+      if (event.key === "Escape") {
+        setIsFullscreen(false); // Exit fullscreen on Escape press
+      }
+    };
+
+    // When the component enters fullscreen mode
+    if (isFullscreen) {
+      // Prevent the background page from scrolling
+      document.body.style.overflow = "hidden";
+      // Add event listener for the Escape key
+      window.addEventListener("keydown", handleEsc);
+    }
+
+    // Cleanup function: This is called when `isFullscreen` changes or the component unmounts.
+    return () => {
+      // Always re-enable scrolling when the effect is cleaned up
+      document.body.style.overflow = "unset";
+      // Remove the event listener to prevent memory leaks
+      window.removeEventListener("keydown", handleEsc);
+    };
+  }, [isFullscreen]); // Dependency array: this effect runs whenever `isFullscreen` change
+
   // Summaries processing
   useEffect(() => {
     if (allStartups.length === 0) {

@@ -20,6 +20,7 @@ export default function StartupDetail() {
   const [id, setId] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [navItems, setNavItems] = useState([]); // State to hold nav links from CMS
 
   const quickLinks = [
     { label: "Home", href: "/" },
@@ -33,11 +34,46 @@ export default function StartupDetail() {
     { label: "Projects", href: "#projects" },
     { label: "Global Impact", href: "#impact" },
   ];
-  const navItems = [
-    { label: "Home", href: "/" },
-    { label: "Global Accelerator", href: "/global-accelerator" },
-   { label: "Apply Now", href: "https://solarx.isa.int/registration_lac" },
-  ];
+
+  useEffect(() => {
+    const fetchNavLinks = async () => {
+      try {
+        const response = await fetch(
+          `${API_URL}/home-page?populate[0]=nav_links&populate[1]=nav_links.dropdown_files&populate[2]=nav_links.dropdown_files.pdf_file`,
+        );
+        const apiData = await response.json();
+
+        // Transform the data to match the expected format { label, href, dropdown? }
+        const transformedNavLinks = apiData.data.nav_links
+          .filter((link) => !link.Label.includes("Media"))
+          .map((link) => ({
+            label: link.Label,
+            // Use URL if available, otherwise '#' as a fallback for dropdown triggers
+            href: link.URL || "#",
+            // Map dropdown files to a simpler structure
+            dropdown: (link.dropdown_files || []).map((file) => ({
+              label: file.Label,
+              href: file.pdf_file.url,
+            })),
+          }));
+
+        setNavItems(transformedNavLinks);
+      } catch (error) {
+        console.error("Failed to fetch navigation links:", error);
+        // Fallback to hardcoded links in case of an API error
+        setNavItems([
+          { label: "Global Accelerator", href: "/global-accelerator" },
+          { label: "Collateral", href: "#" },
+          {
+            label: "Apply Now",
+            href: "https://solarx.isa.int/registration_lac",
+          },
+        ]);
+      }
+    };
+
+    fetchNavLinks();
+  }, []); // Empty dependency array ensures this runs only once
 
   useEffect(() => {
     const checkCompany = async () => {

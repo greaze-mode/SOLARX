@@ -209,7 +209,7 @@ export default function SolarXWinners({ isMobile }) {
       id="winners"
       className="max-w-screen-2xl mx-auto min-w-full bg-gradient-to-b from-white via-orange-50 to-white pt-16 md:pt-24 relative"
     >
-      <div className="px-4 sm:px-6 lg:px-8 relative z-10">
+      <div className="px-4 sm:px-6 lg:px-8">
         <div className="text-center">
           <h2 className="text-4xl md:text-5xl font-extrabold mb-4 text-gray-800">
             Meet Our <span className="text-orange-600">SolarX Winners</span>

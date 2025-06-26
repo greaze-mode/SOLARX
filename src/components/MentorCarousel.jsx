@@ -13,7 +13,7 @@ export default function MentorCarousel({ darkMode = false, companyId }) {
         const response = await fetchMentors(companyId);
         const founders = response.data[0].founders || [];
 
-        console.log(founders)
+        // console.log(founders)
 
         if (response && response.data) {
           const processedMentors = founders.map((founder) => {
@@ -25,7 +25,7 @@ export default function MentorCarousel({ darkMode = false, companyId }) {
               image: founder.Profile_Picture
                 ? getMediaUrl(founder.Profile_Picture)
                 : `https://placehold.co/400x400/orange/white?text=${encodeURIComponent(
-                    founder.name || "Mentor"
+                    founder.name || "Mentor",
                   )}`,
             };
             return mentorData;
@@ -56,7 +56,7 @@ export default function MentorCarousel({ darkMode = false, companyId }) {
   useEffect(() => {
     if (mentors.length > 0) {
       const activeMentorPosition = mentors.findIndex(
-        (mentor) => mentor.id === activeIndex
+        (mentor) => mentor.id === activeIndex,
       );
 
       if (activeMentorPosition !== -1) {

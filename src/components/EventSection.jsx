@@ -50,7 +50,7 @@ const renderRichText = (richTextArray) => {
         return (
           <p key={blockIndex} className="text-gray-600 mb-4">
             {children.map((child, i) => {
-              console.log("Child:", child);
+              // console.log("Child:", child);
               if (child.bold === true) {
                 return <span className="font-bold">{child.text}</span>;
               } else if (child.italic === true) {
@@ -97,6 +97,32 @@ export const EventSection = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   useEffect(() => {
+    // Function to handle the Escape key press
+    const handleEsc = (event) => {
+      if (event.key === "Escape") {
+        setSelectedProject(null); // Close the popup
+      }
+    };
+
+    // If a project is selected (popup is open)
+    if (selectedProject) {
+      // Disable scrolling on the main page
+      document.body.style.overflow = "hidden";
+      // Add event listener for the Escape key
+      window.addEventListener("keydown", handleEsc);
+    }
+
+    // Cleanup function: This runs when the effect is cleaned up.
+    // (i.e., when selectedProject changes again, or the component unmounts)
+    return () => {
+      // Re-enable scrolling
+      document.body.style.overflow = "unset";
+      // Remove the event listener to prevent memory leaks
+      window.removeEventListener("keydown", handleEsc);
+    };
+  }, [selectedProject]); // The effect depends on `selectedProject` state
+
+  useEffect(() => {
     const fetchEvents = async () => {
       axios
         .get(
@@ -111,11 +137,12 @@ export const EventSection = () => {
               id: event.id,
               title: event.title || "Untitled Event",
               date: event.date || "No date provided",
+              imageGallery: event.image_gallery_link || "#",
               description: event.description || [],
               imgSrc: event.carousel || [],
             }));
 
-            // console.log("Fetched slides:", formattedSlides);
+            // console.log("Fetched Events:", formattedEvents);
 
             setEvents(formattedEvents);
           }
@@ -325,8 +352,12 @@ export const EventSection = () => {
         <div
           className="fixed inset-0 bg-black bg-opacity-75 z-[9999] flex items-start justify-center overflow-y-auto"
           style={{ paddingTop: "40px", paddingBottom: "40px" }}
+          onClick={() => setSelectedProject(null)}
         >
-          <div className="relative bg-white rounded-xl shadow-2xl max-w-4xl w-full my-4 mx-4 max-h-[calc(100vh-120px)] overflow-y-auto">
+          <div
+            className="relative bg-white rounded-xl shadow-2xl max-w-4xl w-full my-4 mx-4 max-h-[calc(100vh-120px)] overflow-y-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
             {/* Close button */}
             <button
               onClick={() => setSelectedProject(null)}
@@ -401,13 +432,28 @@ export const EventSection = () => {
               )}
             </div>
 
-            <h2 className="text-3xl px-6 sm:px-8 pt-4 font-bold text-black">
-              {selectedProject.title}
-            </h2>
+            <div className="flex flex-col gap-4 px-6 sm:px-8 pt-4 ">
+              <h2 className="text-3xl font-bold text-black">
+                {selectedProject.title}
+              </h2>
 
-            <p className="text-gray-600 px-6 sm:px-8">
-              Dates: {selectedProject.date}
-            </p>
+              <div className="flex flex-col gap-2">
+                <p className="text-gray-600">Dates: {selectedProject.date}</p>
+                <a
+                  href={selectedProject.imageGallery}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <button className="inline-flex items-center text-orange-600 hover:text-orange-700 font-medium text-sm hover:underline transition-colors duration-200 group/link">
+                    Picture Gallery
+                    <ExternalLink
+                      size={16}
+                      className="ml-1.5 transform transition-transform duration-300 group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5"
+                    />
+                  </button>
+                </a>
+              </div>
+            </div>
 
             {/* Project content */}
             <div className="p-6 sm:p-8">

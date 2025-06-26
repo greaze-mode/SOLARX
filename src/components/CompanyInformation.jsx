@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Calendar, MapPin, Users, Shield, Target, Globe } from "lucide-react";
 import { useParams } from "react-router-dom";
 import * as countryCodes from "country-codes-list";
+import { LI } from "country-flag-icons/react/3x2";
 
 const getCountryNameFromCode = (code) => {
   if (!code || typeof code !== "string") return "Unknown Country";
@@ -17,6 +18,8 @@ export default function CompanyInformation({ companyId }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const isa_contact_emails = ["itsupport2@isa.int", "tempmail@isa.int"];
+
   useEffect(() => {
     const fetchCompanyDetails = async () => {
       try {
@@ -25,7 +28,7 @@ export default function CompanyInformation({ companyId }) {
         // Get all companies first
         const baseUrl = import.meta.env.VITE_API_URL;
         const response = await fetch(
-          `${baseUrl}/api/startups?filters[id][$eq]=${companyId}&pagination[pageSize]=100`
+          `${baseUrl}/api/startups?filters[id][$eq]=${companyId}&pagination[pageSize]=100`,
         );
         const result = await response.json();
         const companyData =
@@ -205,6 +208,30 @@ export default function CompanyInformation({ companyId }) {
                           "Not specified"
                         )}
                       </p>
+                    </div>
+                  </div>
+
+                  <div className="col-span-2 border border-gray-200 rounded-lg p-4 flex items-start bg-white">
+                    <div className="bg-orange-500 rounded-full p-3 mr-4">
+                      <Shield className="text-white" size={20} />
+                    </div>
+                    <div>
+                      <p className="text-gray-500 text-sm mb-1">
+                        ISA Team Contact
+                      </p>
+                      <ul className="text-orange-600 text-lg lg:text-xl truncate font-medium flex flex-row gap-1">
+                        {isa_contact_emails.map((email, idx) => (
+                          <li key={idx}>
+                            <a
+                              href={`mailto:${email}`}
+                              className="text-orange-600 hover:text-orange-700 hover:underline"
+                            >
+                              {email}
+                            </a>
+                            {idx < isa_contact_emails.length - 1 && ","}
+                          </li>
+                        ))}
+                      </ul>
                     </div>
                   </div>
                 </div>

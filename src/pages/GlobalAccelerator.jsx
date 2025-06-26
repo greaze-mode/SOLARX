@@ -23,7 +23,10 @@ const GlobalAccelerator = () => {
     { label: "Home", href: "/" },
     { label: "Global Accelerator", href: "/global-accelerator" },
     { label: "Workshops", href: "#workshops" },
-    { label: "Apply Now", href: "https://solarx.isa.int/registration_lac" },
+    {
+      label: "Apply Now - LAC 2025",
+      href: "https://solarx.isa.int/registration_lac",
+    },
   ];
 
   const [isCookieSet, setIsCookieSet] = useState(false);
