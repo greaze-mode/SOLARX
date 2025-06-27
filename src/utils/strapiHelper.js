@@ -6,7 +6,7 @@
 // Update this map whenever you notice a discrepancy
 const idMap = {
   // Strapi Admin ID: API ID
-  '16': '17',  // The company showing as ID 16 in admin is actually ID 17 in API
+  16: "17", // The company showing as ID 16 in admin is actually ID 17 in API
   // Add more mappings as needed
 };
 
@@ -42,12 +42,14 @@ export const getAdminId = (apiId) => {
  */
 export const getCompanyIdsByName = async () => {
   try {
-    const response = await fetch('http://localhost:1337/api/companies&pagination[pageSize]=100');
+    const response = await fetch(
+      `${API_URL}/companies&pagination[pageSize]=100`,
+    );
     const data = await response.json();
 
     if (data && data.data && Array.isArray(data.data)) {
       const mapping = {};
-      data.data.forEach(company => {
+      data.data.forEach((company) => {
         if (company.attributes.Name) {
           mapping[company.attributes.Name] = company.id;
         }
@@ -56,11 +58,10 @@ export const getCompanyIdsByName = async () => {
     }
     return {};
   } catch (error) {
-    console.error('Error fetching company IDs by name:', error);
+    console.error("Error fetching company IDs by name:", error);
     return {};
   }
 };
-
 
 export async function getLocationFromLatLong(latitude, longitude) {
   if (!latitude || !longitude) {
@@ -68,14 +69,15 @@ export async function getLocationFromLatLong(latitude, longitude) {
   }
   // const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=6`);
   // const response = await fetch(`https://us1.api-bdc.net/data/reverse-geocode?latitude=${latitude}&longitude=${longitude}&localityLanguage=en`);
-  const response = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${import.meta.env.GOOGLE_API_KEY}`);
+  const response = await fetch(
+    `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${import.meta.env.GOOGLE_API_KEY}`,
+  );
   const data = await response.json();
 
   // console.log('Reverse geocode data:', data);
 
-  let city = '';
-  let country = '';
-
+  let city = "";
+  let country = "";
 
   data.results[0].address_components.forEach((component) => {
     if (component.types.includes("administrative_area_level_2")) {
@@ -85,17 +87,17 @@ export async function getLocationFromLatLong(latitude, longitude) {
       country = component.long_name;
       // console.log('Country:', component.long_name);
     }
-  })
+  });
 
-  if (city !== '' && country !== '') {
+  if (city !== "" && country !== "") {
     return `${city}, ${country}`;
     // return data.results[0].formatted_address || 'Location not found';
-  } else if (city !== '') {
+  } else if (city !== "") {
     return city;
-  } else if (country !== '') {
+  } else if (country !== "") {
     return country;
   } else {
-    return 'Location not found';
+    return "Location not found";
   }
 }
 
@@ -104,12 +106,13 @@ export function parseRichText(content) {
   let fin = "";
   content.forEach((block) => {
     if (block.type === "paragraph") {
-      fin += block.children
-        .map((child) => child.text || "")
-        .join("")
-        .trim() + "\n";
+      fin +=
+        block.children
+          .map((child) => child.text || "")
+          .join("")
+          .trim() + "\n";
     }
-  })
+  });
 
   return fin.trim();
 }

@@ -4,6 +4,7 @@ import axios from "axios"; // Using axios as in your original
 import useEmblaCarousel from "embla-carousel-react";
 import TechnologyCard from "./TechnologyCard"; // Import the new card
 import { ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
+import { API_URL } from "../services/api";
 
 // Reusable Embla Navigation Buttons (can be in a separate file)
 const PrevButton = ({ enabled, onClick }) => (
@@ -46,15 +47,15 @@ export default function TechnologySection({ companyId }) {
 
   const scrollPrev = useCallback(
     () => emblaApi && emblaApi.scrollPrev(),
-    [emblaApi]
+    [emblaApi],
   );
   const scrollNext = useCallback(
     () => emblaApi && emblaApi.scrollNext(),
-    [emblaApi]
+    [emblaApi],
   );
   const scrollTo = useCallback(
     (index) => emblaApi && emblaApi.scrollTo(index),
-    [emblaApi]
+    [emblaApi],
   );
 
   const onSelect = useCallback(() => {
@@ -92,9 +93,8 @@ export default function TechnologySection({ companyId }) {
       setLoading(true);
       setError(null);
       try {
-        const baseUrl = import.meta.env.VITE_API_URL;
         const response = await axios.get(
-          `${baseUrl}/api/startups?filters[id][$eq]=${companyId}&populate[0]=Technology&populate[1]=Technology.Highlights&populate[2]=Technology.Demonstration&pagination[pageSize]=100`
+          `${API_URL}/startups?filters[id][$eq]=${companyId}&populate[0]=Technology&populate[1]=Technology.Highlights&populate[2]=Technology.Demonstration&pagination[pageSize]=100`,
         );
 
         const startup = response.data?.data?.[0];
@@ -111,7 +111,7 @@ export default function TechnologySection({ companyId }) {
           setTechData(technologies);
           // randomise and limit to 5 items for Technology_Tags
           const randomTags = startup.Technology_Tags.sort(
-            () => 0.5 - Math.random()
+            () => 0.5 - Math.random(),
           ).slice(0, 5);
           setTechTags(randomTags || []);
         }

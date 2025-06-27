@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Target, AlertTriangle, Loader2 } from "lucide-react";
+import { API_URL } from "../services/api";
 import sdgIcon1 from "../../public/imgs/sdgs/SDG_01.jpg";
 import sdgIcon2 from "../../public/imgs/sdgs/SDG_02.jpg";
 import sdgIcon3 from "../../public/imgs/sdgs/SDG_03.jpg";
@@ -127,8 +128,9 @@ const GlobalImpactSection = () => {
       try {
         setLoading(true);
         setError(null);
-        const baseUrl = import.meta.env.VITE_API_URL;
-        const fullRes = await axios.get(`${baseUrl}/api/startups?populate=*&pagination[pageSize]=100`);
+        const fullRes = await axios.get(
+          `${API_URL}/startups?populate=*&pagination[pageSize]=100`,
+        );
         const allStartups = fullRes?.data?.data || [];
 
         const sdgCounts = {};

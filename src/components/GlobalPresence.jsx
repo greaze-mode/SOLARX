@@ -25,7 +25,7 @@ const GlobalPresence = ({ companyId }) => {
 
       axios
         .get(
-          `${API_URL}/startups?filters[id][$eq]=${companyId}&pagination[pageSize]=100`
+          `${API_URL}/startups?filters[id][$eq]=${companyId}&pagination[pageSize]=100`,
         )
         .then((response) => {
           if (
@@ -92,12 +92,7 @@ const GlobalPresence = ({ companyId }) => {
       try {
         setLoading(true);
         setError(null);
-        // The endpoint filters by startups.id, which implies global-presences is a collection
-        // and each item in it can be linked to multiple startups.
-        // We expect the response to be an array of global-presence entries.
-        // If a startup can only have one global-presence entry, the API design might differ.
-        const baseUrl = import.meta.env.VITE_API_URL;
-        const apiUrl = `${baseUrl}/api/global-presences?populate=Presence&filters[startups][id][$eq]=${companyId}&pagination[pageSize]=100`;
+        const apiUrl = `${API_URL}/global-presences?populate=Presence&filters[startups][id][$eq]=${companyId}&pagination[pageSize]=100`;
         const response = await fetch(apiUrl);
 
         if (!response.ok) {
@@ -150,7 +145,7 @@ const GlobalPresence = ({ companyId }) => {
                       type: "expansion",
                     });
                     regionsSet.add(
-                      item.Location.country || "Region (Expansion)"
+                      item.Location.country || "Region (Expansion)",
                     ); // Placeholder
                   }
                   // Add other types like 'Partner Locations' if they exist in API
@@ -229,7 +224,7 @@ const GlobalPresence = ({ companyId }) => {
             attribution:
               '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors & <a href="https://carto.com/attributions">CARTO</a>',
             maxZoom: 18,
-          }
+          },
         ).addTo(map);
 
         const addMarkers = (locations, color, fillColor, size = 8) => {
@@ -244,8 +239,8 @@ const GlobalPresence = ({ companyId }) => {
             }).addTo(map);
             marker.bindPopup(
               `<b>${location.name}</b><br>Lat: ${location.lat.toFixed(
-                2
-              )}, Lng: ${location.lng.toFixed(2)}`
+                2,
+              )}, Lng: ${location.lng.toFixed(2)}`,
             );
           });
         };
@@ -254,19 +249,19 @@ const GlobalPresence = ({ companyId }) => {
           mapLocations.currentOperations,
           darkMode ? "#e95a00" : "#f97316",
           darkMode ? "#ff8c00" : "#fdba74",
-          8
+          8,
         ); // Orange
         addMarkers(
           mapLocations.expansionTargets,
           darkMode ? "#2563eb" : "#3b82f6",
           darkMode ? "#60a5fa" : "#93c5fd",
-          6
+          6,
         ); // Blue
         addMarkers(
           mapLocations.partnerLocations,
           darkMode ? "#059669" : "#10b981",
           darkMode ? "#34d399" : "#6ee7b7",
-          6
+          6,
         ); // Green
 
         // Fit bounds if there are markers
@@ -277,7 +272,7 @@ const GlobalPresence = ({ companyId }) => {
         ];
         if (allPoints.length > 0) {
           const bounds = window.L.latLngBounds(
-            allPoints.map((p) => [p.lat, p.lng])
+            allPoints.map((p) => [p.lat, p.lng]),
           );
           if (bounds.isValid()) {
             map.fitBounds(bounds, { padding: [50, 50], maxZoom: 5 });

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import KeyImpactMetricsScroller from "./KeyImpactMetricsScroller";
+import { API_URL } from "../services/api";
 
 const CATEGORIES = {
   Environmental_Impact_Metrics: "Environmental Impact",
@@ -106,8 +107,7 @@ export default function ImpactMetrics({ companyId }) {
     const loadMetrics = async () => {
       try {
         setLoading(true);
-        const baseUrl = import.meta.env.VITE_API_URL;
-        const url = `${baseUrl}/api/startups?filters[id][$eq]=${companyId}&populate[0]=Environmental_Impact_Metrics&populate[1]=Social_Impact_Metrics&populate[2]=Economic_Impact_Metrics&populate[3]=Technology_And_Scalability_Metrics&pagination[pageSize]=100`;
+        const url = `${API_URL}/startups?filters[id][$eq]=${companyId}&populate[0]=Environmental_Impact_Metrics&populate[1]=Social_Impact_Metrics&populate[2]=Economic_Impact_Metrics&populate[3]=Technology_And_Scalability_Metrics&pagination[pageSize]=100`;
         const res = await axios.get(url);
         const startup = res.data.data[0];
 
@@ -151,7 +151,10 @@ export default function ImpactMetrics({ companyId }) {
 
   return (
     metrics && (
-      <div id="impact" className="w-full bg-gradient-to-r from-orange-200 to-orange-500 pt-32 pb-20 relative">
+      <div
+        id="impact"
+        className="w-full bg-gradient-to-r from-orange-200 to-orange-500 pt-32 pb-20 relative"
+      >
         <div className="absolute inset-0 bg-[url('/imgs/bg_impact_metrics.png')] bg-no-repeat bg-center bg-cover opacity-20"></div>
         <div className="relative z-10">
           <div className="flex flex-col md:flex-row items-center justify-center md:space-x-3 w-full">

@@ -9,6 +9,7 @@ import {
   FileText,
   X,
 } from "lucide-react";
+import { API_URL } from "../services/api";
 
 // Helper function to extract plain text from Strapi's rich text format
 const extractRichTextToString = (richTextArray) => {
@@ -122,9 +123,7 @@ const ProjectGallery = ({ companyId }) => {
         setLoading(true);
         setError(null);
 
-        const baseUrl = import.meta.env.VITE_API_URL;
-        // Fix the populate syntax - using the correct format for Strapi v4
-        const apiUrl = `${baseUrl}/api/projects?filters[startup][id][$eq]=${companyId}&populate=*&pagination[pageSize]=100`;
+        const apiUrl = `${API_URL}/projects?filters[startup][id][$eq]=${companyId}&populate=*&pagination[pageSize]=100`;
         // console.log("Fetching projects from:", apiUrl);
         const response = await fetch(apiUrl);
 
@@ -226,7 +225,7 @@ const ProjectGallery = ({ companyId }) => {
       } catch (err) {
         console.error("Error fetching projects:", err);
         setError(
-          err.message || "An unknown error occurred while fetching projects."
+          err.message || "An unknown error occurred while fetching projects.",
         );
         setProjects([]); // Clear projects on error
       } finally {
@@ -332,7 +331,10 @@ const ProjectGallery = ({ companyId }) => {
 
   return (
     projects.length !== 0 && (
-      <div id="projects" className="px-4 sm:px-6 lg:px-[69px] mx-auto py-12 ml-10">
+      <div
+        id="projects"
+        className="px-4 sm:px-6 lg:px-[69px] mx-auto py-12 ml-10"
+      >
         <div className="flex flex-col md:flex-row items-start md:items-center justify-start mb-8 space-y-3 md:space-y-0 md:space-x-3 w-full">
           <div className="w-1/5 md:w-16 hidden md:block h-1.5 bg-gradient-to-r from-orange-500 to-red-500 rounded-full"></div>
           <h1 className="text-3xl md:text-5xl font-bold mb-1 text-left">

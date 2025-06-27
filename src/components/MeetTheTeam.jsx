@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import useEmblaCarousel from "embla-carousel-react";
+import { API_URL } from "../services/api";
 
 const SectionHeader = ({ title }) => (
   <div className="mb-8 md:mb-12">
@@ -316,7 +317,7 @@ export default function MeetTheTeam() {
     const fetchData = async () => {
       try {
         const response = await fetch(
-          "http://20.0.137.179:1337/api/home-page?populate[0]=meet_the_team&populate[1]=meet_the_team.image",
+          `${API_URL}/home-page?populate[0]=meet_the_team&populate[1]=meet_the_team.image`,
         );
         if (!response.ok) {
           throw new Error(

@@ -15,6 +15,7 @@ import {
   ChevronRight,
 } from "lucide-react";
 import * as countryCodes from "country-codes-list";
+import { API_URL } from "../services/api";
 
 const getCountryNameFromCode = (code) => {
   if (!code || typeof code !== "string") return "Unknown Country";
@@ -22,9 +23,7 @@ const getCountryNameFromCode = (code) => {
   return country ? country.countryNameEn : "Unknown Country";
 };
 
-const STARTUPS_API_URL = `${
-  import.meta.env.VITE_API_URL
-}/api/startups?populate=*&pagination[pageSize]=100`;
+const STARTUPS_API_URL = `${API_URL}/startups?populate=*&pagination[pageSize]=100`;
 
 const GLOBE_RADIUS = 1;
 

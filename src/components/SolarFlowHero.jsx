@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 // import { getLocationFromLatLong } from "../utils/strapiHelper";
 import * as countryFlags from "country-flag-icons/react/3x2";
+import { API_URL } from "../services/api";
 
 const SolarFlowHero = ({ companyId }) => {
   const [companyData, setCompanyData] = useState(null);
@@ -18,9 +19,8 @@ const SolarFlowHero = ({ companyId }) => {
         setLoading(true);
         setError(null);
 
-        const baseUrl = import.meta.env.VITE_API_URL;
         const response = await fetch(
-          `${baseUrl}/api/startups?filters[id][$eq]=${companyId}&populate=*&pagination[pageSize]=100`
+          `${API_URL}/startups?filters[id][$eq]=${companyId}&populate=*&pagination[pageSize]=100`,
         );
         const result = await response.json();
         const company =
@@ -106,8 +106,8 @@ const SolarFlowHero = ({ companyId }) => {
         playsInline
         className="absolute inset-0 w-full h-full object-cover filter blur-3xl opacity-70"
       >
-        {/* 
-          For production, download this video and serve it from your /public folder 
+        {/*
+          For production, download this video and serve it from your /public folder
           for better performance and reliability.
           Example: <source src="/videos/abstract-motion.mp4" type="video/mp4" />
         */}

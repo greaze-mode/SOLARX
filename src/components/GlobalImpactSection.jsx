@@ -334,6 +334,7 @@ const GlobalImpactSection = () => {
         ];
 
         const selectedMetrics = shuffleArray(allMetricsRaw)
+          .filter((metric) => metric.Title && metric.Metric)
           .slice(0, Math.min(20, allMetricsRaw.length))
           .map((metric) => ({
             label: metric.Title || "Untitled Metric",

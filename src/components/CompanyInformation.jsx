@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Calendar, MapPin, Users, Shield, Target, Globe } from "lucide-react";
 import { useParams } from "react-router-dom";
 import * as countryCodes from "country-codes-list";
-import { LI } from "country-flag-icons/react/3x2";
+import { API_URL } from "../services/api";
 
 const getCountryNameFromCode = (code) => {
   if (!code || typeof code !== "string") return "Unknown Country";
@@ -26,9 +26,8 @@ export default function CompanyInformation({ companyId }) {
         setLoading(true);
 
         // Get all companies first
-        const baseUrl = import.meta.env.VITE_API_URL;
         const response = await fetch(
-          `${baseUrl}/api/startups?filters[id][$eq]=${companyId}&pagination[pageSize]=100`,
+          `${API_URL}/startups?filters[id][$eq]=${companyId}&pagination[pageSize]=100`,
         );
         const result = await response.json();
         const companyData =
