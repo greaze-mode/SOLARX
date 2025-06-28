@@ -14,6 +14,7 @@ import GlobalImpactSection from "./components/GlobalImpactSection";
 import SolarXGlobalReach from "./components/SolarXGlobalReach";
 import { EventSection } from "./components/EventSection.jsx";
 import MeetTheTeam from "./components/MeetTheTeam.jsx";
+import ChatBot from "./components/ChatBot";
 // import { SimpleGlobe } from "./components/Globe.jsx";
 
 export default function App() {
@@ -109,6 +110,8 @@ export default function App() {
         <AboutSolarXChallenge isMobile={isMobile} />
         <Footer quickLinks={quickLinks} />
       </div>
+      
+      <ChatBot />
     </div>
   );
 }
