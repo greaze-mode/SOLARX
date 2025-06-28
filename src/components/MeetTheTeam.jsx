@@ -281,7 +281,7 @@ const SecretariatSection = ({ members }) => {
                 flex: isCarouselActive ? `0 0 ${100 / slidesToShow}%` : "none",
                 minWidth: 0,
               }}
-              className={`py-10 px-2 ${!isCarouselActive ? "w-1/2 sm:w-1/3 md:w-1/4 lg:w-1/5" : ""}`}
+              className={`py-10 px-2 ${!isCarouselActive ? "w-1/2 sm:w-1/3 md:w-1/4" : ""}`}
             >
               <SecretariatMemberCard
                 member={member}
