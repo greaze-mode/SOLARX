@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { API_URL } from "../services/api";
-import { MessageCircle, X, Send, Bot, Building, Globe } from "lucide-react";
+import { MessageCircle, X, Send, Sun, Building, Globe } from "lucide-react";
 import Markdown from "react-markdown";
 import axios from "axios";
 
@@ -135,7 +135,6 @@ const ChatBot = () => {
     };
 
     fetchStartupData();
-    console.log("Fetched AAAAAA", startupData);
   }, [startupRedirectURL]);
 
   const handleSendMessage = async () => {
@@ -155,21 +154,11 @@ const ChatBot = () => {
     setIsLoading(true);
 
     try {
-      const response = await fetch(import.meta.env.VITE_CHATBOT_URL, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          query: userMessage.text,
-        }),
+      const res = await axios.post(import.meta.env.VITE_CHATBOT_URL, {
+        query: userMessage.text,
       });
 
-      if (!response.ok) {
-        throw new Error("Failed to get response");
-      }
-
-      const data = await response.json();
+      data = res.data;
 
       const botMessage = {
         id: Date.now() + 1,
@@ -216,9 +205,9 @@ const ChatBot = () => {
       {isOpen && (
         <div className="fixed bottom-6 right-6 w-[420px] h-[600px] bg-white rounded-2xl shadow-2xl border border-orange-200 z-50 flex flex-col animate-in slide-in-from-bottom-4 duration-300">
           {/* Header */}
-          <div className="bg-gradient-to-r from-orange-500 to-red-600 text-white p-4 rounded-t-2xl flex items-center justify-between">
+          <div className="bg-orange-600 text-white p-4 rounded-t-2xl flex items-center justify-between">
             <div className="flex items-center space-x-2">
-              <Bot className="w-8 h-8" />
+              <Sun className="w-8 h-8" />
               <div className={"pl-2"}>
                 <h3 className="font-semibold">ISA Assistant</h3>
                 <p className="text-[10px] text-orange-200">
@@ -244,7 +233,7 @@ const ChatBot = () => {
                 <div
                   className={`max-w-[80%] p-3 rounded-2xl text-sm ${
                     message.isBot
-                      ? "bg-gradient-to-r from-orange-500 to-red-600 text-white"
+                      ? "bg-orange-600 text-white"
                       : "bg-gray-100 text-gray-800"
                   }`}
                 >
@@ -317,7 +306,7 @@ const ChatBot = () => {
           onClick={() => setIsOpen(!isOpen)}
           className="fixed bottom-6 right-6 w-14 h-14 bg-gradient-to-r from-orange-500 to-red-600 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-200 z-40 flex items-center justify-center hover:scale-110"
         >
-          <Bot className="w-6 h-6" />
+          <Sun className="w-6 h-6" />
         </button>
       )}
     </>
