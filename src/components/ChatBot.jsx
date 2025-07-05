@@ -1,71 +1,45 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
 import { API_URL } from "../services/api";
-import { MessageCircle, X, Send, Sun, Building, Globe } from "lucide-react";
+import { X, Send, Sun, Mic } from "lucide-react"; // Imported Mic
 import Markdown from "react-markdown";
 import axios from "axios";
 
-const StartupCard = ({ startup, url }) => {
-  // Don't render if there's no startup data
-  if (!startup) {
-    return null;
-  }
-
-  // Display an error message if the data fetch failed
-  if (startup.error) {
+// New component for rendering the startup card inside a chat message
+const StartupMessageCard = ({ startup, url }) => {
+  // Handle case where startup data couldn't be loaded
+  if (!startup || startup.error) {
     return (
-      <div className="p-4 border-t border-gray-200">
-        <div
-          className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg text-sm"
-          role="alert"
-        >
-          {startup.error}
-        </div>
+      <div className="p-3 text-sm text-red-200">
+        Could not load startup information.
       </div>
     );
   }
 
-  const { Name, Company_Logo, HQ_Location_Name, Description } = startup;
-
-  // Safely extract the description text from the API's rich text format
-  const descriptionText =
-    Description?.[0]?.children?.[0]?.text || "No description available.";
-
-  // Truncate the description to keep the card compact
-  const shortDescription =
-    descriptionText.length > 100
-      ? descriptionText.substring(0, 100) + "..."
-      : descriptionText;
+  const { Name, Company_Logo, HQ_Location_Name } = startup;
 
   return (
-    <div className="p-4 border-t border-gray-200 bg-gray-50">
+    <div className="flex flex-col items-center p-3">
+      {/* Logo */}
+      <img
+        src={Company_Logo.url}
+        alt={`${Name} Logo`}
+        className="w-28 h-28 mb-3 rounded-md bg-white p-1 object-contain"
+      />
+
+      <p className="font-bold text-gray-900 text-center text-base">{Name}</p>
+      <div className="flex items-center text-sm text-gray-600 mt-1 mb-4">
+        {/* <Globe className="w-3 h-3 mr-1.5 flex-shrink-0" /> */}
+        <span>{HQ_Location_Name || "Location not specified"}</span>
+      </div>
+
+      {/* Button */}
       <a
         href={url}
         target="_blank"
         rel="noopener noreferrer"
-        className="block bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 p-3 border border-gray-200"
+        className="w-full bg-white text-orange-600 font-semibold px-4 py-2 rounded-lg text-sm hover:bg-orange-100 transition-colors text-center"
       >
-        <div className="flex items-start space-x-4">
-          <div className="flex-shrink-0 w-12 h-12 bg-orange-100 rounded-md flex items-center justify-center">
-            <img src={Company_Logo.url} alt={`${Name} Logo`} />
-          </div>
-
-          {/* Startup Info */}
-          <div className="flex-1 min-w-0">
-            <p
-              className="text-base font-bold text-gray-800 truncate"
-              title={Name}
-            >
-              {Name}
-            </p>
-            <div className="flex items-center text-xs text-gray-500 mt-1">
-              <Globe className="w-3 h-3 mr-1.5 flex-shrink-0" />
-              <span>{HQ_Location_Name || "Region not specified"}</span>
-            </div>
-            <p className="text-sm text-gray-600 mt-2 leading-snug">
-              {shortDescription}
-            </p>
-          </div>
-        </div>
+        View Startup Profile
       </a>
     </div>
   );
@@ -79,109 +53,167 @@ const ChatBot = () => {
       text: "Hello! I'm here to help you. How can I assist you today?",
       isBot: true,
       timestamp: new Date(),
+      type: "text",
     },
   ]);
   const [inputMessage, setInputMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [startupData, setStartupData] = useState(null);
-  const [startupRedirectURL, setStartupRedirectURL] = useState(null);
-  const [isFetchingStartup, setIsFetchingStartup] = useState(false);
+  const [isRecording, setIsRecording] = useState(false);
+  const [showInitialTooltip, setShowInitialTooltip] = useState(true); // State for the initial tooltip
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
+  const recognitionRef = useRef(null); // Ref for the speech recognition instance
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
+
+  const submitMessage = useCallback(
+    async (text) => {
+      if (!text.trim() || isLoading) return;
+
+      const userMessage = {
+        id: Date.now(),
+        text: text.trim(),
+        isBot: false,
+        timestamp: new Date(),
+        type: "text",
+      };
+
+      setMessages((prev) => [...prev, userMessage]);
+      setIsLoading(true);
+
+      try {
+        const res = await axios.post(import.meta.env.VITE_CHATBOT_URL, {
+          query: userMessage.text,
+        });
+
+        const data = res.data;
+        const newBotMessages = [];
+
+        if (data.response) {
+          newBotMessages.push({
+            id: Date.now() + 1,
+            text: data.response,
+            isBot: true,
+            timestamp: new Date(),
+            type: "text",
+          });
+        }
+
+        if (data.startupURL) {
+          try {
+            const urlParts = data.startupURL.split("/");
+            const startupId = urlParts[urlParts.length - 1];
+            const apiUrl = `${API_URL}/startups/${startupId}?populate=Company_Logo`;
+            const startupRes = await axios.get(apiUrl);
+
+            newBotMessages.push({
+              id: Date.now() + 2,
+              isBot: true,
+              timestamp: new Date(),
+              type: "startup",
+              payload: {
+                startup: startupRes.data.data,
+                url: data.startupURL,
+              },
+            });
+          } catch (fetchError) {
+            console.error("Failed to fetch startup data:", fetchError);
+            newBotMessages.push({
+              id: Date.now() + 2,
+              text: "I found a startup but had trouble loading its details.",
+              isBot: true,
+              timestamp: new Date(),
+              type: "text",
+            });
+          }
+        }
+
+        if (newBotMessages.length === 0) {
+          newBotMessages.push({
+            id: Date.now() + 1,
+            text: "I'm sorry, I couldn't process your request.",
+            isBot: true,
+            timestamp: new Date(),
+            type: "text",
+          });
+        }
+
+        setMessages((prev) => [...prev, ...newBotMessages]);
+      } catch (error) {
+        console.error("Chat API error:", error);
+        const errorMessage = {
+          id: Date.now() + 1,
+          text: "I'm sorry, I'm having trouble connecting right now. Please try again later.",
+          isBot: true,
+          timestamp: new Date(),
+          type: "text",
+        };
+        setMessages((prev) => [...prev, errorMessage]);
+      } finally {
+        setIsLoading(false);
+        setTimeout(() => scrollToBottom(), 100);
+      }
+    },
+    [isLoading], // Dependency for useCallback
+  );
+
+  // Setup Speech Recognition
+  useEffect(() => {
+    const SpeechRecognition =
+      window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      console.warn("Speech recognition not supported by this browser.");
+      return;
+    }
+
+    const recognition = new SpeechRecognition();
+    recognition.continuous = false;
+    recognition.lang = "en-US";
+    recognition.interimResults = false;
+
+    recognition.onresult = (event) => {
+      const transcript = event.results[0][0].transcript;
+      submitMessage(transcript); // Send the transcript
+    };
+
+    recognition.onend = () => {
+      setIsRecording(false);
+    };
+
+    recognition.onerror = (event) => {
+      console.error("Speech recognition error:", event.error);
+      setIsRecording(false);
+    };
+
+    recognitionRef.current = recognition;
+  }, [submitMessage]); // Add submitMessage as a dependency
 
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
 
   useEffect(() => {
-    if (isOpen && inputRef.current) {
-      inputRef.current.focus();
+    if (isOpen) {
       setTimeout(() => {
+        inputRef.current?.focus();
         scrollToBottom();
       }, 100);
     }
   }, [isOpen]);
 
-  useEffect(() => {
-    const fetchStartupData = async () => {
-      if (!startupRedirectURL) {
-        setStartupData(null);
-        return;
-      }
-      setIsFetchingStartup(true);
-      setStartupData(null);
+  const handleSendMessage = () => {
+    submitMessage(inputMessage);
+    setInputMessage(""); // Clear input after sending
+  };
 
-      try {
-        const urlParts = startupRedirectURL.split("/");
-        const startupId = urlParts[urlParts.length - 1];
-
-        // Construct the API endpoint from your prompt
-        const apiUrl = `${API_URL}/startups/${startupId}?populate=Company_Logo`;
-        const response = await axios.get(apiUrl);
-
-        setStartupData(response.data.data);
-      } catch (error) {
-        console.error("Failed to fetch startup data:", error);
-        setStartupData({ error: "Could not load startup information." });
-      } finally {
-        setIsFetchingStartup(false);
-        // Scroll to bottom again after card loads/fails to ensure it's visible
-        setTimeout(() => scrollToBottom(), 100);
-      }
-    };
-
-    fetchStartupData();
-  }, [startupRedirectURL]);
-
-  const handleSendMessage = async () => {
-    if (!inputMessage.trim() || isLoading) return;
-
-    setStartupRedirectURL(null);
-
-    const userMessage = {
-      id: Date.now(),
-      text: inputMessage.trim(),
-      isBot: false,
-      timestamp: new Date(),
-    };
-
-    setMessages((prev) => [...prev, userMessage]);
-    setInputMessage("");
-    setIsLoading(true);
-
-    try {
-      const res = await axios.post(import.meta.env.VITE_CHATBOT_URL, {
-        query: userMessage.text,
-      });
-
-      data = res.data;
-
-      const botMessage = {
-        id: Date.now() + 1,
-        text: data.response || "I'm sorry, I couldn't process your request.",
-        isBot: true,
-        timestamp: new Date(),
-      };
-      if (data.startupURL) {
-        setStartupRedirectURL(data.startupURL);
-      }
-
-      setMessages((prev) => [...prev, botMessage]);
-    } catch (error) {
-      console.error("Chat API error:", error);
-      const errorMessage = {
-        id: Date.now() + 1,
-        text: "I'm sorry, I'm having trouble connecting right now. Please try again later.",
-        isBot: true,
-        timestamp: new Date(),
-      };
-      setMessages((prev) => [...prev, errorMessage]);
-    } finally {
-      setIsLoading(false);
+  const handleMicClick = () => {
+    if (isRecording) {
+      recognitionRef.current?.stop();
+    } else {
+      recognitionRef.current?.start();
+      setIsRecording(true);
     }
   };
 
@@ -192,18 +224,16 @@ const ChatBot = () => {
     }
   };
 
-  const formatTime = (timestamp) => {
-    return timestamp.toLocaleTimeString([], {
-      hour: "2-digit",
-      minute: "2-digit",
-    });
+  const handleOpenChat = () => {
+    setIsOpen(true);
+    setShowInitialTooltip(false); // Hide tooltip forever after first click
   };
 
   return (
     <>
       {/* Chat Interface */}
       {isOpen && (
-        <div className="fixed bottom-6 right-6 w-[420px] h-[600px] bg-white rounded-2xl shadow-2xl border border-orange-200 z-50 flex flex-col animate-in slide-in-from-bottom-4 duration-300">
+        <div className="fixed bottom-6 sm:mx-0 sm:right-6 w-full sm:w-1/3 h-5/6 bg-white rounded-2xl shadow-2xl border border-orange-200 z-50 flex flex-col animate-in slide-in-from-bottom-4 duration-300">
           {/* Header */}
           <div className="bg-orange-600 text-white p-4 rounded-t-2xl flex items-center justify-between">
             <div className="flex items-center space-x-2">
@@ -228,22 +258,35 @@ const ChatBot = () => {
             {messages.map((message) => (
               <div
                 key={message.id}
-                className={`flex ${message.isBot ? "justify-start" : "justify-end"}`}
+                className={`flex ${
+                  message.isBot ? "justify-start" : "justify-end"
+                }`}
               >
                 <div
-                  className={`max-w-[80%] p-3 rounded-2xl text-sm ${
+                  className={`max-w-[80%] text-base rounded-2xl ${
                     message.isBot
-                      ? "bg-orange-600 text-white"
+                      ? "bg-orange-200 text-gray-900"
                       : "bg-gray-100 text-gray-800"
+                  } ${
+                    message.type === "startup"
+                      ? "w-2/5 p-0 overflow-hidden"
+                      : "p-3"
                   }`}
                 >
-                  <Markdown>{message.text}</Markdown>
+                  {message.type === "startup" ? (
+                    <StartupMessageCard
+                      startup={message.payload.startup}
+                      url={message.payload.url}
+                    />
+                  ) : (
+                    <Markdown>{message.text}</Markdown>
+                  )}
                 </div>
               </div>
             ))}
             {isLoading && (
               <div className="flex justify-start">
-                <div className="bg-gray-100 text-gray-800 p-3 rounded-2xl">
+                <div className="bg-gray-100 p-3 rounded-2xl">
                   <div className="flex space-x-1">
                     <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
                     <div
@@ -261,37 +304,34 @@ const ChatBot = () => {
             <div ref={messagesEndRef} />
           </div>
 
-          {isFetchingStartup && (
-            <div className="p-4 border-t border-gray-200 text-center">
-              <div className="flex justify-center items-center space-x-2 text-gray-500 text-sm">
-                <span>Loading startup info...</span>
-              </div>
-            </div>
-          )}
-          {!isFetchingStartup && startupData && (
-            <StartupCard startup={startupData} url={startupRedirectURL} />
-          )}
-
           {/* Input */}
           <div className="p-4 border-t border-gray-200">
-            <div className="flex space-x-2">
+            <div className="flex items-center space-x-2">
               <input
                 ref={inputRef}
                 type="text"
                 value={inputMessage}
-                onChange={(e) => {
-                  setInputMessage(e.target.value);
-                  if (startupRedirectURL) setStartupRedirectURL(null);
-                }}
+                onChange={(e) => setInputMessage(e.target.value)}
                 onKeyDown={handleKeyPress}
-                placeholder="Type your message..."
+                placeholder="Type or press mic to talk..."
                 className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                 disabled={isLoading}
               />
               <button
+                onClick={handleMicClick}
+                disabled={isLoading}
+                className={`p-2 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
+                  isRecording
+                    ? "bg-red-100 text-red-600 animate-pulse"
+                    : "text-gray-500 hover:bg-gray-100"
+                }`}
+              >
+                <Mic className="w-5 h-5" />
+              </button>
+              <button
                 onClick={handleSendMessage}
                 disabled={!inputMessage.trim() || isLoading}
-                className="px-4 py-2 bg-gradient-to-r from-orange-500 to-red-600 text-white rounded-lg hover:from-orange-600 hover:to-red-700 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
+                className="pr-4 pl-3.5 py-2 bg-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-red-700 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
               >
                 <Send className="w-4 h-4" />
               </button>
@@ -300,14 +340,25 @@ const ChatBot = () => {
         </div>
       )}
 
-      {/* Floating Button */}
+      {/* Floating Button and Tooltip */}
       {!isOpen && (
-        <button
-          onClick={() => setIsOpen(!isOpen)}
-          className="fixed bottom-6 right-6 w-14 h-14 bg-gradient-to-r from-orange-500 to-red-600 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-200 z-40 flex items-center justify-center hover:scale-110"
-        >
-          <Sun className="w-6 h-6" />
-        </button>
+        <div className="fixed bottom-6 right-6 z-40">
+          {/* Tooltip Cloud */}
+          {showInitialTooltip && (
+            <div className="absolute bottom-full right-0 mb-3 w-max bg-gray-800 text-white text-sm font-semibold px-4 py-2 rounded-lg shadow-lg animate-fade-in-up">
+              Hi! Tap to chat with the Assistant
+              {/* Triangle Pointer */}
+              <div className="absolute right-0 -translate-x-1/2 bottom-[-8px] w-0 h-0 border-l-[8px] border-l-transparent border-r-[8px] border-r-transparent border-t-[8px] border-t-gray-800"></div>
+            </div>
+          )}
+          {/* Floating Button */}
+          <button
+            onClick={handleOpenChat}
+            className="w-14 h-14 border-2 border-orange-300 bg-gray-200 text-orange-600 rounded-full shadow-lg hover:shadow-2xl transition-all duration-200 flex items-center justify-center hover:scale-110"
+          >
+            <Sun className="w-8 h-8" absoluteStrokeWidth={false} />
+          </button>
+        </div>
       )}
     </>
   );
