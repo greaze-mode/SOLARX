@@ -4,6 +4,8 @@ import { X, Send, Sun, Mic } from "lucide-react"; // Imported Mic
 import Markdown from "react-markdown";
 import axios from "axios";
 
+const SESSION_ID_KEY = "chatbot_session_id";
+
 // New component for rendering the startup card inside a chat message
 const StartupMessageCard = ({ startup, url }) => {
   // Handle case where startup data couldn't be loaded
@@ -64,6 +66,21 @@ const ChatBot = () => {
   const inputRef = useRef(null);
   const recognitionRef = useRef(null); // Ref for the speech recognition instance
 
+  const sessionIdRef = useRef(null);
+
+  useEffect(() => {
+    const savedSessionId = localStorage.getItem(SESSION_ID_KEY);
+    if (savedSessionId) {
+      sessionIdRef.current = savedSessionId;
+      // console.log("Existing session found:", savedSessionId);
+    }
+    // else {
+    // console.log(
+    //   "No existing session found. A new one will be created on the first message.",
+    // );
+    // }
+  }, []);
+
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
@@ -84,11 +101,29 @@ const ChatBot = () => {
       setIsLoading(true);
 
       try {
-        const res = await axios.post(import.meta.env.VITE_CHATBOT_URL, {
+        const requestPayload = {
           query: userMessage.text,
-        });
+          session_id: sessionIdRef.current, // Will be null if no session has started
+        };
+
+        const res = await axios.post(
+          import.meta.env.VITE_CHATBOT_URL,
+          requestPayload,
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          },
+        );
 
         const data = res.data;
+
+        if (data.session_id && !sessionIdRef.current) {
+          sessionIdRef.current = data.session_id;
+          localStorage.setItem(SESSION_ID_KEY, data.session_id);
+          // console.log("New session started and saved:", data.session_id);
+        }
+
         const newBotMessages = [];
 
         if (data.response) {
