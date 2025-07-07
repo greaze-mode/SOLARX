@@ -298,7 +298,7 @@ const ChatBot = () => {
                 }`}
               >
                 <div
-                  className={`max-w-[80%] text-base rounded-2xl ${
+                  className={`max-w-[80%] rounded-2xl ${
                     message.isBot
                       ? "bg-orange-200 text-gray-900"
                       : "bg-gray-100 text-gray-800"
@@ -314,7 +314,9 @@ const ChatBot = () => {
                       url={message.payload.url}
                     />
                   ) : (
-                    <Markdown>{message.text}</Markdown>
+                    <div className="prose marker:text-gray-900 prose-p:text-gray-900 prose-p:leading-relaxed prose-a:text-blue-600 prose-a:underline">
+                      <Markdown>{message.text}</Markdown>
+                    </div>
                   )}
                 </div>
               </div>
