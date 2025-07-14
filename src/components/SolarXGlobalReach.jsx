@@ -36,7 +36,7 @@ const REGION_COLORS = {
   LAC: 0x9c27b0, // Purple
   NA: 0xf44336, // Red
   // GROUP: 0xffeb3b, // Yellow for grouped markers
-  DEFAULT: 0x9e9e9e, // Grey for other regions
+  DEFAULT: 0xff9800,
 };
 
 // Add region names mapping

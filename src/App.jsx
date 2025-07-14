@@ -96,21 +96,21 @@ export default function App() {
       <div className="relative mt-16">
         <HeroCarousel />
         <EventSection />
+        <SolarXGlobalReach isMobile={isMobile} />
         <AboutSolarXChallenge isMobile={isMobile} />
-        <MeetTheTeam />
         <SolarXWinners isMobile={isMobile} />
         <StatsSection isMobile={isMobile} />
         <FundingInvestorsDashboard isMobile={isMobile} />
-        <SolarXGlobalReach isMobile={isMobile} />
         {/* <SimpleGlobe /> */}
         {/* <SuccessStories isMobile={isMobile} /> */}
         <MediaCoverageSection isMobile={isMobile} />
         <GlobalImpactSection isMobile={isMobile} />
         {/* <HeroCarousel /> */}
-        <AboutSolarXChallenge isMobile={isMobile} />
+        {/* <AboutSolarXChallenge isMobile={isMobile} /> */}
+        <MeetTheTeam />
         <Footer quickLinks={quickLinks} />
       </div>
-      
+
       <ChatBot />
     </div>
   );
