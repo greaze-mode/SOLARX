@@ -296,7 +296,7 @@ const SolarXGlobalReach = () => {
         .sort((a, b) => b.count - a.count)
         .slice(0, 5);
     };
-    setRegionSummary(createSummary("Regions"));
+    setRegionSummary(createSummary("Region"));
     setSectorSummary(createSummary("Sector_Tags"));
     setTechnologySummary(createSummary("Technology_Tags"));
   }, [allStartups]);

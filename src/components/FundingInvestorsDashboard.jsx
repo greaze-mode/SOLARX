@@ -162,7 +162,7 @@ export default function FundingInvestorsDashboard() {
           });
 
           // JUGAAD: Adding dummy funding for 14 startups that haven't sent data yet
-          for (let i = 0; i < 14; i++) {
+          for (let i = 0; i < 12; i++) {
             allRounds.push({
               amount: 15000,
               amountFormatted: formatCurrency(15000),
@@ -226,6 +226,7 @@ export default function FundingInvestorsDashboard() {
           );
 
           const investorsArray = sortedInvestors
+            .filter((x) => x !== "Kith & Kin")
             .slice(0, 6)
             .map((name, index) => ({
               name,
