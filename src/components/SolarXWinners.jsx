@@ -24,11 +24,8 @@ const getCountryNameFromCode = (code) => {
 const REGIONS_OPTIONS = [
   "All Regions",
   "Asia-Pacific (APAC)",
-  "Middle East & North Africa (MENA)",
-  "Rest of Africa (RoA)",
-  "Europe",
-  "Latin America & the Caribbean (LAC)",
-  "North America",
+  "India",
+  "Africa",
 ];
 
 const transformStartupData = (rawStartup) => {
@@ -38,7 +35,7 @@ const transformStartupData = (rawStartup) => {
     id: rawStartup.id,
     documentId: rawStartup.documentId,
     name: rawStartup.Name || "Unnamed Startup",
-    regions: rawStartup.Regions || [],
+    regions: rawStartup.Region || [],
     location: rawStartup.HQ_Location_Name || "",
     countryCode: rawStartup.Country || "",
     country:

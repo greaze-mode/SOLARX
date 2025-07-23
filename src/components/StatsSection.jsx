@@ -26,8 +26,8 @@ export default function StatsSection() {
           const regionsCount = () => {
             const uniqueRegions = new Set();
             res.data.data.forEach((startup) => {
-              if (startup && startup.Regions) {
-                uniqueRegions.add(startup.Regions);
+              if (startup && startup.Region) {
+                uniqueRegions.add(startup.Region);
               }
             });
 

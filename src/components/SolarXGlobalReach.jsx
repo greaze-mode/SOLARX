@@ -30,23 +30,17 @@ const GLOBE_RADIUS = 1;
 // Add region color constants
 const REGION_COLORS = {
   APAC: 0x05bcf4, // Cyan
-  MENA: 0xff9800, // Orange
-  ROA: 0x4caf50, // Green (corrected hex)
-  EUROPE: 0x2196f3, // Blue
-  LAC: 0x9c27b0, // Purple
-  NA: 0xf44336, // Red
+  AFRICA: 0x4caf50, // Green (corrected hex)
+  INDIA: 0xff681a, // Red for India
   // GROUP: 0xffeb3b, // Yellow for grouped markers
   DEFAULT: 0xff9800,
 };
 
 // Add region names mapping
 const REGION_NAMES = {
-  APAC: "Asia-Pacific (APAC)",
-  MENA: "Middle East & North Africa (MENA)",
-  ROA: "Rest of Africa (RoA)",
-  EUROPE: "Europe",
-  LAC: "Latin America & the Caribbean (LAC)",
-  NA: "North America",
+  APAC: "Asia-Pacific (APAC) (Excluding India)",
+  AFRICA: "Africa",
+  INDIA: "India",
   // GROUP: "Multiple Startups",
   DEFAULT: "Other Regions",
 };
@@ -58,20 +52,11 @@ const getRegionColor = (region) => {
     case REGION_NAMES.APAC:
       color = REGION_COLORS.APAC;
       break;
-    case REGION_NAMES.MENA:
-      color = REGION_COLORS.MENA;
+    case REGION_NAMES.AFRICA:
+      color = REGION_COLORS.AFRICA;
       break;
-    case REGION_NAMES.ROA:
-      color = REGION_COLORS.ROA;
-      break;
-    case REGION_NAMES.EUROPE:
-      color = REGION_COLORS.EUROPE;
-      break;
-    case REGION_NAMES.LAC:
-      color = REGION_COLORS.LAC;
-      break;
-    case REGION_NAMES.NA:
-      color = REGION_COLORS.NA;
+    case REGION_NAMES.INDIA:
+      color = REGION_COLORS.INDIA;
       break;
     default:
       color = REGION_COLORS.DEFAULT;
@@ -176,7 +161,7 @@ const SolarXGlobalReach = () => {
                 startupLogo: startup.Company_Logo.url || "",
                 startupCountry:
                   getCountryNameFromCode(startup.Country) || "N/A",
-                startupRegions: startup.Regions || "N/A",
+                startupRegions: startup.Region || "N/A",
                 startupSectors:
                   startup.Sector_Tags?.map((t) =>
                     typeof t === "string" ? t.split("|").pop().trim() : "",
